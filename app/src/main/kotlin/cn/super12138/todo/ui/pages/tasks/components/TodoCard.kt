@@ -21,22 +21,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.ButtonShapes
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
@@ -45,6 +48,8 @@ import cn.super12138.todo.ui.TodoDefaults
 import cn.super12138.todo.ui.theme.shapeByInteraction
 import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.containerColor
+import cn.super12138.todo.utils.disabledContainerColor
+import cn.super12138.todo.utils.disabledContentColor
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -63,7 +68,8 @@ fun TodoCard(
 ) {
     val view = LocalView.current
     // TODO: 滑动删除
-    val animatedContainerColor by animateColorAsState(if (selected) MaterialTheme.colorScheme.secondaryContainer else TodoDefaults.ContainerColor)
+    val cardColors = CardDefaults.cardColors(containerColor = TodoDefaults.ContainerColor)
+    val animatedContainerColor by animateColorAsState(targetValue = if (selected) MaterialTheme.colorScheme.secondaryContainer else if (completed) cardColors.disabledContainerColor else cardColors.containerColor)
 
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
@@ -89,7 +95,9 @@ fun TodoCard(
                 // 因为 combinedClickable 在更新的 Compose 里已经处理好了触感反馈
                 onLongClick = onCardLongClick
             )
-            .background(animatedContainerColor)
+            .drawBehind {
+                drawRect(animatedContainerColor)
+            }
             .padding(horizontal = TodoDefaults.screenHorizontalPadding)
     ) {
         AnimatedVisibility(
@@ -125,33 +133,36 @@ fun TodoCard(
                 .weight(1f)
                 .fillMaxSize()
         ) {
-            Text(
-                text = content,
-                style = MaterialTheme.typography.titleLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textDecoration = if (completed) TextDecoration.LineThrough else TextDecoration.None,
-                // modifier = Modifier.basicMarquee()
-            )
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(5.dp)
+            CompositionLocalProvider(
+                LocalContentColor provides if (completed) cardColors.disabledContentColor else cardColors.contentColor,
             ) {
-                Badge(containerColor = MaterialTheme.colorScheme.primary) {
+                Text(
+                    text = content,
+                    style = MaterialTheme.typography.titleLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    // modifier = Modifier.basicMarquee()
+                )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(5.dp)
+                ) {
+                    Badge(containerColor = if (completed) disabledContainerColor() else MaterialTheme.colorScheme.primary) {
+                        Text(
+                            text = category.ifEmpty { stringResource(R.string.tip_default_category) },
+                            style = MaterialTheme.typography.labelMedium,
+                            maxLines = 1
+                        )
+                    }
+
                     Text(
-                        text = category.ifEmpty { stringResource(R.string.tip_default_category) },
-                        style = MaterialTheme.typography.labelMedium,
-                        textDecoration = if (completed) TextDecoration.LineThrough else TextDecoration.None,
-                        maxLines = 1
+                        text = stringResource(priority.nameRes),
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            color = if (completed) disabledContentColor() else priority.containerColor()
+                        ),
                     )
                 }
-
-                Text(
-                    text = stringResource(priority.nameRes),
-                    style = MaterialTheme.typography.labelMedium.copy(priority.containerColor()),
-                    textDecoration = if (completed) TextDecoration.LineThrough else TextDecoration.None,
-                )
             }
         }
 

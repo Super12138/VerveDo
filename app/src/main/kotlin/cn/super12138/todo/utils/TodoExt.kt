@@ -2,8 +2,11 @@ package cn.super12138.todo.utils
 
 import android.content.Context
 import androidx.compose.foundation.shape.CornerBasedShape
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -11,12 +14,14 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.model.Priority
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -86,7 +91,7 @@ fun ContentDrawScope.drawFadedEdge(
 fun Long?.toLocalDateString(): String {
     if (this == null) return ""
     val date = Date(this)
-    val format = SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+    val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     return format.format(date)
 }
 
@@ -132,3 +137,9 @@ fun Long?.toRelativeTimeString(context: Context): String {
         }
     }
 }
+
+@Composable
+fun disabledContentColor(alpha: Float = 0.38f): Color = MaterialTheme.colorScheme.onSurface.copy(alpha = alpha)
+
+@Composable
+fun disabledContainerColor(alpha: Float = 0.12f): Color = MaterialTheme.colorScheme.onSurface.copy(alpha = alpha)
