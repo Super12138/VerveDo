@@ -2,16 +2,16 @@ package cn.super12138.todo.ui.pages.tasks.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.shrinkOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -22,9 +22,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,7 +35,7 @@ import cn.super12138.todo.R
 import cn.super12138.todo.ui.TodoDefaults
 import cn.super12138.todo.utils.VibrationUtils
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TodoTopAppBar(
     selectedTodoIds: List<Int>,
@@ -44,8 +45,32 @@ fun TodoTopAppBar(
     onDeleteSelectedTodo: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val navIconEnterTransition = fadeIn(
+        animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()
+    ) + expandIn(
+        animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec(),
+        expandFrom = Alignment.CenterStart
+    )
+    val navIconExitTransition = fadeOut(
+        animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()
+    ) + shrinkOut(
+        animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec(),
+        shrinkTowards = Alignment.CenterStart
+    )
+    val enterTransition = fadeIn(MaterialTheme.motionScheme.defaultEffectsSpec()) +
+            scaleIn(
+                animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec(),
+                initialScale = 0.92f
+            )
+    val exitTransition = fadeOut(MaterialTheme.motionScheme.defaultEffectsSpec())
+    val titleTransition = ContentTransform(
+        targetContentEnter = enterTransition,
+        initialContentExit = exitTransition
+    )
+
     val view = LocalView.current
-    val animatedTopAppBarColors by animateColorAsState(
+    val animatedContainerColor by animateColorAsState(
+        animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec(),
         targetValue = if (selectedMode) {
             MaterialTheme.colorScheme.surfaceContainerHighest
         } else {
@@ -57,8 +82,8 @@ fun TodoTopAppBar(
         navigationIcon = {
             AnimatedVisibility(
                 visible = selectedMode,
-                enter = fadeIn() + expandIn(expandFrom = Alignment.CenterStart),
-                exit = shrinkOut(shrinkTowards = Alignment.CenterStart) + fadeOut()
+                enter = navIconEnterTransition,
+                exit = navIconExitTransition
             ) {
                 IconButton(
                     onClick = {
@@ -76,14 +101,7 @@ fun TodoTopAppBar(
         title = {
             AnimatedContent(
                 targetState = !selectedMode,
-                transitionSpec = {
-                    (
-                            fadeIn(animationSpec = tween(100)) +
-                                    scaleIn(initialScale = 0.92f)
-                            ).togetherWith(
-                            fadeOut(animationSpec = tween(100))
-                        )
-                }
+                transitionSpec = { titleTransition }
             ) {
                 if (it) {
                     Text(
@@ -104,7 +122,11 @@ fun TodoTopAppBar(
             }
         },
         actions = {
-            AnimatedVisibility(visible = selectedMode) {
+            AnimatedVisibility(
+                visible = selectedMode,
+                enter = enterTransition,
+                exit = exitTransition
+            ) {
                 Row {
                     IconButton(
                         onClick = {
@@ -132,21 +154,21 @@ fun TodoTopAppBar(
             }
 
         },
-        colors = TopAppBarDefaults.topAppBarColors().copy(
-            containerColor = animatedTopAppBarColors
-        ),
-        modifier = modifier
+        colors = TopAppBarDefaults.topAppBarColors().copy(containerColor = Color.Transparent),
+        modifier = modifier.drawBehind {
+            drawRect(animatedContainerColor)
+        }
     )
 }
 
 @Preview(locale = "zh-rCN", showBackground = true)
 @Composable
 private fun TodoTopAppBarPreview() {
-    var selectedMode by remember { mutableStateOf(false) }
+    val selectedMode = remember { mutableStateOf(false) }
     TodoTopAppBar(
         selectedTodoIds = (1..10).toList(),
-        selectedMode = selectedMode,
-        onCancelSelect = { selectedMode = !selectedMode },
+        selectedMode = selectedMode.value,
+        onCancelSelect = { selectedMode.value = !selectedMode.value },
         onSelectAll = { },
         onDeleteSelectedTodo = { }
     )

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -85,6 +86,7 @@ fun SharedTransitionScope.TodoEditPage(
     onNavigateUp = onNavigateUp
 )
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SharedTransitionScope.TodoEditorPage(
     modifier: Modifier = Modifier,
@@ -210,8 +212,12 @@ fun SharedTransitionScope.TodoEditorPage(
 
                 AnimatedVisibility(
                     visible = isCustomCategory,
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically()
+                    enter = fadeIn(MaterialTheme.motionScheme.defaultEffectsSpec()) + expandVertically(
+                        MaterialTheme.motionScheme.defaultEffectsSpec()
+                    ),
+                    exit = fadeOut(MaterialTheme.motionScheme.defaultEffectsSpec()) + shrinkVertically(
+                        MaterialTheme.motionScheme.defaultEffectsSpec()
+                    )
                 ) {
                     TodoCategoryTextField(
                         value = uiState.categoryContent,
