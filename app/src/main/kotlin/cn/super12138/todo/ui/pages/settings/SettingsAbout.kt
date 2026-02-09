@@ -65,9 +65,9 @@ fun SettingsAbout(
                         clickCount++
                         if (clickCount == 5) {
                             if ((System.currentTimeMillis() % 2) == 0.toLong()) {
-                                Toast.makeText(context, "🍨", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "\uD83E\uDDE7", Toast.LENGTH_SHORT).show()
                             } else {
-                                Toast.makeText(context, "✈️", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "⛄", Toast.LENGTH_SHORT).show()
                             }
                             clickCount = 0
                         }

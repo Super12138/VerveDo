@@ -246,6 +246,7 @@ fun SharedTransitionScope.TodoEditorPage(
                     text = stringResource(R.string.label_more),
                     style = MaterialTheme.typography.titleMedium
                 )
+                Spacer(modifier = Modifier.size(4.dp))
                 TodoDueDateChooser(
                     value = uiState.dueDateState,
                     onValueChange = { uiState.dueDateState = it },
