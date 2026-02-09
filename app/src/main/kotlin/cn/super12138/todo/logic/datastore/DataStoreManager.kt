@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import cn.super12138.todo.TodoApp
+import cn.super12138.todo.VerveDoApp
 import cn.super12138.todo.constants.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -27,7 +27,7 @@ object DataStoreManager {
         }
     )
 
-    val dataStore = TodoApp.context.dataStore
+    val dataStore = VerveDoApp.context.dataStore
 
     // Keys
     // 外观与个性化

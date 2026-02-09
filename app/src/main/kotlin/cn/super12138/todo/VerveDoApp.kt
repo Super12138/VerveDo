@@ -6,7 +6,7 @@ import android.content.Context
 import cn.super12138.todo.logic.database.TodoDatabase
 import cn.super12138.todo.ui.pages.crash.CrashHandler
 
-class TodoApp : Application() {
+class VerveDoApp : Application() {
     private val database by lazy { TodoDatabase.getDatabase(this) }
 
     companion object {

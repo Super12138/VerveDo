@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">قائمة المهام</string>
     <string name="page_settings">الإعدادات</string>
     <string name="action_add_task">إضافة مهمة</string>
     <string name="tip_no_task">لا توجد مهام لإكمالها في الوقت الحالي.\nخذ قسطًا من الراحة!</string>
@@ -87,9 +86,7 @@
     <string name="pref_data">البيانات</string>
     <string name="pref_data_desc">نسخ احتياطي واستعادة، إدارة البيانات</string>
     <string name="pref_backup">نسخ احتياطي</string>
-    <string name="pref_backup_desc">حفظ بيانات تطبيق المهام على جهازك</string>
     <string name="pref_restore">استعادة</string>
-    <string name="pref_restore_desc">استعادة بيانات التطبيق من جهازك</string>
     <string name="tip_backup_success">تم النسخ الاحتياطي بنجاح</string>
     <string name="tip_backup_failed">فشل النسخ الاحتياطي</string>
     <string name="tip_restore_success">تمت الاستعادة بنجاح، أعد تشغيل التطبيق لتحميل البيانات</string>

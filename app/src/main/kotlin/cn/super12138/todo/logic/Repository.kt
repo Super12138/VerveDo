@@ -1,11 +1,11 @@
 package cn.super12138.todo.logic
 
-import cn.super12138.todo.TodoApp
+import cn.super12138.todo.VerveDoApp
 import cn.super12138.todo.logic.database.TodoEntity
 import kotlinx.coroutines.flow.Flow
 
 object Repository : IRepository {
-    private val db get() = TodoApp.db
+    private val db get() = VerveDoApp.db
     private val toDoDao = db.toDoDao()
 
     override suspend fun insertTodo(toDo: TodoEntity) {

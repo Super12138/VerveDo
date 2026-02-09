@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">待办</string>
     <string name="page_settings">设置</string>
     <string name="action_add_task">添加待办</string>
     <string name="tip_no_task">目前没有要完成的任务，好好休息一下吧~</string>
@@ -86,9 +85,9 @@
     <string name="pref_data">数据</string>
     <string name="pref_data_desc">备份与恢复、管理数据</string>
     <string name="pref_backup">备份数据</string>
-    <string name="pref_backup_desc">将待办的应用数据保存在你的设备上</string>
+    <string name="pref_backup_desc">将 VerveDo 的应用数据保存在你的设备上</string>
     <string name="pref_restore">恢复数据</string>
-    <string name="pref_restore_desc">从你的设备上恢复待办的应用数据</string>
+    <string name="pref_restore_desc">从你的设备上恢复 VerveDo 的应用数据</string>
     <string name="tip_backup_success">备份成功</string>
     <string name="tip_backup_failed">备份失败</string>
     <string name="tip_restore_success">数据恢复成功，需要重启应用以加载数据</string>

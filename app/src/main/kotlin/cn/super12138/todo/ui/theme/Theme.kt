@@ -11,7 +11,7 @@ import cn.super12138.todo.logic.model.PaletteStyle
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun ToDoTheme(
+fun VerveDoTheme(
     color: Color? = null,
     darkTheme: Boolean = isSystemInDarkTheme(),
     style: PaletteStyle = PaletteStyle.TonalSpot,

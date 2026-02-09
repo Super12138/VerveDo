@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">To Do</string>
+    <string name="app_name" translatable="false">VerveDo</string>
     <string name="page_settings">Settings</string>
     <string name="action_add_task">Add Task</string>
     <string name="tip_no_task">There are no tasks to complete at the moment.\nTake a good rest!</string>
@@ -87,9 +87,9 @@
     <string name="pref_data">Data</string>
     <string name="pref_data_desc">Backup and Restore, Manage Data</string>
     <string name="pref_backup">Backup</string>
-    <string name="pref_backup_desc">Save the To Do app data on your device</string>
+    <string name="pref_backup_desc">Save VerveDo app data on your device</string>
     <string name="pref_restore">Restore</string>
-    <string name="pref_restore_desc">Restore the To Do app data from your device</string>
+    <string name="pref_restore_desc">Restore VerveDo app data from your device</string>
     <string name="tip_backup_success">Backup successful</string>
     <string name="tip_backup_failed">Backup failed</string>
     <string name="tip_restore_success">Restore successful, restart the app to load data</string>

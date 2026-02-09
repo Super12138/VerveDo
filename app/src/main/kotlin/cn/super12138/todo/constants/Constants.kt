@@ -2,7 +2,7 @@ package cn.super12138.todo.constants
 
 object Constants {
     const val DEVELOPER_GITHUB = "https://github.com/Super12138/"
-    const val GITHUB_REPO = "https://github.com/Super12138/ToDo/"
+    const val GITHUB_REPO = "https://github.com/Super12138/VerveDo/"
 
     const val KEY_TODO_FAB_TRANSITION = "todo_fab"
     const val KEY_TODO_ITEM_TRANSITION = "todo_item_id"

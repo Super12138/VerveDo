@@ -17,7 +17,7 @@ import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.PaletteStyle
 import cn.super12138.todo.ui.pages.crash.CrashPage
-import cn.super12138.todo.ui.theme.ToDoTheme
+import cn.super12138.todo.ui.theme.VerveDoTheme
 import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.configureEdgeToEdge
 
@@ -61,7 +61,7 @@ class CrashActivity : ComponentActivity() {
                 VibrationUtils.setEnabled(hapticFeedback)
             }
 
-            ToDoTheme(
+            VerveDoTheme(
                 darkTheme = darkTheme,
                 style = PaletteStyle.fromId(paletteStyle),
                 contrastLevel = contrastLevel.toDouble(),

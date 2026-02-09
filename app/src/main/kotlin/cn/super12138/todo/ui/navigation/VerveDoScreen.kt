@@ -5,15 +5,15 @@ import cn.super12138.todo.logic.database.TodoEntity
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class TodoScreen : NavKey {
+sealed class VerveDoScreen : NavKey {
     @Serializable
-    data object Overview : TodoScreen()
+    data object Overview : VerveDoScreen()
 
     @Serializable
-    data object Tasks : TodoScreen()
+    data object Tasks : VerveDoScreen()
 
     @Serializable
-    sealed class Settings : TodoScreen() {
+    sealed class Settings : VerveDoScreen() {
         @Serializable
         data object Main : Settings()
 
@@ -46,7 +46,7 @@ sealed class TodoScreen : NavKey {
     }
 
     @Serializable
-    sealed class Editor : TodoScreen() {
+    sealed class Editor : VerveDoScreen() {
         @Serializable
         data object Add : Editor()
 

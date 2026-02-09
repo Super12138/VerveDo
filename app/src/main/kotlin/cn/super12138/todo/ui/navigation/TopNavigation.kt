@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import cn.super12138.todo.ui.pages.editor.TodoAddPage
-import cn.super12138.todo.ui.pages.editor.TodoEditPage
+import cn.super12138.todo.ui.pages.editor.TaskAddPage
+import cn.super12138.todo.ui.pages.editor.TaskEditPage
 import cn.super12138.todo.ui.pages.overview.OverviewPage
 import cn.super12138.todo.ui.pages.settings.SettingsAbout
 import cn.super12138.todo.ui.pages.settings.SettingsAboutLicence
@@ -78,20 +78,20 @@ fun TopNavigation(
             popTransitionSpec = { defaultTransition },
             predictivePopTransitionSpec = { defaultTransition },
             entryProvider = entryProvider {
-                entry<TodoScreen.Overview> {
+                entry<VerveDoScreen.Overview> {
                     OverviewPage(viewModel = viewModel)
                 }
 
-                entry<TodoScreen.Tasks> {
+                entry<VerveDoScreen.Tasks> {
                     TasksPage(
                         viewModel = viewModel,
-                        toTodoAddPage = { backStack.add(TodoScreen.Editor.Add) },
-                        toTodoEditPage = { backStack.add(TodoScreen.Editor.Edit(it)) }
+                        toTodoAddPage = { backStack.add(VerveDoScreen.Editor.Add) },
+                        toTodoEditPage = { backStack.add(VerveDoScreen.Editor.Edit(it)) }
                     )
                 }
 
-                entry<TodoScreen.Editor.Add>(metadata = editorTransition()) {
-                    TodoAddPage(
+                entry<VerveDoScreen.Editor.Add>(metadata = editorTransition()) {
+                    TaskAddPage(
                         onSave = {
                             viewModel.addTodo(it)
                             onBack()
@@ -100,8 +100,8 @@ fun TopNavigation(
                     )
                 }
 
-                entry<TodoScreen.Editor.Edit>(metadata = editorTransition()) { editorArgs ->
-                    TodoEditPage(
+                entry<VerveDoScreen.Editor.Edit>(metadata = editorTransition()) { editorArgs ->
+                    TaskEditPage(
                         toDo = editorArgs.toDo,
                         onSave = {
                             viewModel.addTodo(it)
@@ -119,40 +119,40 @@ fun TopNavigation(
                     )
                 }
 
-                entry<TodoScreen.Settings.Main> {
+                entry<VerveDoScreen.Settings.Main> {
                     SettingsMain(
-                        toAppearancePage = { backStack.add(TodoScreen.Settings.Appearance) },
-                        toAboutPage = { backStack.add(TodoScreen.Settings.About) },
-                        toInterfacePage = { backStack.add(TodoScreen.Settings.Interface) },
-                        toDataPage = { backStack.add(TodoScreen.Settings.Data) },
+                        toAppearancePage = { backStack.add(VerveDoScreen.Settings.Appearance) },
+                        toAboutPage = { backStack.add(VerveDoScreen.Settings.About) },
+                        toInterfacePage = { backStack.add(VerveDoScreen.Settings.Interface) },
+                        toDataPage = { backStack.add(VerveDoScreen.Settings.Data) },
                     )
                 }
 
-                entry<TodoScreen.Settings.Appearance>(metadata = settingsTransition()) {
+                entry<VerveDoScreen.Settings.Appearance>(metadata = settingsTransition()) {
                     SettingsAppearance(onNavigateUp = ::onBack)
                 }
 
-                entry<TodoScreen.Settings.Interface>(metadata = settingsTransition()) {
+                entry<VerveDoScreen.Settings.Interface>(metadata = settingsTransition()) {
                     SettingsInterface(onNavigateUp = ::onBack)
                 }
 
-                entry<TodoScreen.Settings.Data>(metadata = settingsTransition()) {
+                entry<VerveDoScreen.Settings.Data>(metadata = settingsTransition()) {
                     SettingsData(
                         viewModel = viewModel,
-                        toCategoryManager = { backStack.add(TodoScreen.Settings.DataCategory) },
+                        toCategoryManager = { backStack.add(VerveDoScreen.Settings.DataCategory) },
                         onNavigateUp = ::onBack
                     )
                 }
 
-                entry<TodoScreen.Settings.DataCategory>(metadata = settingsTransition()) {
+                entry<VerveDoScreen.Settings.DataCategory>(metadata = settingsTransition()) {
                     SettingsDataCategory(onNavigateUp = ::onBack)
                 }
 
-                entry<TodoScreen.Settings.About>(metadata = settingsTransition()) {
+                entry<VerveDoScreen.Settings.About>(metadata = settingsTransition()) {
                     SettingsAbout(
                         //toSpecialPage = { backStack.add(TodoScreen.Settings.AboutSpecial) },
-                        toLicencePage = { backStack.add(TodoScreen.Settings.AboutLicence) },
-                        toDevPage = { backStack.add(TodoScreen.Settings.DeveloperOptions) },
+                        toLicencePage = { backStack.add(VerveDoScreen.Settings.AboutLicence) },
+                        toDevPage = { backStack.add(VerveDoScreen.Settings.DeveloperOptions) },
                         onNavigateUp = ::onBack,
                     )
                 }
@@ -161,17 +161,17 @@ fun TopNavigation(
                     SettingsAboutSpecial(viewModel = viewModel)
                 }*/
 
-                entry<TodoScreen.Settings.AboutLicence>(metadata = settingsTransition()) {
+                entry<VerveDoScreen.Settings.AboutLicence>(metadata = settingsTransition()) {
                     SettingsAboutLicence(onNavigateUp = ::onBack)
                 }
 
-                entry<TodoScreen.Settings.DeveloperOptions>(metadata = settingsTransition()) {
+                entry<VerveDoScreen.Settings.DeveloperOptions>(metadata = settingsTransition()) {
                     SettingsDeveloperOptions(
-                        toPaddingPage = { backStack.add(TodoScreen.Settings.DeveloperOptionsPadding) },
+                        toPaddingPage = { backStack.add(VerveDoScreen.Settings.DeveloperOptionsPadding) },
                         onNavigateUp = ::onBack
                     )
                 }
-                entry<TodoScreen.Settings.DeveloperOptionsPadding>(metadata = settingsTransition()) {
+                entry<VerveDoScreen.Settings.DeveloperOptionsPadding>(metadata = settingsTransition()) {
                     SettingsDeveloperOptionsPadding(onNavigateUp = ::onBack)
                 }
             },

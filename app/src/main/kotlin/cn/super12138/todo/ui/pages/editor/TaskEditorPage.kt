@@ -48,11 +48,11 @@ import cn.super12138.todo.ui.pages.editor.components.TodoPrioritySlider
 import cn.super12138.todo.ui.pages.editor.state.rememberEditorState
 
 @Composable
-fun SharedTransitionScope.TodoAddPage(
+fun SharedTransitionScope.TaskAddPage(
     modifier: Modifier = Modifier,
     onSave: (TodoEntity) -> Unit,
     onNavigateUp: () -> Unit
-) = TodoEditorPage(
+) = TaskEditorPage(
     toDo = null,
     modifier = modifier
         .sharedBounds(
@@ -67,13 +67,13 @@ fun SharedTransitionScope.TodoAddPage(
 )
 
 @Composable
-fun SharedTransitionScope.TodoEditPage(
+fun SharedTransitionScope.TaskEditPage(
     modifier: Modifier = Modifier,
     toDo: TodoEntity,
     onSave: (TodoEntity) -> Unit,
     onDelete: () -> Unit,
     onNavigateUp: () -> Unit
-) = TodoEditorPage(
+) = TaskEditorPage(
     toDo = toDo,
     modifier = modifier.sharedBounds(
         sharedContentState = rememberSharedContentState(key = "${Constants.KEY_TODO_ITEM_TRANSITION}_${toDo.id}"),
@@ -88,7 +88,7 @@ fun SharedTransitionScope.TodoEditPage(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun SharedTransitionScope.TodoEditorPage(
+fun SharedTransitionScope.TaskEditorPage(
     modifier: Modifier = Modifier,
     toDo: TodoEntity? = null,
     onSave: (TodoEntity) -> Unit,

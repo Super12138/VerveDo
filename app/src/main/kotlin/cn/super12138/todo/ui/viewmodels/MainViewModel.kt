@@ -8,13 +8,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation3.runtime.NavKey
-import cn.super12138.todo.TodoApp
+import cn.super12138.todo.VerveDoApp
 import cn.super12138.todo.constants.Constants
 import cn.super12138.todo.logic.Repository
 import cn.super12138.todo.logic.database.TodoEntity
 import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.logic.model.SortingMethod
-import cn.super12138.todo.ui.navigation.TodoScreen
+import cn.super12138.todo.ui.navigation.VerveDoScreen
 import cn.super12138.todo.ui.navigation.TopLevelBackStack
 import cn.super12138.todo.utils.FileUtils
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +40,7 @@ import java.util.zip.ZipOutputStream
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModel : ViewModel() {
-    val mainBackStack = TopLevelBackStack<NavKey>(TodoScreen.Overview)
+    val mainBackStack = TopLevelBackStack<NavKey>(VerveDoScreen.Overview)
 
     // 待办
     private val toDos: Flow<List<TodoEntity>> = Repository.getAllTodos()
@@ -232,7 +232,7 @@ class MainViewModel : ViewModel() {
      * * DataStore Preferences 文件
      */
     private fun getBackupFiles(context: Context): List<File> {
-        val dbPath = TodoApp.db.openHelper.writableDatabase.path
+        val dbPath = VerveDoApp.db.openHelper.writableDatabase.path
         val prefPath = "${context.filesDir}/datastore"
         return listOf(
             context.getDatabasePath(Constants.DB_NAME), // 数据库

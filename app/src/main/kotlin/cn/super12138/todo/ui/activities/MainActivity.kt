@@ -29,9 +29,9 @@ import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.PaletteStyle
 import cn.super12138.todo.ui.TodoDefaults
 import cn.super12138.todo.ui.components.Konfetti
-import cn.super12138.todo.ui.navigation.TodoDestinations
+import cn.super12138.todo.ui.navigation.VerveDoDestinations
 import cn.super12138.todo.ui.navigation.TopNavigation
-import cn.super12138.todo.ui.theme.ToDoTheme
+import cn.super12138.todo.ui.theme.VerveDoTheme
 import cn.super12138.todo.ui.viewmodels.MainViewModel
 import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.configureEdgeToEdge
@@ -91,7 +91,7 @@ class MainActivity : ComponentActivity() {
             // 当BackStack出现非顶层路由时，隐藏底部导航栏
             LaunchedEffect(mainBackStack.backStack.lastOrNull()) {
                 val isTopLevel =
-                    mainBackStack.backStack.lastOrNull() in TodoDestinations.entries.map { it.route }
+                    mainBackStack.backStack.lastOrNull() in VerveDoDestinations.entries.map { it.route }
                 if (isTopLevel) {
                     if (navigationScaffoldState.currentValue != NavigationSuiteScaffoldValue.Visible) navigationScaffoldState.show()
                 } else {
@@ -99,7 +99,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            ToDoTheme(
+            VerveDoTheme(
                 darkTheme = darkTheme,
                 style = PaletteStyle.fromId(paletteStyle),
                 contrastLevel = contrastLevel.toDouble(),
@@ -113,7 +113,7 @@ class MainActivity : ComponentActivity() {
                     NavigationSuiteScaffold(
                         state = navigationScaffoldState,
                         navigationSuiteItems = {
-                            TodoDestinations.entries.forEach { destination ->
+                            VerveDoDestinations.entries.forEach { destination ->
                                 val selected = destination.route == mainBackStack.topLevelKey
                                 item(
                                     icon = {

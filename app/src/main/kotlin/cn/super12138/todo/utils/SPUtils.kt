@@ -2,12 +2,12 @@ package cn.super12138.todo.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import cn.super12138.todo.TodoApp
+import cn.super12138.todo.VerveDoApp
 import cn.super12138.todo.constants.Constants
 
 object SPUtils {
     private val sp: SharedPreferences by lazy {
-        TodoApp.context.getSharedPreferences(Constants.SP_NAME, Context.MODE_PRIVATE)
+        VerveDoApp.context.getSharedPreferences(Constants.SP_NAME, Context.MODE_PRIVATE)
     }
 
     fun <T> getValue(name: String, default: T): T = with(sp) {
