@@ -17,8 +17,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
 import cn.super12138.todo.ui.components.TopAppBarScaffold
+import cn.super12138.todo.ui.pages.overview.components.ListCard
+import cn.super12138.todo.ui.pages.overview.components.ProgressCard
 import cn.super12138.todo.ui.pages.overview.components.RoundedCornerCardLarge
-import cn.super12138.todo.ui.pages.overview.components.UpcomingTaskCard
 import cn.super12138.todo.ui.viewmodels.MainViewModel
 import cn.super12138.todo.utils.SystemUtils
 
@@ -31,13 +32,26 @@ fun OverviewPage(
     val toDos by viewModel.sortedTodos.collectAsState(initial = emptyList())
     val totalTasks by remember { derivedStateOf { toDos.size } }
     val completedTasks by remember { derivedStateOf { toDos.count { it.isCompleted } } }
-    val nextWeekTodo by remember {
+
+    val todayMillis = SystemUtils.getToday()
+    val dayMillis = 24L * 60 * 60 * 1000
+    val todayEnd = todayMillis + dayMillis
+
+    val todayTodo by remember {
         derivedStateOf {
-            val today = SystemUtils.getToday()
-            val weekFromToday = today + 7L * 24 * 60 * 60 * 1000
             toDos.filter { todo ->
                 val due = todo.dueDate ?: return@filter false
-                due in today..<weekFromToday
+                due in todayMillis until todayEnd
+            }
+        }
+    }
+
+    val nextWeekTodo by remember {
+        derivedStateOf {
+            val weekFromToday = todayMillis + 7 * dayMillis
+            toDos.filter { todo ->
+                val due = todo.dueDate ?: return@filter false
+                due in todayMillis until weekFromToday
             }
         }
     }
@@ -74,12 +88,21 @@ fun OverviewPage(
                         iconRes = R.drawable.ic_pending,
                         title = stringResource(R.string.title_pending_task),
                         count = totalTasks - completedTasks,
-                        containerColor = MaterialTheme.colorScheme.errorContainer // tertiaryContainer
+                        containerColor = MaterialTheme.colorScheme.errorContainer
                     )
                 }
                 item {
-                    UpcomingTaskCard(
-                        nextWeekTodo = nextWeekTodo
+                    ProgressCard(
+                        title = stringResource(R.string.title_today_task),
+                        total = todayTodo.size,
+                        completed = todayTodo.count { it.isCompleted }
+                    )
+                }
+
+                item {
+                    ListCard(
+                        title = stringResource(R.string.title_upcoming_task),
+                        list = nextWeekTodo
                     )
                 }
             }

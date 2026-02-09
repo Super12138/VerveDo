@@ -135,5 +135,5 @@
     <string name="sorting_due_date">Due date</string>
     <string name="tip_search_task_not_found">No tasks found</string>
     <string name="tip_no_task_brief">No tasks</string>
-    <string name="title_today_task">Today</string>
+    <string name="title_today_task">Today\'s Task Progress</string>
 </resources>

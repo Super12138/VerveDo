@@ -53,7 +53,6 @@ object SystemUtils {
         set(Calendar.SECOND, 0)
         set(Calendar.MILLISECOND, 0)
     }.timeInMillis
-
 }
 
 fun ComponentActivity.configureEdgeToEdge() {

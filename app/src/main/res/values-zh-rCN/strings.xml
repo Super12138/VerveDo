@@ -134,5 +134,5 @@
     <string name="sorting_due_date">截止日期</string>
     <string name="tip_search_task_not_found">暂未搜索到内容</string>
     <string name="tip_no_task_brief">暂无任务</string>
-    <string name="title_today_task">今日任务</string>
+    <string name="title_today_task">今日任务进度</string>
 </resources>

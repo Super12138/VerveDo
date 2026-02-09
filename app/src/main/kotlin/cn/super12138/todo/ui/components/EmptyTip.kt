@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -26,8 +28,10 @@ enum class EmptyTipType {
 @Composable
 fun EmptyTip(
     modifier: Modifier = Modifier,
+    type: EmptyTipType,
     size: Dp = 48.dp,
-    type: EmptyTipType
+    containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+    contentColor: Color = contentColorFor(containerColor)
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -35,7 +39,7 @@ fun EmptyTip(
             .padding(TodoDefaults.screenHorizontalPadding)
             .size(size)
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(containerColor)
     ) {
         Icon(
             painter = painterResource(
@@ -46,7 +50,7 @@ fun EmptyTip(
                 }
             ),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.secondary,
+            tint = contentColor,
             modifier = Modifier.size(size / 2)
         )
     }

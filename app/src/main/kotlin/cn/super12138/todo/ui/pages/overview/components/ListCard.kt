@@ -40,10 +40,12 @@ import cn.super12138.todo.utils.containerColor
 import cn.super12138.todo.utils.toRelativeTimeString
 
 @Composable
-fun UpcomingTaskCard(
+fun ListCard(
     modifier: Modifier = Modifier,
-    nextWeekTodo: List<TodoEntity>,
-    containerColor: Color = TodoDefaults.Colors.Container
+    title: String,
+    list: List<TodoEntity>,
+    containerColor: Color = TodoDefaults.Colors.Container,
+    emptyTipContainerColor: Color = MaterialTheme.colorScheme.secondaryContainer
 ) {
     Card(
         modifier = modifier.height(TodoDefaults.overviewCardHeight * 2),
@@ -58,12 +60,12 @@ fun UpcomingTaskCard(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = stringResource(R.string.title_upcoming_task),
+                text = title,
                 style = MaterialTheme.typography.titleLarge
             )
             val transitionSpec = fadeScale()
             AnimatedContent(
-                targetState = nextWeekTodo.isEmpty(),
+                targetState = list.isEmpty(),
                 transitionSpec = { transitionSpec }
             ) {
                 if (it) {
@@ -75,7 +77,10 @@ fun UpcomingTaskCard(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        EmptyTip(type = EmptyTipType.List)
+                        EmptyTip(
+                            type = EmptyTipType.List,
+                            containerColor = emptyTipContainerColor
+                        )
 
                         Text(
                             text = stringResource(R.string.tip_no_task_brief),
@@ -87,7 +92,7 @@ fun UpcomingTaskCard(
                 } else {
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(
-                            items = nextWeekTodo,
+                            items = list,
                             key = { task -> task.id }
                         ) { task ->
                             UpcomingTaskItem(
