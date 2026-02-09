@@ -23,7 +23,9 @@ enum class SortingMethod(
     AlphabeticalAscending(id = 5, nameRes = R.string.sorting_alphabetical_ascending),
 
     // 按字母降序
-    AlphabeticalDescending(id = 6, nameRes = R.string.sorting_alphabetical_descending);
+    AlphabeticalDescending(id = 6, nameRes = R.string.sorting_alphabetical_descending),
+
+    DueDate(id = 7, nameRes = R.string.sorting_alphabetical_descending);
 
     companion object {
         fun fromId(id: Int) = entries.find { it.id == id } ?: Sequential
