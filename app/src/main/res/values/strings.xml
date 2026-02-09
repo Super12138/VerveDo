@@ -66,8 +66,8 @@
     <string name="contrast_very_high">Very High</string>
     <string name="pref_interface_interaction">Interface &amp; Interaction</string>
     <string name="pref_interface_interaction_desc">To-Do List, Haptic Feedback</string>
-    <string name="pref_show_completed">Show Completed Tasks</string>
-    <string name="pref_show_completed_desc">Show completed tasks in to-do list</string>
+    <!--<string name="pref_show_completed">Show Completed Tasks</string>
+    <string name="pref_show_completed_desc">Show completed tasks in to-do list</string>-->
     <string name="pref_category_todo_list">To-Do List</string>
     <string name="pref_view_on_github">View On GitHub</string>
     <string name="pref_view_on_github_desc">View source code, submit bug reports, and improvement suggestions</string>
@@ -135,4 +135,5 @@
     <string name="sorting_due_date">Due date</string>
     <string name="tip_search_task_not_found">No tasks found</string>
     <string name="tip_no_task_brief">No tasks</string>
+    <string name="title_today_task">Today</string>
 </resources>

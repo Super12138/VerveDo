@@ -32,7 +32,7 @@ fun SettingsInterface(
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val showCompleted by DataStoreManager.showCompletedFlow.collectAsState(initial = Constants.PREF_SHOW_COMPLETED_DEFAULT)
+    // val showCompleted by DataStoreManager.showCompletedFlow.collectAsState(initial = Constants.PREF_SHOW_COMPLETED_DEFAULT)
     val secureMode by DataStoreManager.secureModeFlow.collectAsState(initial = Constants.PREF_SECURE_MODE_DEFAULT)
     val sortingMethod by DataStoreManager.sortingMethodFlow.collectAsState(initial = Constants.PREF_SORTING_METHOD_DEFAULT)
     val hapticFeedback by DataStoreManager.hapticFeedbackFlow.collectAsState(initial = Constants.PREF_HAPTIC_FEEDBACK_DEFAULT)
@@ -50,15 +50,13 @@ fun SettingsInterface(
                     title = stringResource(R.string.pref_category_todo_list),
                     first = true
                 )
-                SwitchSettingsItem(
+                /*SwitchSettingsItem(
                     leadingIconRes = R.drawable.ic_checklist,
                     title = stringResource(R.string.pref_show_completed),
                     description = stringResource(R.string.pref_show_completed_desc),
                     checked = showCompleted,
                     onCheckedChange = { scope.launch { DataStoreManager.setShowCompleted(it) } }
-                )
-            }
-            item {
+                )*/
                 SettingsItem(
                     leadingIconRes = R.drawable.ic_sort,
                     title = stringResource(R.string.pref_sorting_method),

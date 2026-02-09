@@ -66,8 +66,8 @@
     <string name="contrast_very_high">مرتفع جدًا</string>
     <string name="pref_interface_interaction">الواجهة والتفاعل</string>
     <string name="pref_interface_interaction_desc">قائمة المهام، الاهتزاز</string>
-    <string name="pref_show_completed">إظهار المهام المكتملة</string>
-    <string name="pref_show_completed_desc">عرض المهام المكتملة في قائمة المهام</string>
+    <!--<string name="pref_show_completed">إظهار المهام المكتملة</string>
+    <string name="pref_show_completed_desc">عرض المهام المكتملة في قائمة المهام</string>-->
     <string name="pref_category_todo_list">قائمة المهام</string>
     <string name="pref_view_on_github">عرض على GitHub</string>
     <string name="pref_view_on_github_desc">عرض الكود المصدري، الإبلاغ عن الأخطاء، واقتراح التحسينات</string>

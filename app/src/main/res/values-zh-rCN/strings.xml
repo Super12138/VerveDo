@@ -65,8 +65,8 @@
     <string name="contrast_very_high">极高</string>
     <string name="pref_interface_interaction">界面与交互</string>
     <string name="pref_interface_interaction_desc">待办列表、触感反馈</string>
-    <string name="pref_show_completed">显示已完成待办</string>
-    <string name="pref_show_completed_desc">在待办列表里显示已完成的待办</string>
+    <!--<string name="pref_show_completed">显示已完成待办</string>
+    <string name="pref_show_completed_desc">在待办列表里显示已完成的待办</string>-->
     <string name="pref_category_todo_list">待办列表</string>
     <string name="pref_view_on_github">在 GitHub 上查看</string>
     <string name="pref_view_on_github_desc">查看源代码、提交错误报告和改进建议</string>
@@ -118,7 +118,7 @@
     <string name="page_overview">概览</string>
     <string name="tip_short_category">尽量使用简短的分类名称</string>
     <string name="action_clear">清除</string>
-    <string name="title_upcoming_task">临近的任务</string>
+    <string name="title_upcoming_task">临近任务</string>
     <string name="time_today">今天</string>
     <string name="time_tomorrow">明天</string>
     <string name="time_in_days">%d 天后</string>
@@ -134,4 +134,5 @@
     <string name="sorting_due_date">截止日期</string>
     <string name="tip_search_task_not_found">暂未搜索到内容</string>
     <string name="tip_no_task_brief">暂无任务</string>
+    <string name="title_today_task">今日任务</string>
 </resources>

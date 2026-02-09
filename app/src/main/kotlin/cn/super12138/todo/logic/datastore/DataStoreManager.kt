@@ -37,7 +37,7 @@ object DataStoreManager {
     private val CONTRAST_LEVEL = floatPreferencesKey(Constants.PREF_CONTRAST_LEVEL)
 
     // 界面与交互
-    private val SHOW_COMPLETED = booleanPreferencesKey(Constants.PREF_SHOW_COMPLETED)
+    // private val SHOW_COMPLETED = booleanPreferencesKey(Constants.PREF_SHOW_COMPLETED)
     private val SORTING_METHOD = intPreferencesKey(Constants.PREF_SORTING_METHOD)
     private val SECURE_MODE = booleanPreferencesKey(Constants.PREF_SECURE_MODE)
     private val HAPTIC_FEEDBACK = booleanPreferencesKey(Constants.PREF_HAPTIC_FEEDBACK)
@@ -62,9 +62,9 @@ object DataStoreManager {
         preferences[CONTRAST_LEVEL] ?: Constants.PREF_CONTRAST_LEVEL_DEFAULT
     }
 
-    val showCompletedFlow: Flow<Boolean> = dataStore.data.map { preferences ->
+    /*val showCompletedFlow: Flow<Boolean> = dataStore.data.map { preferences ->
         preferences[SHOW_COMPLETED] ?: Constants.PREF_SHOW_COMPLETED_DEFAULT
-    }
+    }*/
 
     val sortingMethodFlow: Flow<Int> = dataStore.data.map { preferences ->
         preferences[SORTING_METHOD] ?: Constants.PREF_SORTING_METHOD_DEFAULT
@@ -107,11 +107,11 @@ object DataStoreManager {
         }
     }
 
-    suspend fun setShowCompleted(value: Boolean) {
+    /*suspend fun setShowCompleted(value: Boolean) {
         dataStore.edit { preferences ->
             preferences[SHOW_COMPLETED] = value
         }
-    }
+    }*/
 
     suspend fun setSortingMethod(value: Int) {
         dataStore.edit { preferences ->
