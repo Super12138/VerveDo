@@ -47,14 +47,17 @@ object TodoDefaults {
             bottomEnd = ZeroCornerSize
         )*/
 
-    val ContainerColor: Color
-        @Composable
-        get() = MaterialTheme.colorScheme.surfaceBright
+    object Colors {
+        val Container: Color
+            @Composable
+            get() = MaterialTheme.colorScheme.surfaceBright
 
-    val BackgroundColor: Color
-        @Composable
-        get() = MaterialTheme.colorScheme.surfaceContainer
+        val Background: Color
+            @Composable
+            get() = MaterialTheme.colorScheme.surfaceContainer
 
+        val Green = Color(0xFF349938)
+    }
 
     val fadedEdgeWidth = 8.dp
 

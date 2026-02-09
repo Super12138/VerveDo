@@ -37,12 +37,12 @@ fun RowSettingsItem(
     title: String,
     description: String? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    background: Color = TodoDefaults.ContainerColor,
+    background: Color = TodoDefaults.Colors.Container,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
     scrollState: ScrollState = rememberScrollState(),
     fadedEdgeWidth: Dp,
-    maskColor: Color = TodoDefaults.ContainerColor,
+    maskColor: Color = TodoDefaults.Colors.Container,
     content: @Composable RowScope.() -> Unit
 ) {
     MoreContentSettingsItem(
@@ -88,11 +88,11 @@ fun LazyRowSettingsItem(
     title: String,
     description: String? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    background: Color = TodoDefaults.ContainerColor,
+    background: Color = TodoDefaults.Colors.Container,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
     fadedEdgeWidth: Dp,
-    maskColor: Color = TodoDefaults.ContainerColor,
+    maskColor: Color = TodoDefaults.Colors.Container,
     content: LazyListScope.() -> Unit
 ) {
     MoreContentSettingsItem(
@@ -137,7 +137,7 @@ fun MoreContentSettingsItem(
     title: String,
     description: String? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    background: Color = TodoDefaults.ContainerColor,
+    background: Color = TodoDefaults.Colors.Container,
     shape: CornerBasedShape = TodoDefaults.defaultShape,
     content: @Composable () -> Unit
 ) {

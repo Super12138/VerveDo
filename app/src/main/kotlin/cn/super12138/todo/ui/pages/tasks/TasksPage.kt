@@ -126,6 +126,7 @@ fun SharedTransitionScope.TasksPage(
                         content = task.content,
                         category = task.category,
                         completed = task.isCompleted,
+                        dueDate = task.dueDate,
                         priority = Priority.fromFloat(task.priority),
                         selected = selectedTodoIds.contains(task.id),
                         onCardClick = {

@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,7 +26,6 @@ import androidx.compose.material3.ButtonShapes
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,9 +38,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
@@ -50,6 +54,8 @@ import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.containerColor
 import cn.super12138.todo.utils.disabledContainerColor
 import cn.super12138.todo.utils.disabledContentColor
+import cn.super12138.todo.utils.toLocalDateString
+import cn.super12138.todo.utils.toRelativeTimeString
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -59,6 +65,7 @@ fun TodoCard(
     content: String,
     category: String,
     completed: Boolean,
+    dueDate: Long?,
     priority: Priority,
     selected: Boolean,
     onCardClick: () -> Unit = {},
@@ -67,8 +74,9 @@ fun TodoCard(
     shapes: ButtonShapes = TodoDefaults.shapes(),
 ) {
     val view = LocalView.current
+    val context = LocalContext.current
     // TODO: 滑动删除
-    val cardColors = CardDefaults.cardColors(containerColor = TodoDefaults.ContainerColor)
+    val cardColors = CardDefaults.cardColors(containerColor = TodoDefaults.Colors.Container)
     val animatedContainerColor by animateColorAsState(targetValue = if (selected) MaterialTheme.colorScheme.secondaryContainer else if (completed) cardColors.disabledContainerColor else cardColors.containerColor)
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -77,6 +85,13 @@ fun TodoCard(
         shapes = shapes,
         pressed = if (selected) true else pressed,
         animationSpec = TodoDefaults.shapesDefaultAnimationSpec
+    )
+
+    val enterTransition = fadeIn(MaterialTheme.motionScheme.fastSpatialSpec()) + expandHorizontally(
+        MaterialTheme.motionScheme.fastSpatialSpec()
+    )
+    val exitTransition = fadeOut(MaterialTheme.motionScheme.fastSpatialSpec()) + shrinkHorizontally(
+        MaterialTheme.motionScheme.fastSpatialSpec()
     )
 
     Row(
@@ -98,16 +113,12 @@ fun TodoCard(
             .drawBehind {
                 drawRect(animatedContainerColor)
             }
-            .padding(horizontal = TodoDefaults.screenHorizontalPadding)
+            .padding(start = TodoDefaults.screenHorizontalPadding)
     ) {
         AnimatedVisibility(
             visible = selected,
-            enter = fadeIn(MaterialTheme.motionScheme.fastSpatialSpec()) + expandHorizontally(
-                MaterialTheme.motionScheme.fastSpatialSpec()
-            ),
-            exit = fadeOut(MaterialTheme.motionScheme.fastSpatialSpec()) + shrinkHorizontally(
-                MaterialTheme.motionScheme.fastSpatialSpec()
-            )
+            enter = enterTransition,
+            exit = exitTransition
         ) {
             Box(
                 Modifier
@@ -125,10 +136,7 @@ fun TodoCard(
         }
 
         Column(
-            verticalArrangement = Arrangement.spacedBy(
-                space = 5.dp,
-                alignment = Alignment.CenterVertically
-            ),
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .weight(1f)
                 .fillMaxSize()
@@ -136,13 +144,42 @@ fun TodoCard(
             CompositionLocalProvider(
                 LocalContentColor provides if (completed) cardColors.disabledContentColor else cardColors.contentColor,
             ) {
-                Text(
-                    text = content,
-                    style = MaterialTheme.typography.titleLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    // modifier = Modifier.basicMarquee()
-                )
+                Row(
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = content,
+                        style = MaterialTheme.typography.titleLarge,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        modifier = Modifier.padding(
+                            start = TodoDefaults.screenVerticalPadding,
+                            end = TodoDefaults.screenHorizontalPadding
+                        )
+                    ) {
+                        Text(
+                            text = dueDate.toLocalDateString(),
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+
+                        Text(
+                            text = dueDate.toRelativeTimeString(context),
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
+                    }
+                }
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -166,35 +203,28 @@ fun TodoCard(
             }
         }
 
-        AnimatedVisibility(!selected && !completed) {
-            IconButton(
-                onClick = {
-                    VibrationUtils.performHapticFeedback(view)
-                    onChecked()
-                }
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_check),
-                    tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = stringResource(R.string.tip_mark_completed)
-                )
-            }
-            /*Box(
+        AnimatedVisibility(
+            visible = !selected && !completed,
+            enter = enterTransition,
+            exit = exitTransition
+        ) {
+            Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .width(50.dp)
                     .fillMaxHeight()
-                    .background(MaterialTheme.colorScheme.tertiaryContainer)
+                    .background(TodoDefaults.Colors.Green)
                     .clickable {
+                        VibrationUtils.performHapticFeedback(view)
                         onChecked()
                     }
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.Check,
-                    tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = ""
+                    painter = painterResource(R.drawable.ic_check),
+                    tint = Color.White,
+                    contentDescription = null,
+                    modifier = Modifier.padding(TodoDefaults.screenHorizontalPadding)
                 )
-            }*/
+            }
         }
     }
 }

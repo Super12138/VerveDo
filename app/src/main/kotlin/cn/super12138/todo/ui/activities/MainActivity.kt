@@ -106,7 +106,7 @@ class MainActivity : ComponentActivity() {
                 dynamicColor = dynamicColor
             ) {
                 Surface(
-                    color = TodoDefaults.BackgroundColor,
+                    color = TodoDefaults.Colors.Background,
                     modifier = Modifier.fillMaxSize()
                 ) {
                     val view = LocalView.current
@@ -140,7 +140,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         },
-                        containerColor = TodoDefaults.BackgroundColor,
+                        containerColor = TodoDefaults.Colors.Background,
                         modifier = Modifier.fillMaxSize()
                     ) {
                         TopNavigation(

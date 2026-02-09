@@ -36,7 +36,7 @@ import cn.super12138.todo.utils.toRelativeTimeString
 fun UpcomingTaskCard(
     modifier: Modifier = Modifier,
     nextWeekTodo: List<TodoEntity>,
-    containerColor: Color = TodoDefaults.ContainerColor
+    containerColor: Color = TodoDefaults.Colors.Container
 ) {
     Card(
         modifier = modifier.height(TodoDefaults.overviewCardHeight * 2),

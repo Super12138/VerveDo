@@ -41,7 +41,7 @@ fun RoundedCornerCardLarge(
     @DrawableRes iconRes: Int,
     title: String,
     count: Int,
-    containerColor: Color = TodoDefaults.ContainerColor,
+    containerColor: Color = TodoDefaults.Colors.Container,
     shapes: ButtonShapes = TodoDefaults.shapes(),
     onClick: () -> Unit = {}
 ) {

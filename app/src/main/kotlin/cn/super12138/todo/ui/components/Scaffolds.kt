@@ -130,7 +130,7 @@ fun TopAppBarScaffold(
                 navigationIcon = navigationIcon,
                 actions = actions,
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = TodoDefaults.BackgroundColor,
+                    containerColor = TodoDefaults.Colors.Background,
                 )
             )
         },
@@ -151,7 +151,7 @@ fun TopAppBarScaffold(
     floatingActionButton: @Composable () -> Unit = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
     contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
-    containerColor: Color = TodoDefaults.BackgroundColor,
+    containerColor: Color = TodoDefaults.Colors.Background,
     screenShape: Shape = TodoDefaults.ScreenContainerShape,
     content: @Composable () -> Unit
 ) = Scaffold(

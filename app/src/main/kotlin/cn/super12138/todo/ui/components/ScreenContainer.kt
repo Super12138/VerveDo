@@ -16,7 +16,7 @@ fun RoundedScreenContainer(
 ) {
     Surface(
         modifier = modifier.padding(horizontal = TodoDefaults.screenHorizontalPadding),
-        color = TodoDefaults.BackgroundColor,
+        color = TodoDefaults.Colors.Background,
         shape = TodoDefaults.ScreenContainerShape,
         content = content
     )

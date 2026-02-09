@@ -46,23 +46,23 @@ fun TodoTopAppBar(
     modifier: Modifier = Modifier
 ) {
     val navIconEnterTransition = fadeIn(
-        animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()
+        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
     ) + expandIn(
-        animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec(),
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         expandFrom = Alignment.CenterStart
     )
     val navIconExitTransition = fadeOut(
-        animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()
+        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
     ) + shrinkOut(
-        animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec(),
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         shrinkTowards = Alignment.CenterStart
     )
-    val enterTransition = fadeIn(MaterialTheme.motionScheme.defaultEffectsSpec()) +
+    val enterTransition = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()) +
             scaleIn(
-                animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec(),
+                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
                 initialScale = 0.92f
             )
-    val exitTransition = fadeOut(MaterialTheme.motionScheme.defaultEffectsSpec())
+    val exitTransition = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
     val titleTransition = ContentTransform(
         targetContentEnter = enterTransition,
         initialContentExit = exitTransition
@@ -74,7 +74,7 @@ fun TodoTopAppBar(
         targetValue = if (selectedMode) {
             MaterialTheme.colorScheme.surfaceContainerHighest
         } else {
-            TodoDefaults.BackgroundColor
+            TodoDefaults.Colors.Background
         }
     )
 
