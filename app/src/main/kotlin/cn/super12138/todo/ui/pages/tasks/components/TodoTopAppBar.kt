@@ -1,6 +1,8 @@
 package cn.super12138.todo.ui.pages.tasks.components
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.animateColorAsState
@@ -8,12 +10,14 @@ import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -38,8 +42,10 @@ import cn.super12138.todo.utils.VibrationUtils
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TodoTopAppBar(
-    selectedTodoIds: List<Int>,
+    searchMode: Boolean,
     selectedMode: Boolean,
+    selectedTodoIds: List<Int>,
+    onSearchModeChange: (Boolean) -> Unit,
     onCancelSelect: () -> Unit,
     onSelectAll: () -> Unit,
     onDeleteSelectedTodo: () -> Unit,
@@ -86,6 +92,7 @@ fun TodoTopAppBar(
                 exit = navIconExitTransition
             ) {
                 IconButton(
+                    shapes = IconButtonDefaults.shapes(),
                     onClick = {
                         VibrationUtils.performHapticFeedback(view)
                         onCancelSelect()
@@ -122,37 +129,22 @@ fun TodoTopAppBar(
             }
         },
         actions = {
-            AnimatedVisibility(
-                visible = selectedMode,
-                enter = enterTransition,
-                exit = exitTransition
+            AnimatedContent(
+                targetState = selectedMode,
+                transitionSpec = { titleTransition }
             ) {
-                Row {
-                    IconButton(
-                        onClick = {
-                            VibrationUtils.performHapticFeedback(view)
-                            onSelectAll()
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_select_all),
-                            contentDescription = stringResource(R.string.tip_select_all)
-                        )
-                    }
-                    IconButton(
-                        onClick = {
-                            VibrationUtils.performHapticFeedback(view)
-                            onDeleteSelectedTodo()
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_delete),
-                            contentDescription = stringResource(R.string.action_delete)
-                        )
-                    }
+                if (it) {
+                    ActionMultipleSelection(
+                        onSelectAll = onSelectAll,
+                        onDeleteSelectedTodo = onDeleteSelectedTodo
+                    )
+                } else {
+                    ActionSearch(
+                        searchMode = searchMode,
+                        onSearchModeChange = onSearchModeChange,
+                    )
                 }
             }
-
         },
         colors = TopAppBarDefaults.topAppBarColors().copy(containerColor = Color.Transparent),
         modifier = modifier.drawBehind {
@@ -161,11 +153,84 @@ fun TodoTopAppBar(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun AnimatedContentScope.ActionSearch(
+    searchMode: Boolean,
+    onSearchModeChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val view = LocalView.current
+
+    BackHandler(enabled = searchMode) { onSearchModeChange(false) }
+
+    AnimatedVisibility(
+        visible = !searchMode,
+        enter = fadeIn() + scaleIn(),
+        exit = fadeOut() + scaleOut(),
+    ) {
+        IconButton(
+            shapes = IconButtonDefaults.shapes(),
+            onClick = {
+                VibrationUtils.performHapticFeedback(view)
+                onSearchModeChange(!searchMode)
+            },
+            modifier = modifier
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_search),
+                contentDescription = stringResource(R.string.action_search)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun AnimatedContentScope.ActionMultipleSelection(
+    onSelectAll: () -> Unit,
+    onDeleteSelectedTodo: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val view = LocalView.current
+    Row(
+        verticalAlignment = Alignment.Bottom,
+        modifier = modifier
+    ) {
+        IconButton(
+            shapes = IconButtonDefaults.shapes(),
+            onClick = {
+                VibrationUtils.performHapticFeedback(view)
+                onSelectAll()
+            }
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_select_all),
+                contentDescription = stringResource(R.string.tip_select_all)
+            )
+        }
+        IconButton(
+            shapes = IconButtonDefaults.shapes(),
+            onClick = {
+                VibrationUtils.performHapticFeedback(view)
+                onDeleteSelectedTodo()
+            }
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_delete),
+                contentDescription = stringResource(R.string.action_delete)
+            )
+        }
+    }
+}
+
 @Preview(locale = "zh-rCN", showBackground = true)
 @Composable
 private fun TodoTopAppBarPreview() {
     val selectedMode = remember { mutableStateOf(false) }
     TodoTopAppBar(
+        searchMode = true,
+        onSearchModeChange = {},
         selectedTodoIds = (1..10).toList(),
         selectedMode = selectedMode.value,
         onCancelSelect = { selectedMode.value = !selectedMode.value },

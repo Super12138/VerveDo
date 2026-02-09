@@ -129,4 +129,7 @@
     <string name="title_all_task">总任务</string>
     <string name="title_completed_task">已完成</string>
     <string name="title_pending_task">未完成</string>
+    <string name="action_search">搜索</string>
+    <string name="action_close">关闭</string>
+    <string name="sorting_due_date">截止日期</string>
 </resources>

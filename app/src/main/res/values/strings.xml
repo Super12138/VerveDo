@@ -130,4 +130,7 @@
     <string name="title_all_task">All</string>
     <string name="title_completed_task">Completed</string>
     <string name="title_pending_task">Pending</string>
+    <string name="action_search">Search</string>
+    <string name="action_close">Close</string>
+    <string name="sorting_due_date">Due date</string>
 </resources>
