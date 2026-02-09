@@ -3,6 +3,7 @@ package cn.super12138.todo.ui.pages.settings.components.appearance.darkmode
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -16,6 +17,7 @@ import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.ui.TodoDefaults
 import cn.super12138.todo.ui.pages.settings.components.LazyRowSettingsItem
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun DarkModePicker(
     modifier: Modifier = Modifier,
