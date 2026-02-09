@@ -124,6 +124,11 @@
     <string name="time_in_weeks">%d 周后</string>
     <string name="time_in_months">%d 个月后</string>
     <string name="time_in_years">%d 年后</string>
+    <string name="time_yesterday">昨天</string>
+    <string name="time_days_ago">%d 天前</string>
+    <string name="time_weeks_ago">%d 周前</string>
+    <string name="time_months_ago">%d 个月前</string>
+    <string name="time_years_ago">%d 年前</string>
     <string name="label_due_date">截止日期（可选）</string>
     <string name="title_all_task">总任务</string>
     <string name="title_completed_task">已完成</string>

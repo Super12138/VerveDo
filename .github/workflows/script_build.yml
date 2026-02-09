@@ -1,4 +1,4 @@
-name: Todo Script Build
+name: VerveDo Script Build
 
 on:
   push:
@@ -37,5 +37,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v6.0.0
         with:
-          name: Todo Script
+          name: VerveDo Script
           path: ./script/updateVersionCode.js

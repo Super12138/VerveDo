@@ -31,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.EmptyTip
 import cn.super12138.todo.ui.components.EmptyTipType
 import cn.super12138.todo.ui.theme.fadeScale
@@ -43,20 +43,20 @@ fun ProgressCard(
     title: String,
     total: Int,
     completed: Int,
-    containerColor: Color = TodoDefaults.Colors.Container,
+    containerColor: Color = VerveDoDefaults.Colors.Container,
     emptyTipContainerColor: Color = MaterialTheme.colorScheme.secondaryContainer
 ) {
     val progress = if (total == 0) 0f else completed / total.toFloat()
 
     Card(
-        modifier = modifier.height(TodoDefaults.overviewCardHeight * 2),
+        modifier = modifier.height(VerveDoDefaults.overviewCardHeight * 2),
         colors = CardDefaults.cardColors(containerColor = containerColor),
-        shape = TodoDefaults.defaultShape
+        shape = VerveDoDefaults.defaultShape
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(TodoDefaults.screenHorizontalPadding),
+                .padding(VerveDoDefaults.screenHorizontalPadding),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -112,7 +112,7 @@ fun ProgressCard(
                             stroke = thickStroke,
                             trackStroke = thickStroke,
                             modifier = Modifier
-                                .padding(TodoDefaults.screenHorizontalPadding)
+                                .padding(VerveDoDefaults.screenHorizontalPadding)
                                 .size(90.dp)
                         )
 

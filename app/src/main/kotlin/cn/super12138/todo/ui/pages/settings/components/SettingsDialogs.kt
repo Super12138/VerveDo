@@ -25,7 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.BasicDialog
 import cn.super12138.todo.ui.theme.shapeByInteraction
 import cn.super12138.todo.utils.VibrationUtils
@@ -86,9 +86,9 @@ fun RadioItem(
             .height(56.dp)
             .clip(
                 shapeByInteraction(
-                    shapes = TodoDefaults.shapes(),
+                    shapes = VerveDoDefaults.shapes(),
                     pressed = pressed,
-                    animationSpec = TodoDefaults.shapesDefaultAnimationSpec
+                    animationSpec = VerveDoDefaults.shapesDefaultAnimationSpec
                 )
             )
             // .background(MaterialTheme.colorScheme.surfaceContainerHighest)
@@ -101,7 +101,7 @@ fun RadioItem(
                 },
                 role = Role.RadioButton
             )
-            .padding(horizontal = TodoDefaults.screenHorizontalPadding),
+            .padding(horizontal = VerveDoDefaults.screenHorizontalPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
         RadioButton(

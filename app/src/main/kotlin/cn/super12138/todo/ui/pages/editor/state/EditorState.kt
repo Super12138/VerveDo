@@ -77,7 +77,17 @@ class EditorState(val initialTodo: TodoEntity? = null) {
     object Saver : androidx.compose.runtime.saveable.Saver<EditorState, Any> {
         override fun SaverScope.save(value: EditorState): Any {
             return listOf(
-                value.initialTodo,
+                // 避免错误：java.lang.RuntimeException: Parcel: unable to marshal value TodoEntity(...)
+                value.initialTodo?.let {
+                    listOf(
+                        it.content,
+                        it.category,
+                        it.isCompleted,
+                        it.priority,
+                        it.dueDate,
+                        it.id
+                    )
+                },
                 value.toDoContent,
                 value.isErrorContent,
                 value.selectedCategoryIndex,
@@ -93,7 +103,17 @@ class EditorState(val initialTodo: TodoEntity? = null) {
 
         override fun restore(value: Any): EditorState {
             val list = value as List<*>
-            val initialTodo = list[0] as? TodoEntity?
+            val initialTodoList = list[0] as? List<*>
+            val initialTodo = initialTodoList?.let {
+                TodoEntity(
+                    content = it[0] as String,
+                    category = it[1] as String,
+                    isCompleted = it[2] as Boolean,
+                    priority = it[3] as Float,
+                    dueDate = it[4] as Long?,
+                    id = it[5] as Int
+                )
+            }
             return EditorState(initialTodo).apply {
                 toDoContent = list[1] as String
                 isErrorContent = list[2] as Boolean

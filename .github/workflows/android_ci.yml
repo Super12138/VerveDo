@@ -43,7 +43,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Write sign info
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.repository == 'Super12138/ToDo'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && github.repository == 'Super12138/VerveDo'
         run: |
           if [ ! -z "${{ secrets.SIGNING_KEY }}" ]; then
             echo releaseStorePassword='${{ secrets.KEY_STORE_PASSWORD }}' >> gradle.properties
@@ -61,7 +61,7 @@ jobs:
         run: ./gradlew assembleRelease
 
       - name: Upload APK
-        if: success() && github.event_name != 'pull_request' && github.repository == 'Super12138/ToDo'
+        if: success() && github.event_name != 'pull_request' && github.repository == 'Super12138/VerveDo'
         uses: actions/upload-artifact@v6.0.0
         with:
           name: Release

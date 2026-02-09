@@ -34,7 +34,7 @@ import cn.super12138.todo.R
 import cn.super12138.todo.constants.Constants
 import cn.super12138.todo.logic.database.TodoEntity
 import cn.super12138.todo.logic.datastore.DataStoreManager
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.ChipItem
 import cn.super12138.todo.ui.components.ConfirmDialog
 import cn.super12138.todo.ui.components.TodoFloatingActionButton
@@ -184,7 +184,7 @@ fun SharedTransitionScope.TaskEditorPage(
             modifier = Modifier.fillMaxSize()
         ) {
             item(key = 0) {
-                Spacer(modifier = Modifier.size(TodoDefaults.screenVerticalPadding))
+                Spacer(modifier = Modifier.size(VerveDoDefaults.screenVerticalPadding))
             }
 
             item(key = 1) {
@@ -262,7 +262,7 @@ fun SharedTransitionScope.TaskEditorPage(
             }
 
             item(key = 5) {
-                Spacer(modifier = Modifier.size(TodoDefaults.screenVerticalPadding))
+                Spacer(modifier = Modifier.size(VerveDoDefaults.screenVerticalPadding))
             }
         }
     }

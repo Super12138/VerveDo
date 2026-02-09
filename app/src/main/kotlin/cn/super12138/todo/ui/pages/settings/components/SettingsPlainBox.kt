@@ -17,7 +17,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 
 @Composable
 fun SettingsPlainBox(
@@ -30,8 +30,8 @@ fun SettingsPlainBox(
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(
-                vertical = TodoDefaults.settingsItemVerticalPadding,
-                horizontal = TodoDefaults.settingsItemHorizontalPadding / 2
+                vertical = VerveDoDefaults.settingsItemVerticalPadding,
+                horizontal = VerveDoDefaults.settingsItemHorizontalPadding / 2
             ),
     ) {
         Icon(

@@ -28,7 +28,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.theme.shapeByInteraction
 import cn.super12138.todo.utils.VibrationUtils
 
@@ -61,8 +61,8 @@ fun SettingsItem(
     title: String,
     description: String? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    background: Color = TodoDefaults.Colors.Container,
-    shapes: ButtonShapes = TodoDefaults.shapes(),
+    background: Color = VerveDoDefaults.Colors.Container,
+    shapes: ButtonShapes = VerveDoDefaults.shapes(),
     enableClick: Boolean = true,
     onClick: () -> Unit = {}
 ) = SettingsItem(
@@ -82,7 +82,7 @@ fun SettingsItem(
                 painter = leadingIcon,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(end = TodoDefaults.settingsItemHorizontalPadding)
+                modifier = Modifier.padding(end = VerveDoDefaults.settingsItemHorizontalPadding)
             )
             // }
         }
@@ -125,8 +125,8 @@ fun SettingsItem(
     title: String,
     description: String? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    background: Color = TodoDefaults.Colors.Container,
-    shapes: ButtonShapes = TodoDefaults.shapes(),
+    background: Color = VerveDoDefaults.Colors.Container,
+    shapes: ButtonShapes = VerveDoDefaults.shapes(),
     enableClick: Boolean = true,
     onClick: () -> Unit = {}
 ) = SettingsItem(
@@ -136,7 +136,7 @@ fun SettingsItem(
                 imageVector = it,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(end = TodoDefaults.settingsItemHorizontalPadding),
+                modifier = Modifier.padding(end = VerveDoDefaults.settingsItemHorizontalPadding),
             )
         }
     },
@@ -159,8 +159,8 @@ fun SettingsItem(
     title: String,
     description: String? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    background: Color = TodoDefaults.Colors.Container,
-    shapes: ButtonShapes = TodoDefaults.shapes(),
+    background: Color = VerveDoDefaults.Colors.Container,
+    shapes: ButtonShapes = VerveDoDefaults.shapes(),
     enableClick: Boolean = true,
     onClick: () -> Unit = {},
 ) = SettingsItem(
@@ -204,8 +204,8 @@ fun SettingsItem(
     headlineContent: (@Composable () -> Unit)? = null,
     supportingContent: (@Composable () -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    background: Color = TodoDefaults.Colors.Container,
-    shapes: ButtonShapes = TodoDefaults.shapes(),
+    background: Color = VerveDoDefaults.Colors.Container,
+    shapes: ButtonShapes = VerveDoDefaults.shapes(),
     interactionSource: MutableInteractionSource? = null,
     enableClick: Boolean = true,
     onClick: () -> Unit = {},
@@ -213,7 +213,7 @@ fun SettingsItem(
     val view = LocalView.current
     val userInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
     val pressed by userInteractionSource.collectIsPressedAsState()
-    val animatedShape = shapeByInteraction(shapes, pressed, TodoDefaults.shapesDefaultAnimationSpec)
+    val animatedShape = shapeByInteraction(shapes, pressed, VerveDoDefaults.shapesDefaultAnimationSpec)
 
     Row(
         modifier = modifier
@@ -230,8 +230,8 @@ fun SettingsItem(
             )
             .background(background)
             .padding(
-                horizontal = TodoDefaults.settingsItemHorizontalPadding,
-                vertical = TodoDefaults.settingsItemVerticalPadding
+                horizontal = VerveDoDefaults.settingsItemHorizontalPadding,
+                vertical = VerveDoDefaults.settingsItemVerticalPadding
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {

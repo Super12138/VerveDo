@@ -20,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ToDo"
+rootProject.name = "VerveDo"
 include(":app")

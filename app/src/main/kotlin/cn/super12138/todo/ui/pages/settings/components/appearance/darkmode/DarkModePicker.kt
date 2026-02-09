@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.model.DarkMode
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.pages.settings.components.LazyRowSettingsItem
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -32,7 +32,7 @@ fun DarkModePicker(
         title = stringResource(R.string.pref_dark_mode),
         description = stringResource(R.string.pref_dark_mode_desc),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
-        fadedEdgeWidth = TodoDefaults.fadedEdgeWidth,
+        fadedEdgeWidth = VerveDoDefaults.fadedEdgeWidth,
         modifier = modifier
     ) {
         items(items = darkModeList, key = { it.id }) {

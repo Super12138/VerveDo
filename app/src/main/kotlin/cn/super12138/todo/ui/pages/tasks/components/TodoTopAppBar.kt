@@ -34,7 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import cn.super12138.todo.R
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.utils.VibrationUtils
 
@@ -72,7 +72,7 @@ fun TodoTopAppBar(
         targetValue = if (selectedMode) {
             MaterialTheme.colorScheme.surfaceContainerHighest
         } else {
-            TodoDefaults.Colors.Background
+            VerveDoDefaults.Colors.Background
         }
     )
 

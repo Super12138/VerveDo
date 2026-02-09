@@ -15,7 +15,7 @@ import cn.super12138.todo.R
 import cn.super12138.todo.logic.model.ContrastLevel
 import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.PaletteStyle
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.pages.settings.components.LazyRowSettingsItem
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -34,7 +34,7 @@ fun PalettePicker(
         title = stringResource(R.string.pref_palette_style),
         description = stringResource(R.string.pref_palette_style_desc),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
-        fadedEdgeWidth = TodoDefaults.fadedEdgeWidth,
+        fadedEdgeWidth = VerveDoDefaults.fadedEdgeWidth,
         modifier = modifier
     ) {
         items(items = paletteOptions, key = { it.id }) {

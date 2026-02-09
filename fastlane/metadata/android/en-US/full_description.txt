@@ -1,1 +1,1 @@
-A simple to-do app that follows Material Design 3. You can use it to keep track of your daily school homeworks or as a memo for everyday life. You can set priorities to each task and sort them, helping you stay organized and in control of your life.
+VerveDo is a concise to-do app that follows Material 3 Expressive. You can use it to keep track of your daily school homeworks or as a memo for everyday life. You can set priorities to each task and sort them, helping you stay organized and in control of your life.

@@ -73,7 +73,7 @@
     <string name="pref_view_on_github_desc">View source code, submit bug reports, and improvement suggestions</string>
     <string name="tip_discard_changes">After exiting edit mode, you will not be able to retrieve the data you have modified. Are you sure you want to exit editing?</string>
     <string name="sorting_sequential">Sequential</string>
-    <string name="sorting_category">category</string>
+    <string name="sorting_category">Category</string>
     <string name="sorting_priority">Priority</string>
     <string name="sorting_completion">Completion</string>
     <string name="sorting_alphabetical_ascending">Alphabetical (Ascending)</string>
@@ -126,6 +126,11 @@
     <string name="time_in_weeks">in %d w</string>
     <string name="time_in_months">in %d mo</string>
     <string name="time_in_years">in %d y</string>
+    <string name="time_yesterday">Yesterday</string>
+    <string name="time_days_ago">%d d ago</string>
+    <string name="time_weeks_ago">%d w ago</string>
+    <string name="time_months_ago">%d mo ago</string>
+    <string name="time_years_ago">%d y ago</string>
     <string name="label_due_date">Due Date (Optional)</string>
     <string name="title_all_task">All</string>
     <string name="title_completed_task">Completed</string>

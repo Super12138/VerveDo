@@ -27,7 +27,7 @@ import cn.super12138.todo.constants.Constants
 import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.PaletteStyle
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.Konfetti
 import cn.super12138.todo.ui.navigation.VerveDoDestinations
 import cn.super12138.todo.ui.navigation.TopNavigation
@@ -106,7 +106,7 @@ class MainActivity : ComponentActivity() {
                 dynamicColor = dynamicColor
             ) {
                 Surface(
-                    color = TodoDefaults.Colors.Background,
+                    color = VerveDoDefaults.Colors.Background,
                     modifier = Modifier.fillMaxSize()
                 ) {
                     val view = LocalView.current
@@ -140,7 +140,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         },
-                        containerColor = TodoDefaults.Colors.Background,
+                        containerColor = VerveDoDefaults.Colors.Background,
                         modifier = Modifier.fillMaxSize()
                     ) {
                         TopNavigation(

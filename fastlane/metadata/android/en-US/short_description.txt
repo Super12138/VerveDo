@@ -1,1 +1,1 @@
-A simple to-do app that follows Material Design 3.
+A concise to-do app that follows Material 3 Expressive.

@@ -31,7 +31,7 @@ import androidx.compose.ui.graphics.ColorProducer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.theme.shapeByInteraction
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -41,17 +41,17 @@ fun RoundedCornerCardLarge(
     @DrawableRes iconRes: Int,
     title: String,
     count: Int,
-    containerColor: Color = TodoDefaults.Colors.Container,
-    shapes: ButtonShapes = TodoDefaults.shapes(),
+    containerColor: Color = VerveDoDefaults.Colors.Container,
+    shapes: ButtonShapes = VerveDoDefaults.shapes(),
     onClick: () -> Unit = {}
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
-    val animatedShape = shapeByInteraction(shapes, pressed, TodoDefaults.shapesDefaultAnimationSpec)
+    val animatedShape = shapeByInteraction(shapes, pressed, VerveDoDefaults.shapesDefaultAnimationSpec)
 
     val cardColors = CardDefaults.cardColors(containerColor = containerColor)
     Card(
-        modifier = modifier.height(TodoDefaults.overviewCardHeight),
+        modifier = modifier.height(VerveDoDefaults.overviewCardHeight),
         colors = cardColors,
         shape = animatedShape
     ) {
@@ -63,7 +63,7 @@ fun RoundedCornerCardLarge(
                     onClick = onClick,
                     interactionSource = interactionSource
                 )
-                .padding(TodoDefaults.screenHorizontalPadding),
+                .padding(VerveDoDefaults.screenHorizontalPadding),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {

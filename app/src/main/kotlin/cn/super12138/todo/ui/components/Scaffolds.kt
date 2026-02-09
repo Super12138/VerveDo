@@ -25,7 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import cn.super12138.todo.R
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.utils.VibrationUtils
 
 /**
@@ -130,7 +130,7 @@ fun TopAppBarScaffold(
                 navigationIcon = navigationIcon,
                 actions = actions,
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = TodoDefaults.Colors.Background,
+                    containerColor = VerveDoDefaults.Colors.Background,
                 )
             )
         },
@@ -151,8 +151,8 @@ fun TopAppBarScaffold(
     floatingActionButton: @Composable () -> Unit = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
     contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
-    containerColor: Color = TodoDefaults.Colors.Background,
-    screenShape: Shape = TodoDefaults.ScreenContainerShape,
+    containerColor: Color = VerveDoDefaults.Colors.Background,
+    screenShape: Shape = VerveDoDefaults.ScreenContainerShape,
     content: @Composable () -> Unit
 ) = Scaffold(
     modifier = modifier,
@@ -166,7 +166,7 @@ fun TopAppBarScaffold(
     Surface(
         modifier = Modifier
             .padding(paddingValues = innerPadding)
-            .padding(horizontal = TodoDefaults.screenHorizontalPadding),
+            .padding(horizontal = VerveDoDefaults.screenHorizontalPadding),
         color = containerColor,
         shape = screenShape,
         content = content

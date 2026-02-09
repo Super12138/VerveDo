@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
+import cn.super12138.todo.logic.database.TodoEntity
 import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.pages.overview.components.ListCard
 import cn.super12138.todo.ui.pages.overview.components.ProgressCard
@@ -33,15 +34,14 @@ fun OverviewPage(
     val totalTasks by remember { derivedStateOf { toDos.size } }
     val completedTasks by remember { derivedStateOf { toDos.count { it.isCompleted } } }
 
-    val todayMillis = SystemUtils.getToday()
+    val todayMillis = SystemUtils.getTodayEightAM()
     val dayMillis = 24L * 60 * 60 * 1000
-    val todayEnd = todayMillis + dayMillis
 
     val todayTodo by remember {
         derivedStateOf {
             toDos.filter { todo ->
                 val due = todo.dueDate ?: return@filter false
-                due in todayMillis until todayEnd
+                due == todayMillis
             }
         }
     }
@@ -49,10 +49,16 @@ fun OverviewPage(
     val nextWeekTodo by remember {
         derivedStateOf {
             val weekFromToday = todayMillis + 7 * dayMillis
-            toDos.filter { todo ->
-                val due = todo.dueDate ?: return@filter false
-                due in todayMillis until weekFromToday
-            }
+            toDos
+                .filter { todo ->
+                    val due = todo.dueDate ?: return@filter false
+                    due in todayMillis..weekFromToday && !todo.isCompleted
+                }
+                .sortedWith(
+                    comparator = compareBy<TodoEntity> { it.dueDate }
+                        .thenBy { it.category }
+                        .thenByDescending { it.priority }
+                )
         }
     }
 

@@ -112,7 +112,7 @@ fun SettingsData(
                     title = stringResource(R.string.pref_backup),
                     description = stringResource(R.string.pref_backup_desc),
                     onClick = {
-                        backupLauncher.launch("Todo-backup-${SystemUtils.getTime()}.zip")
+                        backupLauncher.launch("VerveDo-backup-${SystemUtils.getTime()}.zip")
                     }
                 )
             }

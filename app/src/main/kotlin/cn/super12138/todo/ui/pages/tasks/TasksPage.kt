@@ -42,7 +42,7 @@ import cn.super12138.todo.R
 import cn.super12138.todo.constants.Constants
 import cn.super12138.todo.logic.database.TodoEntity
 import cn.super12138.todo.logic.model.Priority
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.ConfirmDialog
 import cn.super12138.todo.ui.components.EmptyTip
 import cn.super12138.todo.ui.components.EmptyTipType
@@ -168,11 +168,11 @@ fun SharedTransitionScope.TasksPage(
                 } else {
                     LazyColumn(
                         state = viewModel.toDoListState,
-                        verticalArrangement = Arrangement.spacedBy(TodoDefaults.settingsItemPadding),
+                        verticalArrangement = Arrangement.spacedBy(VerveDoDefaults.settingsItemPadding),
                         modifier = Modifier.fillMaxSize()
                     ) {
                         item {
-                            Spacer(modifier = Modifier.size(TodoDefaults.screenVerticalPadding))
+                            Spacer(modifier = Modifier.size(VerveDoDefaults.screenVerticalPadding))
                         }
 
                         items(
@@ -214,7 +214,7 @@ fun SharedTransitionScope.TasksPage(
                         }
 
                         item {
-                            Spacer(modifier = Modifier.size(TodoDefaults.screenVerticalPadding))
+                            Spacer(modifier = Modifier.size(VerveDoDefaults.screenVerticalPadding))
                         }
                     }
                 }

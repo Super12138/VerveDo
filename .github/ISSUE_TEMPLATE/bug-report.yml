@@ -1,5 +1,5 @@
 name: 问题反馈 / Bug Report
-description: 发现并反馈问题以帮助改进待办 / Create a report to help us improve To Do
+description: 发现并反馈问题以帮助改进 VerveDo / Create a report to help us improve VerveDo
 title: "[Bug] "
 labels: [ "bug" ]
 body:
@@ -8,7 +8,7 @@ body:
     attributes:
       label: 检查列表 / Checklist
       options:
-        - label: 我正在使用待办的最新版本 / I am using the latest version of To Do
+        - label: 我正在使用 VerveDo 的最新版本 / I am using the latest version of VerveDo
           required: true
         - label: 确认没有之前相似或重复的问题（若重复会直接关闭） / Confirm that there are no similar or duplicate issues previously raised (if duplicate, the issue will be closed directly)
           required: true
@@ -16,8 +16,8 @@ body:
   - type: dropdown
     id: version-variant
     attributes:
-      label: 待办版本类型 / To Do Variant
-      description: 请选择当前待办的版本类型 / Select the version of To Do variant you're currently using
+      label: VerveDo 版本类型 / VerveDo Variant
+      description: 请选择当前 VerveDo 的版本类型 / Select the version of VerveDo variant you're currently using
       options:
         - 最新 Release（F-Droid）版 / Latest release (F-Droid)
         - 最新 CI 版 / Latest CI
@@ -27,8 +27,8 @@ body:
   - type: input
     id: version-code
     attributes:
-      label: 待办版本
-      description: 请输入你正在使用的待办版本，你可以在设置中找到 / Enter the version of To Do you're using. You can find this in the settings
+      label: VerveDo 版本
+      description: 请输入你正在使用的 VerveDo 版本，你可以在设置中找到 / Enter the version of VerveDo you're using. You can find this in the settings
       placeholder: 例如：2.0.2(561) / e.g. 2.0.2(561)
     validations:
       required: true

@@ -1,5 +1,5 @@
 {
-  "name": "todo_script",
+  "name": "vervedo_script",
   "version": "1.0.0",
   "description": "自动在 build.gradle.kts 写入版本号",
   "license": "GPL-3.0-only",

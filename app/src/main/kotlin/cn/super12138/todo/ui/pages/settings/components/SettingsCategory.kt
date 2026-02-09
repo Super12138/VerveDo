@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 
 @Composable
 fun SettingsCategory(
@@ -21,10 +21,10 @@ fun SettingsCategory(
         modifier = modifier
             .fillMaxWidth()
             .padding(
-                top = if (first) 0.dp else TodoDefaults.screenVerticalPadding,
-                start = TodoDefaults.screenHorizontalPadding / 2,
-                end = TodoDefaults.screenHorizontalPadding / 2,
-                bottom = TodoDefaults.screenVerticalPadding
+                top = if (first) 0.dp else VerveDoDefaults.screenVerticalPadding,
+                start = VerveDoDefaults.screenHorizontalPadding / 2,
+                end = VerveDoDefaults.screenHorizontalPadding / 2,
+                bottom = VerveDoDefaults.screenVerticalPadding
             )
     ) {
         Text(

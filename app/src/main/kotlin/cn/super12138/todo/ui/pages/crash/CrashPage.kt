@@ -36,7 +36,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.activities.CrashActivity.Companion.BEGINNING_CRASH
 import cn.super12138.todo.ui.activities.CrashActivity.Companion.BRAND_PREFIX
 import cn.super12138.todo.ui.activities.CrashActivity.Companion.CRASH_TIME_PREFIX
@@ -113,7 +113,7 @@ fun CrashPage(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(horizontal = TodoDefaults.screenHorizontalPadding)
+                .padding(horizontal = VerveDoDefaults.screenHorizontalPadding)
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {

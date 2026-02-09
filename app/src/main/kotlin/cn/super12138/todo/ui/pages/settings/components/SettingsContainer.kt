@@ -9,7 +9,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 
 @Composable
 fun SettingsContainer(
@@ -18,18 +18,18 @@ fun SettingsContainer(
     content: LazyListScope.() -> Unit,
 ) {
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(TodoDefaults.settingsItemPadding),
+        verticalArrangement = Arrangement.spacedBy(VerveDoDefaults.settingsItemPadding),
         state = state,
         modifier = modifier
     ) {
         item {
-            Spacer(modifier = Modifier.size(TodoDefaults.screenVerticalPadding))
+            Spacer(modifier = Modifier.size(VerveDoDefaults.screenVerticalPadding))
         }
 
         content()
 
         item {
-            Spacer(modifier = Modifier.size(TodoDefaults.screenVerticalPadding))
+            Spacer(modifier = Modifier.size(VerveDoDefaults.screenVerticalPadding))
         }
     }
 }

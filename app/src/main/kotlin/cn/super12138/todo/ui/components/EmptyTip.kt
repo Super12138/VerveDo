@@ -17,7 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 
 enum class EmptyTipType {
     Search,
@@ -36,7 +36,7 @@ fun EmptyTip(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .padding(TodoDefaults.screenHorizontalPadding)
+            .padding(VerveDoDefaults.screenHorizontalPadding)
             .size(size)
             .clip(CircleShape)
             .background(containerColor)

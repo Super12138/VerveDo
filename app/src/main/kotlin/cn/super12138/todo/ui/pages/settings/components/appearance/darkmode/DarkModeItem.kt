@@ -28,7 +28,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.theme.shapeByInteraction
 import cn.super12138.todo.utils.VibrationUtils
 
@@ -42,13 +42,13 @@ fun DarkModeItem(
     containerColor: Color,
     selected: Boolean,
     onSelect: () -> Unit,
-    shapes: ButtonShapes = TodoDefaults.shapes()
+    shapes: ButtonShapes = VerveDoDefaults.shapes()
 ) {
     val view = LocalView.current
 
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
-    val animatedShape = shapeByInteraction(shapes, pressed, TodoDefaults.shapesDefaultAnimationSpec)
+    val animatedShape = shapeByInteraction(shapes, pressed, VerveDoDefaults.shapesDefaultAnimationSpec)
 
     val borderWidth by animateDpAsState(if (selected) 3.dp else (-1).dp)
     Column(

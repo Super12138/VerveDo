@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.Dp
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.model.Priority
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import kotlin.time.Duration.Companion.days
@@ -25,8 +24,8 @@ import kotlin.time.Duration.Companion.milliseconds
 @Stable
 fun Priority.containerColor(): Color =
     when (this) {
-        Priority.NotUrgent -> MaterialTheme.colorScheme.surfaceContainerHighest
-        Priority.NotImportant -> MaterialTheme.colorScheme.surfaceContainerHighest
+        Priority.NotUrgent -> MaterialTheme.colorScheme.onSurfaceVariant
+        Priority.NotImportant -> MaterialTheme.colorScheme.onSurfaceVariant
         Priority.Default -> MaterialTheme.colorScheme.secondary
         Priority.Important -> MaterialTheme.colorScheme.tertiary
         Priority.Urgent -> MaterialTheme.colorScheme.error
@@ -100,14 +99,7 @@ fun Long?.toLocalDateString(): String {
  */
 fun Long?.toRelativeTimeString(context: Context): String {
     if (this == null) return ""
-    val today = Calendar.getInstance().apply {
-        // 将时间设置为当天的开始（00:00:00.000）
-        // 兼容API24
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-    }.timeInMillis
+    val today = SystemUtils.getTodayEightAM()
     val diff = (this - today).milliseconds
 
     return diff.toComponents { days, _, _, _, _ ->
@@ -129,6 +121,27 @@ fun Long?.toRelativeTimeString(context: Context): String {
             )
 
             days.days >= 365.days -> context.getString(R.string.time_in_years, (days / 365).toInt())
+            days.days == (-1).days -> context.getString(R.string.time_yesterday)
+            days.days < (-1).days && days.days > (-7).days -> context.getString(
+                R.string.time_days_ago,
+                -days.toInt()
+            )
+
+            days.days in (-7).days..<(-30).days -> context.getString(
+                R.string.time_weeks_ago,
+                -(days / 7).toInt()
+            )
+
+            days.days in (-30).days..<(-365).days -> context.getString(
+                R.string.time_months_ago,
+                -(days / 30).toInt()
+            )
+
+            days.days <= (-365).days -> context.getString(
+                R.string.time_years_ago,
+                -(days / 365).toInt()
+            )
+
             else -> context.getString(R.string.time_today)
         }
     }

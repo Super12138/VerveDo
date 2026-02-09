@@ -48,7 +48,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.model.Priority
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.theme.shapeByInteraction
 import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.containerColor
@@ -71,11 +71,11 @@ fun TodoCard(
     onCardClick: () -> Unit = {},
     onCardLongClick: () -> Unit = {},
     onChecked: () -> Unit = {},
-    shapes: ButtonShapes = TodoDefaults.shapes(),
+    shapes: ButtonShapes = VerveDoDefaults.shapes(),
 ) {
     val view = LocalView.current
     val context = LocalContext.current
-    val cardColors = CardDefaults.cardColors(containerColor = TodoDefaults.Colors.Container)
+    val cardColors = CardDefaults.cardColors(containerColor = VerveDoDefaults.Colors.Container)
     val animatedContainerColor by animateColorAsState(targetValue = if (selected) MaterialTheme.colorScheme.secondaryContainer else if (completed) cardColors.disabledContainerColor else cardColors.containerColor)
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -83,7 +83,7 @@ fun TodoCard(
     val animatedShape = shapeByInteraction(
         shapes = shapes,
         pressed = if (selected) true else pressed,
-        animationSpec = TodoDefaults.shapesDefaultAnimationSpec
+        animationSpec = VerveDoDefaults.shapesDefaultAnimationSpec
     )
 
     val enterTransition = fadeIn(MaterialTheme.motionScheme.fastSpatialSpec()) + expandHorizontally(
@@ -97,7 +97,7 @@ fun TodoCard(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .height(TodoDefaults.toDoCardHeight)
+            .height(VerveDoDefaults.toDoCardHeight)
             .clip(animatedShape)
             .combinedClickable(
                 interactionSource = interactionSource,
@@ -112,7 +112,7 @@ fun TodoCard(
             .drawBehind {
                 drawRect(animatedContainerColor)
             }
-            .padding(start = TodoDefaults.screenHorizontalPadding)
+            .padding(start = VerveDoDefaults.screenHorizontalPadding)
     ) {
         AnimatedVisibility(
             visible = selected,
@@ -159,14 +159,14 @@ fun TodoCard(
                     Column(
                         horizontalAlignment = Alignment.End,
                         modifier = Modifier.padding(
-                            start = TodoDefaults.screenVerticalPadding,
-                            end = TodoDefaults.screenHorizontalPadding
+                            start = VerveDoDefaults.screenVerticalPadding,
+                            end = VerveDoDefaults.screenHorizontalPadding
                         )
                     ) {
                         Text(
                             text = dueDate.toLocalDateString(),
                             style = MaterialTheme.typography.labelLarge.copy(
-                                color = MaterialTheme.colorScheme.onSurface,
+                                color = if (completed) cardColors.disabledContentColor else MaterialTheme.colorScheme.onSurface,
                                 fontWeight = FontWeight.Bold
                             )
                         )
@@ -174,7 +174,7 @@ fun TodoCard(
                         Text(
                             text = dueDate.toRelativeTimeString(context),
                             style = MaterialTheme.typography.labelSmall.copy(
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = if (completed) cardColors.disabledContentColor else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         )
                     }
@@ -211,7 +211,7 @@ fun TodoCard(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxHeight()
-                    .background(TodoDefaults.Colors.Green)
+                    .background(VerveDoDefaults.Colors.Green)
                     .clickable {
                         VibrationUtils.performHapticFeedback(view)
                         onChecked()
@@ -221,7 +221,7 @@ fun TodoCard(
                     painter = painterResource(R.drawable.ic_check),
                     tint = Color.White,
                     contentDescription = null,
-                    modifier = Modifier.padding(TodoDefaults.screenHorizontalPadding)
+                    modifier = Modifier.padding(VerveDoDefaults.screenHorizontalPadding)
                 )
             }
         }

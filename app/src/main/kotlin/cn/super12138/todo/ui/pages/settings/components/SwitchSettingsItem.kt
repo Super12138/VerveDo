@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.utils.VibrationUtils
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -30,7 +30,7 @@ fun SwitchSettingsItem(
             Switch(
                 checked = checked,
                 onCheckedChange = null,
-                modifier = Modifier.padding(start = TodoDefaults.settingsItemHorizontalPadding / 2)
+                modifier = Modifier.padding(start = VerveDoDefaults.settingsItemHorizontalPadding / 2)
             )
         },
         onClick = { onCheckedChange(!checked) },
@@ -60,7 +60,7 @@ fun SwitchSettingsItem(
                     VibrationUtils.performHapticFeedback(view)
                     onCheckedChange(it)
                 },
-                modifier = Modifier.padding(start = TodoDefaults.settingsItemHorizontalPadding / 2)
+                modifier = Modifier.padding(start = VerveDoDefaults.settingsItemHorizontalPadding / 2)
             )
         },
         onClick = { onCheckedChange(!checked) },

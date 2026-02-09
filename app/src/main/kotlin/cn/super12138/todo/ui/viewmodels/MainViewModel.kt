@@ -87,6 +87,7 @@ class MainViewModel : ViewModel() {
 
                     SortingMethod.DueDate -> list.sortedWith(
                         comparator = compareBy<TodoEntity> { it.isCompleted }
+                            .thenBy { it.category }
                             .thenBy { it.dueDate }
                             .thenByDescending { it.priority }
                     )

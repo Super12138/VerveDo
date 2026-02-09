@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
-object TodoDefaults {
+object VerveDoDefaults {
     /**
      * 屏幕左右两边预留边距（防止内容全部贴边显示过丑）
      */

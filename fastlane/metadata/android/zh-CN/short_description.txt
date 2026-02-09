@@ -1,1 +1,1 @@
-一个简单的、遵循 Material Design 3 的待办应用。
+一个简约的、遵循 Material 3 Expressive 的待办应用。

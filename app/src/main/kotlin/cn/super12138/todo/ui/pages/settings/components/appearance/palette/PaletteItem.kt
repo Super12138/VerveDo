@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import cn.super12138.todo.logic.model.ContrastLevel
 import cn.super12138.todo.logic.model.PaletteStyle
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.theme.dynamicColorScheme
 import cn.super12138.todo.ui.theme.shapeByInteraction
 import cn.super12138.todo.utils.VibrationUtils
@@ -50,12 +50,12 @@ fun PaletteItem(
     contrastLevel: ContrastLevel,
     selected: Boolean,
     onSelect: () -> Unit,
-    shapes: ButtonShapes = TodoDefaults.shapes()
+    shapes: ButtonShapes = VerveDoDefaults.shapes()
 ) {
     val view = LocalView.current
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
-    val animatedShape = shapeByInteraction(shapes, pressed, TodoDefaults.shapesDefaultAnimationSpec)
+    val animatedShape = shapeByInteraction(shapes, pressed, VerveDoDefaults.shapesDefaultAnimationSpec)
 
     Column(
         modifier = modifier

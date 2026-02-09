@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.database.TodoEntity
 import cn.super12138.todo.logic.model.Priority
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.EmptyTip
 import cn.super12138.todo.ui.components.EmptyTipType
 import cn.super12138.todo.ui.theme.fadeScale
@@ -44,18 +44,18 @@ fun ListCard(
     modifier: Modifier = Modifier,
     title: String,
     list: List<TodoEntity>,
-    containerColor: Color = TodoDefaults.Colors.Container,
+    containerColor: Color = VerveDoDefaults.Colors.Container,
     emptyTipContainerColor: Color = MaterialTheme.colorScheme.secondaryContainer
 ) {
     Card(
-        modifier = modifier.height(TodoDefaults.overviewCardHeight * 2),
+        modifier = modifier.height(VerveDoDefaults.overviewCardHeight * 2),
         colors = CardDefaults.cardColors(containerColor = containerColor),
-        shape = TodoDefaults.defaultShape
+        shape = VerveDoDefaults.defaultShape
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(TodoDefaults.screenHorizontalPadding),
+                .padding(VerveDoDefaults.screenHorizontalPadding),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -123,7 +123,7 @@ fun UpcomingTaskItem(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(vertical = TodoDefaults.settingsItemVerticalPadding / 4),
+            .padding(vertical = VerveDoDefaults.settingsItemVerticalPadding / 4),
         horizontalAlignment = Alignment.Start
     ) {
         Row(
@@ -145,7 +145,7 @@ fun UpcomingTaskItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Bold
                 ),
-                modifier = Modifier.padding(start = TodoDefaults.screenVerticalPadding)
+                modifier = Modifier.padding(start = VerveDoDefaults.screenVerticalPadding)
             )
         }
 
@@ -167,7 +167,7 @@ fun UpcomingTaskItem(
             Text(
                 text = stringResource(priority.nameRes),
                 style = MaterialTheme.typography.labelMedium.copy(priority.containerColor()),
-                modifier = Modifier.padding(start = TodoDefaults.screenVerticalPadding)
+                modifier = Modifier.padding(start = VerveDoDefaults.screenVerticalPadding)
             )
         }
     }

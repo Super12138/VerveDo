@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
-import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.utils.drawFadedEdge
 
 @Composable
@@ -37,12 +37,12 @@ fun RowSettingsItem(
     title: String,
     description: String? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    background: Color = TodoDefaults.Colors.Container,
+    background: Color = VerveDoDefaults.Colors.Container,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
     scrollState: ScrollState = rememberScrollState(),
     fadedEdgeWidth: Dp,
-    maskColor: Color = TodoDefaults.Colors.Container,
+    maskColor: Color = VerveDoDefaults.Colors.Container,
     content: @Composable RowScope.() -> Unit
 ) {
     MoreContentSettingsItem(
@@ -88,11 +88,11 @@ fun LazyRowSettingsItem(
     title: String,
     description: String? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    background: Color = TodoDefaults.Colors.Container,
+    background: Color = VerveDoDefaults.Colors.Container,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
     fadedEdgeWidth: Dp,
-    maskColor: Color = TodoDefaults.Colors.Container,
+    maskColor: Color = VerveDoDefaults.Colors.Container,
     content: LazyListScope.() -> Unit
 ) {
     MoreContentSettingsItem(
@@ -137,8 +137,8 @@ fun MoreContentSettingsItem(
     title: String,
     description: String? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    background: Color = TodoDefaults.Colors.Container,
-    shape: CornerBasedShape = TodoDefaults.defaultShape,
+    background: Color = VerveDoDefaults.Colors.Container,
+    shape: CornerBasedShape = VerveDoDefaults.defaultShape,
     content: @Composable () -> Unit
 ) {
     Column(
@@ -148,8 +148,8 @@ fun MoreContentSettingsItem(
             .clip(shape)
             .background(background)
             .padding(
-                horizontal = TodoDefaults.settingsItemHorizontalPadding,
-                vertical = TodoDefaults.settingsItemVerticalPadding
+                horizontal = VerveDoDefaults.settingsItemHorizontalPadding,
+                vertical = VerveDoDefaults.settingsItemVerticalPadding
             )
     ) {
         Row {
