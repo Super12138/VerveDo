@@ -118,7 +118,6 @@ fun TodoDueDateChooser(
                     TextButton(
                         onClick = {
                             VibrationUtils.performHapticFeedback(view)
-                            onValueChange(null)
                             datePickerState.selectedDateMillis = null
                         },
                         shapes = ButtonDefaults.shapes()
