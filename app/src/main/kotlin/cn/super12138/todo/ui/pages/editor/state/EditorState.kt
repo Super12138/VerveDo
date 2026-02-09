@@ -61,6 +61,7 @@ class EditorState(val initialTodo: TodoEntity? = null) {
      * 检查待办是否被编辑修改
      */
     fun isModified(): Boolean {
+        // Log.d("EditorState", "Initial: content='${initialTodo?.content ?: ""}', category='${initialTodo?.category ?: ""}', priority=${initialTodo?.priority ?: 0f}, isCompleted=${initialTodo?.isCompleted == true}, dueDate=${initialTodo?.dueDate} ; Now: content='$toDoContent', category='$categoryContent', priority=$priorityState, isCompleted=$isCompleted, dueDate=$dueDateState")
         var isModified = false
         if ((initialTodo?.content ?: "") != toDoContent) isModified = true
         if ((initialTodo?.category ?: "") != categoryContent) isModified = true
@@ -76,7 +77,7 @@ class EditorState(val initialTodo: TodoEntity? = null) {
     object Saver : androidx.compose.runtime.saveable.Saver<EditorState, Any> {
         override fun SaverScope.save(value: EditorState): Any {
             return listOf(
-                value.initialTodo?.id ?: 0,
+                value.initialTodo,
                 value.toDoContent,
                 value.isErrorContent,
                 value.selectedCategoryIndex,
