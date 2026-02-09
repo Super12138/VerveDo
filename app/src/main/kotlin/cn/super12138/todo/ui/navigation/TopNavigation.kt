@@ -2,6 +2,7 @@ package cn.super12138.todo.ui.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,12 +22,12 @@ import cn.super12138.todo.ui.pages.settings.SettingsDeveloperOptionsPadding
 import cn.super12138.todo.ui.pages.settings.SettingsInterface
 import cn.super12138.todo.ui.pages.settings.SettingsMain
 import cn.super12138.todo.ui.pages.tasks.TasksPage
-import cn.super12138.todo.ui.theme.fadeThrough
+import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.ui.theme.materialSharedAxisX
 import cn.super12138.todo.ui.theme.veilFade
 import cn.super12138.todo.ui.viewmodels.MainViewModel
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TopNavigation(
     backStack: TopLevelBackStack<NavKey>,
@@ -64,25 +65,18 @@ fun TopNavigation(
         )
     }
 
+    val defaultTransition = fadeScale(
+        effectSpec = MaterialTheme.motionScheme.defaultEffectsSpec(),
+        spatialSpec = MaterialTheme.motionScheme.defaultSpatialSpec()
+    )
+
     SharedTransitionLayout {
         NavDisplay(
             backStack = backStack.backStack,
             onBack = ::onBack,
-            /*transitionSpec = {
-                fadeIn() togetherWith veilOut(targetColor = veilColor)
-            },
-            popTransitionSpec = {
-                unveilIn(initialColor = veilColor) togetherWith fadeOut()
-            },
-            predictivePopTransitionSpec = {
-                unveilIn(initialColor = veilColor) togetherWith fadeOut()
-            },*/
-            /**
-             * 来自：https://github.com/material-components/material-components-android/blob/master/lib/java/com/google/android/material/transition/MaterialFadeThrough.java#L33
-             */
-            transitionSpec = { fadeThrough() },
-            popTransitionSpec = { fadeThrough() },
-            predictivePopTransitionSpec = { fadeThrough() },
+            transitionSpec = { defaultTransition },
+            popTransitionSpec = { defaultTransition },
+            predictivePopTransitionSpec = { defaultTransition },
             entryProvider = entryProvider {
                 entry<TodoScreen.Overview> {
                     OverviewPage(viewModel = viewModel)

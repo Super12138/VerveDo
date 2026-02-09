@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
@@ -24,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
 import cn.super12138.todo.utils.VibrationUtils
 
@@ -51,9 +49,9 @@ fun TodoSearchTextField(
         leadingIcon = {
             IconButton(
                 onClick = {
-                VibrationUtils.performHapticFeedback(view)
-                onSearchModeChange(!searchMode)
-            }
+                    VibrationUtils.performHapticFeedback(view)
+                    onSearchModeChange(!searchMode)
+                }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_arrow_back),

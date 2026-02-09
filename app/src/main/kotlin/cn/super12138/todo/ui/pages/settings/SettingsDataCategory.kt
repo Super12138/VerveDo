@@ -1,10 +1,15 @@
 package cn.super12138.todo.ui.pages.settings
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalIconButton
@@ -23,19 +28,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.datastore.DataStoreManager
+import cn.super12138.todo.ui.components.EmptyTip
+import cn.super12138.todo.ui.components.EmptyTipType
 import cn.super12138.todo.ui.components.TodoFloatingActionButton
 import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.pages.settings.components.SettingsContainer
 import cn.super12138.todo.ui.pages.settings.components.SettingsItem
 import cn.super12138.todo.ui.pages.settings.components.category.CategoryPromptDialog
+import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.utils.VibrationUtils
 import kotlinx.coroutines.launch
 
@@ -58,7 +68,8 @@ fun SettingsDataCategory(
 
     val isExpanded by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
 
-    // TODO: 取消5字分类限制
+    val transitionSpec = fadeScale()
+
     TopAppBarScaffold(
         title = stringResource(R.string.pref_category_category_management),
         onBack = onNavigateUp,
@@ -76,56 +87,71 @@ fun SettingsDataCategory(
         },
         modifier = modifier,
     ) {
-        SettingsContainer(Modifier.fillMaxSize()) {
-            if (categories.isEmpty()) {
-                item {
+        AnimatedContent(
+            targetState = categories.isEmpty(),
+            transitionSpec = { transitionSpec }
+        ) {
+            if (it) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    EmptyTip(
+                        type = EmptyTipType.List,
+                        size = 96.dp
+                    )
+
                     Text(
                         text = stringResource(R.string.tip_no_category_page),
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             } else {
-                // Keep stable content key (category) for animations, but compute rounding based on content
-                items(
-                    items = categories,
-                    key = { it }
-                ) { category ->
-                    SettingsItem(
-                        headlineContent = {
-                            Text(
-                                text = category,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                style = MaterialTheme.typography.titleMedium,
-                                modifier = Modifier.basicMarquee()
-                            )
-                        },
-                        trailingContent = {
-                            FilledTonalIconButton(
-                                shapes = IconButtonDefaults.shapes(),
-                                onClick = {
-                                    VibrationUtils.performHapticFeedback(view)
-                                    scope.launch { DataStoreManager.setCategories(categories - category) }
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_delete),
-                                    contentDescription = stringResource(R.string.action_delete)
+                SettingsContainer(Modifier.fillMaxSize()) {
+                    items(
+                        items = categories,
+                        key = { category -> category }
+                    ) { category ->
+                        SettingsItem(
+                            headlineContent = {
+                                Text(
+                                    text = category,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier.basicMarquee()
                                 )
-                            }
-                        },
-                        onClick = {
-                            initialCategory = category
-                            showDialog = true
-                        },
-                        modifier = Modifier.animateItem(
-                            fadeInSpec = MaterialTheme.motionScheme.defaultEffectsSpec(),
-                            placementSpec = MaterialTheme.motionScheme.defaultSpatialSpec(),
-                            fadeOutSpec = MaterialTheme.motionScheme.defaultEffectsSpec()
+                            },
+                            trailingContent = {
+                                FilledTonalIconButton(
+                                    shapes = IconButtonDefaults.shapes(),
+                                    onClick = {
+                                        VibrationUtils.performHapticFeedback(view)
+                                        scope.launch { DataStoreManager.setCategories(categories - category) }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_delete),
+                                        contentDescription = stringResource(R.string.action_delete)
+                                    )
+                                }
+                            },
+                            onClick = {
+                                initialCategory = category
+                                showDialog = true
+                            },
+                            modifier = Modifier.animateItem(
+                                fadeInSpec = MaterialTheme.motionScheme.defaultEffectsSpec(),
+                                placementSpec = MaterialTheme.motionScheme.defaultSpatialSpec(),
+                                fadeOutSpec = MaterialTheme.motionScheme.defaultEffectsSpec()
+                            )
                         )
-                    )
+                    }
                 }
             }
         }

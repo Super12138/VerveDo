@@ -1,16 +1,19 @@
 package cn.super12138.todo.ui.pages.overview.components
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -23,12 +26,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.database.TodoEntity
 import cn.super12138.todo.logic.model.Priority
 import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.components.EmptyTip
+import cn.super12138.todo.ui.components.EmptyTipType
+import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.utils.containerColor
 import cn.super12138.todo.utils.toRelativeTimeString
 
@@ -54,20 +61,43 @@ fun UpcomingTaskCard(
                 text = stringResource(R.string.title_upcoming_task),
                 style = MaterialTheme.typography.titleLarge
             )
-
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+            val transitionSpec = fadeScale()
+            AnimatedContent(
+                targetState = nextWeekTodo.isEmpty(),
+                transitionSpec = { transitionSpec }
             ) {
-                items(
-                    items = nextWeekTodo,
-                    key = { it.id }
-                ) {
-                    UpcomingTaskItem(
-                        content = it.content,
-                        category = it.category,
-                        priority = Priority.fromFloat(it.priority),
-                        dueDate = it.dueDate
-                    )
+                if (it) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f) // 占满剩余空间
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        EmptyTip(type = EmptyTipType.List)
+
+                        Text(
+                            text = stringResource(R.string.tip_no_task_brief),
+                            style = MaterialTheme.typography.labelLarge,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                } else {
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        items(
+                            items = nextWeekTodo,
+                            key = { task -> task.id }
+                        ) { task ->
+                            UpcomingTaskItem(
+                                content = task.content,
+                                category = task.category,
+                                priority = Priority.fromFloat(task.priority),
+                                dueDate = task.dueDate
+                            )
+                        }
+                    }
                 }
             }
         }

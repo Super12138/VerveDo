@@ -2,9 +2,7 @@ package cn.super12138.todo.ui.pages.tasks.components
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
@@ -37,6 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import cn.super12138.todo.R
 import cn.super12138.todo.ui.TodoDefaults
+import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.utils.VibrationUtils
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -57,22 +56,15 @@ fun TodoTopAppBar(
         animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         expandFrom = Alignment.CenterStart
     )
+
     val navIconExitTransition = fadeOut(
         animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
     ) + shrinkOut(
         animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         shrinkTowards = Alignment.CenterStart
     )
-    val enterTransition = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()) +
-            scaleIn(
-                animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-                initialScale = 0.92f
-            )
-    val exitTransition = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec())
-    val titleTransition = ContentTransform(
-        targetContentEnter = enterTransition,
-        initialContentExit = exitTransition
-    )
+
+    val defaultTransitionSpec = fadeScale()
 
     val view = LocalView.current
     val animatedContainerColor by animateColorAsState(
@@ -108,7 +100,7 @@ fun TodoTopAppBar(
         title = {
             AnimatedContent(
                 targetState = !selectedMode,
-                transitionSpec = { titleTransition }
+                transitionSpec = { defaultTransitionSpec }
             ) {
                 if (it) {
                     Text(
@@ -131,7 +123,7 @@ fun TodoTopAppBar(
         actions = {
             AnimatedContent(
                 targetState = selectedMode,
-                transitionSpec = { titleTransition }
+                transitionSpec = { defaultTransitionSpec }
             ) {
                 if (it) {
                     ActionMultipleSelection(
@@ -155,7 +147,7 @@ fun TodoTopAppBar(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun AnimatedContentScope.ActionSearch(
+private fun ActionSearch(
     searchMode: Boolean,
     onSearchModeChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
@@ -166,8 +158,8 @@ private fun AnimatedContentScope.ActionSearch(
 
     AnimatedVisibility(
         visible = !searchMode,
-        enter = fadeIn() + scaleIn(),
-        exit = fadeOut() + scaleOut(),
+        enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()) + scaleIn(MaterialTheme.motionScheme.fastSpatialSpec()),
+        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()) + scaleOut(MaterialTheme.motionScheme.fastSpatialSpec()),
     ) {
         IconButton(
             shapes = IconButtonDefaults.shapes(),
@@ -187,7 +179,7 @@ private fun AnimatedContentScope.ActionSearch(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AnimatedContentScope.ActionMultipleSelection(
+fun ActionMultipleSelection(
     onSelectAll: () -> Unit,
     onDeleteSelectedTodo: () -> Unit,
     modifier: Modifier = Modifier

@@ -107,7 +107,7 @@
     <string name="tip_enter_category">输入你想添加的分类名称</string>
     <!--<string name="error_category_duplicate">该分类已经存在</string>-->
     <string name="tip_no_category_chip">当前暂无自定义分类，你可以在设置中添加分类</string>
-    <string name="tip_no_category_page">当前暂无自定义分类</string>
+    <string name="tip_no_category_page">暂无自定义分类</string>
     <string name="tip_default_category">默认分类，请修改</string>
     <string name="label_customization">自定义</string>
     <string name="pref_developer_options">开发者选项</string>
@@ -132,4 +132,6 @@
     <string name="action_search">搜索</string>
     <string name="action_close">关闭</string>
     <string name="sorting_due_date">截止日期</string>
+    <string name="tip_search_task_not_found">暂未搜索到内容</string>
+    <string name="tip_no_task_brief">暂无任务</string>
 </resources>

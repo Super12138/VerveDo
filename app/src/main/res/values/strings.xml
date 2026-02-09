@@ -108,7 +108,7 @@
     <string name="tip_enter_category">Enter the category you want to add</string>
     <!--<string name="error_category_duplicate">The category is duplicate</string>-->
     <string name="tip_no_category_chip">There are currently no custom categories. You can add categories in the settings.</string>
-    <string name="tip_no_category_page">There are no custom categories at the moment.</string>
+    <string name="tip_no_category_page">No custom categories</string>
     <string name="tip_default_category">Default Category, please modify</string>
     <string name="label_customization">Customization</string>
     <string name="pref_developer_options">Developer Options</string>
@@ -133,4 +133,6 @@
     <string name="action_search">Search</string>
     <string name="action_close">Close</string>
     <string name="sorting_due_date">Due date</string>
+    <string name="tip_search_task_not_found">No tasks found</string>
+    <string name="tip_no_task_brief">No tasks</string>
 </resources>

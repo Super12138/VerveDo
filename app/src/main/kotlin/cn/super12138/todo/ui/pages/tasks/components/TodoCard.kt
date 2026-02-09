@@ -75,7 +75,6 @@ fun TodoCard(
 ) {
     val view = LocalView.current
     val context = LocalContext.current
-    // TODO: 滑动删除
     val cardColors = CardDefaults.cardColors(containerColor = TodoDefaults.Colors.Container)
     val animatedContainerColor by animateColorAsState(targetValue = if (selected) MaterialTheme.colorScheme.secondaryContainer else if (completed) cardColors.disabledContainerColor else cardColors.containerColor)
 

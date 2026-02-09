@@ -2,6 +2,8 @@ package cn.super12138.todo.ui.viewmodels
 
 import android.content.Context
 import android.net.Uri
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,10 +21,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -39,8 +44,8 @@ class MainViewModel : ViewModel() {
 
     // 待办
     private val toDos: Flow<List<TodoEntity>> = Repository.getAllTodos()
-    val sortedTodos: Flow<List<TodoEntity>> =
-        DataStoreManager.sortingMethodFlow.flatMapLatest { sortingMethod ->
+    val sortedTodos: StateFlow<List<TodoEntity>> = DataStoreManager.sortingMethodFlow
+        .flatMapLatest { sortingMethod ->
             toDos.map { list ->
                 when (SortingMethod.fromId(sortingMethod)) {
                     SortingMethod.Sequential -> list.sortedWith(
@@ -88,8 +93,17 @@ class MainViewModel : ViewModel() {
                 }
             }
         }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     val showConfetti = mutableStateOf(false)
+
+    val toDoListState = LazyListState()
+    val searchMode = mutableStateOf(false)
+    val searchFieldState = TextFieldState()
 
     // 多选逻辑参考：https://github.com/X1nto/Mauth
     private val _selectedTodoIds = MutableStateFlow(listOf<Int>())

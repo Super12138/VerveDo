@@ -6,6 +6,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -15,6 +16,9 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.unveilIn
 import androidx.compose.animation.veilOut
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 /**
@@ -93,7 +97,7 @@ fun materialSharedAxisXOut(
     )
 )
 
-fun fadeThrough(
+/*fun fadeThrough(
     durationMillis: Int = 200,
 ): ContentTransform = ContentTransform(
     fadeThroughIn(durationMillis = durationMillis),
@@ -118,7 +122,7 @@ fun fadeThroughOut(
         durationMillis = durationMillis,
         easing = FastOutLinearInEasing
     )
-)
+)*/
 
 fun veilFade(
     initialColor: Color,
@@ -152,3 +156,33 @@ fun veilFadeOut(
     fadeOut() + veilOut(
         targetColor = initialColor
     )
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun fadeScaleIn(
+    effectSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastEffectsSpec(),
+    spatialSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastSpatialSpec()
+): EnterTransition = fadeIn(effectSpec) +
+        scaleIn(
+            animationSpec = spatialSpec,
+            initialScale = 0.92f
+        )
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun fadeScaleOut(
+    effectSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastEffectsSpec()
+): ExitTransition = fadeOut(effectSpec)
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun fadeScale(
+    effectSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastEffectsSpec(),
+    spatialSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastSpatialSpec()
+): ContentTransform = ContentTransform(
+    targetContentEnter = fadeScaleIn(
+        effectSpec = effectSpec,
+        spatialSpec = spatialSpec
+    ),
+    initialContentExit = fadeScaleOut(effectSpec = effectSpec)
+)
