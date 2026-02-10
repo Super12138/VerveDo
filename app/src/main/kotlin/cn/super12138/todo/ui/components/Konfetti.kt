@@ -1,6 +1,5 @@
 package cn.super12138.todo.ui.components
 
-import androidx.annotation.FloatRange
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -10,7 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.core.graphics.ColorUtils
+import cn.super12138.todo.utils.blend
 import nl.dionsegijn.konfetti.compose.KonfettiView
 import nl.dionsegijn.konfetti.compose.OnParticleSystemUpdateListener
 import nl.dionsegijn.konfetti.core.Angle
@@ -98,8 +97,3 @@ private fun particles(primary: Int) = listOf(
         position = Position.Relative(1.0, 1.0)
     )
 )
-
-fun Int.blend(
-    color: Int,
-    @FloatRange(from = 0.0, to = 1.0) fraction: Float = 0.5f,
-): Int = ColorUtils.blendARGB(this, color, fraction)

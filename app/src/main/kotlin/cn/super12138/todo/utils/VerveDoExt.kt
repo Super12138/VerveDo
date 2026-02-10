@@ -1,6 +1,7 @@
 package cn.super12138.todo.utils
 
 import android.content.Context
+import androidx.annotation.FloatRange
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.unit.Dp
+import androidx.core.graphics.ColorUtils
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.model.Priority
 import java.text.SimpleDateFormat
@@ -19,6 +21,11 @@ import java.util.Date
 import java.util.Locale
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
+
+fun Int.blend(
+    color: Int,
+    @FloatRange(from = 0.0, to = 1.0) fraction: Float = 0.5f,
+): Int = ColorUtils.blendARGB(this, color, fraction)
 
 @Composable
 @Stable

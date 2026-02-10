@@ -14,8 +14,8 @@ import cn.super12138.todo.logic.Repository
 import cn.super12138.todo.logic.database.TodoEntity
 import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.logic.model.SortingMethod
-import cn.super12138.todo.ui.navigation.VerveDoScreen
 import cn.super12138.todo.ui.navigation.TopLevelBackStack
+import cn.super12138.todo.ui.navigation.VerveDoScreen
 import cn.super12138.todo.utils.FileUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -55,41 +55,34 @@ class MainViewModel : ViewModel() {
 
                     SortingMethod.Category -> list.sortedWith(
                         comparator = compareBy<TodoEntity> { it.isCompleted }
-                            .thenByDescending { it.priority }
                             .thenBy { it.category }
                     )
 
                     SortingMethod.Priority -> list.sortedWith(
                         comparator = compareBy<TodoEntity> { it.isCompleted }
                             .thenByDescending { it.priority }
-                            .thenBy { it.category }
                     ) // 优先级高的在前
 
                     SortingMethod.Completion -> list.sortedWith(
                         comparator = compareBy<TodoEntity> { it.isCompleted }
                             .thenBy { it.category }
-                            .thenBy { it.content }
                             .thenByDescending { it.priority }
                     ) // 未完成的在前
                     SortingMethod.AlphabeticalAscending -> list.sortedWith(
                         comparator = compareBy<TodoEntity> { it.isCompleted }
-                            .thenBy { it.category }
                             .thenBy { it.content }
                             .thenByDescending { it.priority }
                     )
 
                     SortingMethod.AlphabeticalDescending -> list.sortedWith(
                         comparator = compareBy<TodoEntity> { it.isCompleted }
-                            .thenByDescending { it.category }
                             .thenByDescending { it.content }
                             .thenByDescending { it.priority }
                     )
 
                     SortingMethod.DueDate -> list.sortedWith(
                         comparator = compareBy<TodoEntity> { it.isCompleted }
-                            .thenBy { it.category }
                             .thenBy { it.dueDate }
-                            .thenByDescending { it.priority }
                     )
                 }
             }

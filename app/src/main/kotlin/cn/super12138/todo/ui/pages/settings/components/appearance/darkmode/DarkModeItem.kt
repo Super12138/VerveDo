@@ -48,7 +48,8 @@ fun DarkModeItem(
 
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
-    val animatedShape = shapeByInteraction(shapes, pressed, VerveDoDefaults.shapesDefaultAnimationSpec)
+    val animatedShape =
+        shapeByInteraction(shapes, pressed, VerveDoDefaults.shapesDefaultAnimationSpec)
 
     val borderWidth by animateDpAsState(if (selected) 3.dp else (-1).dp)
     Column(

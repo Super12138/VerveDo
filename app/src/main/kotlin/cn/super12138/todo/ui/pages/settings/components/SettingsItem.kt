@@ -32,6 +32,8 @@ import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.theme.shapeByInteraction
 import cn.super12138.todo.utils.VibrationUtils
 
+//TODO: MaterialTheme.colorscheme.surfaceContainer.blend(Color.Red, 0.7) 作为新的leading图标后背景色
+
 // Leading icon as drawable resource
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -213,7 +215,8 @@ fun SettingsItem(
     val view = LocalView.current
     val userInteractionSource = interactionSource ?: remember { MutableInteractionSource() }
     val pressed by userInteractionSource.collectIsPressedAsState()
-    val animatedShape = shapeByInteraction(shapes, pressed, VerveDoDefaults.shapesDefaultAnimationSpec)
+    val animatedShape =
+        shapeByInteraction(shapes, pressed, VerveDoDefaults.shapesDefaultAnimationSpec)
 
     Row(
         modifier = modifier
