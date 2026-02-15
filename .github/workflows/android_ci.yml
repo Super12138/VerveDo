@@ -40,7 +40,9 @@ jobs:
 
       - name: Install NDK
         if: steps.cache-ndk.outputs.cache-hit != 'true'
-        run: echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.NDK_VERSION }}"
+        run: |
+          echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.NDK_VERSION }}"
+          sudo chown -R $USER:$USER ${ANDROID_HOME}/ndk/${{ env.NDK_VERSION }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
