@@ -31,6 +31,13 @@ jobs:
       - name: Export ANDROID_HOME to env
         run: echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
 
+      - name: Fix Permissions for Debug Keystore Path
+        if: github.ref != 'refs/heads/main'
+        run: sudo chmod -R 777 /home/runner/.config/.android
+
+      - name: Fix Permissions for NDK Path
+        run: sudo chown -R $USER:$USER $ANDROID_HOME
+
       - name: Cache NDK
         id: cache-ndk
         uses: actions/cache@v5.0.3
@@ -41,8 +48,7 @@ jobs:
       - name: Install NDK
         if: steps.cache-ndk.outputs.cache-hit != 'true'
         run: |
-          echo "y" | sudo ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.NDK_VERSION }}"
-          sudo chown -R $USER:$USER ${ANDROID_HOME}/ndk/${{ env.NDK_VERSION }}
+          echo "y" | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.NDK_VERSION }}"
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -57,10 +63,6 @@ jobs:
             echo releaseStoreFile='${{ github.workspace }}/key.jks' >> gradle.properties
             echo ${{ secrets.SIGNING_KEY }} | base64 --decode > ${{ github.workspace }}/key.jks
           fi
-
-      - name: Fix Permissions for Debug Keystore Path
-        if: github.ref != 'refs/heads/main'
-        run: sudo chmod -R 777 /home/runner/.config/.android
 
       - name: Build with Gradle
         run: ./gradlew assembleRelease
