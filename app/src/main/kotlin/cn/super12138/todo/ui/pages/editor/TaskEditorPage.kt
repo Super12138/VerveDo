@@ -24,9 +24,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
@@ -97,7 +103,10 @@ fun SharedTransitionScope.TaskEditorPage(
 ) {
     // TODO: 本页及其相关组件重组性能检查优化
     val uiState = rememberEditorState(initialTodo = toDo)
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
+    val textFieldAutoFocus by DataStoreManager.textFieldAutoFocusFlow.collectAsState(initial = Constants.PREF_TEXT_FIELD_AUTO_FOCUS_DEFAULT)
     val originalCategories by DataStoreManager.categoriesFlow.collectAsState(initial = emptyList())
     val categories = originalCategories
         .mapIndexed { index, category ->
@@ -136,6 +145,18 @@ fun SharedTransitionScope.TaskEditorPage(
     }
 
     BackHandler(onBack = ::checkModifiedBeforeBack)
+
+    // 控制只有第一次进入界面才聚焦待办内容文本框
+    var isFirstEntry by rememberSaveable { mutableStateOf(true) }
+
+    LaunchedEffect(isFirstEntry, textFieldAutoFocus) {
+        if (isFirstEntry && textFieldAutoFocus) {
+            withFrameNanos { }
+            focusRequester.requestFocus()
+            keyboardController?.show()
+            isFirstEntry = false
+        }
+    }
 
     TopAppBarScaffold(
         title = stringResource(if (toDo != null) R.string.title_edit_task else R.string.action_add_task),
@@ -192,7 +213,9 @@ fun SharedTransitionScope.TaskEditorPage(
                     value = uiState.toDoContent,
                     onValueChange = { uiState.toDoContent = it },
                     isError = uiState.isErrorContent,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester)
                 )
             }
 

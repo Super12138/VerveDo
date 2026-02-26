@@ -1,7 +1,5 @@
 package cn.super12138.todo.ui.pages.settings
 
-import android.content.Context
-import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +19,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import cn.super12138.todo.R
-import cn.super12138.todo.ui.activities.MainActivity
 import cn.super12138.todo.ui.components.ConfirmDialog
 import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.pages.settings.components.SettingsCategory
@@ -29,8 +26,8 @@ import cn.super12138.todo.ui.pages.settings.components.SettingsContainer
 import cn.super12138.todo.ui.pages.settings.components.SettingsItem
 import cn.super12138.todo.ui.viewmodels.MainViewModel
 import cn.super12138.todo.utils.SystemUtils
+import cn.super12138.todo.utils.restartApp
 import kotlinx.coroutines.launch
-import kotlin.system.exitProcess
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -45,6 +42,10 @@ fun SettingsData(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
+    val tipBackupSuccess = stringResource(R.string.tip_backup_success)
+    val tipBackupFailed = stringResource(R.string.tip_backup_failed)
+    val tipRestoreFailed = stringResource(R.string.tip_restore_failed)
+
     val backupLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/zip"),
         onResult = {
@@ -55,15 +56,11 @@ fun SettingsData(
                     onResult = { success ->
                         if (success) {
                             scope.launch {
-                                snackbarHostState.showSnackbar(
-                                    context.getString(R.string.tip_backup_success)
-                                )
+                                snackbarHostState.showSnackbar(tipBackupSuccess)
                             }
                         } else {
                             scope.launch {
-                                snackbarHostState.showSnackbar(
-                                    context.getString(R.string.tip_backup_failed)
-                                )
+                                snackbarHostState.showSnackbar(tipBackupFailed)
                             }
                         }
                     }
@@ -84,9 +81,7 @@ fun SettingsData(
                             showRestoreDialog = true
                         } else {
                             scope.launch {
-                                snackbarHostState.showSnackbar(
-                                    context.getString(R.string.tip_restore_failed)
-                                )
+                                snackbarHostState.showSnackbar(tipRestoreFailed)
                             }
                         }
                     }
@@ -144,24 +139,8 @@ fun SettingsData(
         title = stringResource(R.string.tip_tips),
         text = stringResource(R.string.tip_restore_success),
         showDismissButton = false,
-        onConfirm = { restartApp(context) },
+        onConfirm = { context.restartApp() },
         onDismiss = { showRestoreDialog = false },
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
     )
-}
-
-/**
- * 重启应用
- * @param context 上下文
- */
-private fun restartApp(context: Context) {
-    val intent = Intent(
-        context,
-        MainActivity::class.java
-    ).apply {
-        flags =
-            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-    }
-    context.startActivity(intent)
-    exitProcess(0)
 }

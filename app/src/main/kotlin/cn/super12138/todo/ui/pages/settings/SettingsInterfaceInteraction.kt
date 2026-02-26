@@ -34,6 +34,7 @@ fun SettingsInterface(
 ) {
     // val showCompleted by DataStoreManager.showCompletedFlow.collectAsState(initial = Constants.PREF_SHOW_COMPLETED_DEFAULT)
     val secureMode by DataStoreManager.secureModeFlow.collectAsState(initial = Constants.PREF_SECURE_MODE_DEFAULT)
+    val textFieldAutoFocus by DataStoreManager.textFieldAutoFocusFlow.collectAsState(initial = Constants.PREF_TEXT_FIELD_AUTO_FOCUS_DEFAULT)
     val sortingMethod by DataStoreManager.sortingMethodFlow.collectAsState(initial = Constants.PREF_SORTING_METHOD_DEFAULT)
     val hapticFeedback by DataStoreManager.hapticFeedbackFlow.collectAsState(initial = Constants.PREF_HAPTIC_FEEDBACK_DEFAULT)
 
@@ -62,6 +63,16 @@ fun SettingsInterface(
                     title = stringResource(R.string.pref_sorting_method),
                     description = stringResource(SortingMethod.fromId(sortingMethod).nameRes),
                     onClick = { showSortingMethodDialog = true }
+                )
+            }
+
+            item {
+                SwitchSettingsItem(
+                    leadingIconRes = R.drawable.ic_eye_tracking,
+                    title = stringResource(R.string.pref_text_field_auto_focus),
+                    description = stringResource(R.string.pref_text_field_auto_focus_desc),
+                    checked = textFieldAutoFocus,
+                    onCheckedChange = { scope.launch { DataStoreManager.setTextFieldAutoFocus(it) } }
                 )
             }
 

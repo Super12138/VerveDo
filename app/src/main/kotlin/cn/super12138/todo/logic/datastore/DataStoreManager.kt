@@ -39,6 +39,7 @@ object DataStoreManager {
     // 界面与交互
     // private val SHOW_COMPLETED = booleanPreferencesKey(Constants.PREF_SHOW_COMPLETED)
     private val SORTING_METHOD = intPreferencesKey(Constants.PREF_SORTING_METHOD)
+    private val TEXT_FIELD_AUTO_FOCUS = booleanPreferencesKey(Constants.PREF_TEXT_FIELD_AUTO_FOCUS)
     private val SECURE_MODE = booleanPreferencesKey(Constants.PREF_SECURE_MODE)
     private val HAPTIC_FEEDBACK = booleanPreferencesKey(Constants.PREF_HAPTIC_FEEDBACK)
 
@@ -68,6 +69,10 @@ object DataStoreManager {
 
     val sortingMethodFlow: Flow<Int> = dataStore.data.map { preferences ->
         preferences[SORTING_METHOD] ?: Constants.PREF_SORTING_METHOD_DEFAULT
+    }
+
+    val textFieldAutoFocusFlow: Flow<Boolean> = dataStore.data.map { preferences ->
+        preferences[TEXT_FIELD_AUTO_FOCUS] ?: Constants.PREF_TEXT_FIELD_AUTO_FOCUS_DEFAULT
     }
 
     val secureModeFlow: Flow<Boolean> = dataStore.data.map { preferences ->
@@ -116,6 +121,12 @@ object DataStoreManager {
     suspend fun setSortingMethod(value: Int) {
         dataStore.edit { preferences ->
             preferences[SORTING_METHOD] = value
+        }
+    }
+
+    suspend fun setTextFieldAutoFocus(value: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[TEXT_FIELD_AUTO_FOCUS] = value
         }
     }
 

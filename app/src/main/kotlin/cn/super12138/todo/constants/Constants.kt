@@ -30,6 +30,10 @@ object Constants {
     const val PREF_SORTING_METHOD = "sorting_method"
     const val PREF_SORTING_METHOD_DEFAULT = 1
 
+
+    const val PREF_TEXT_FIELD_AUTO_FOCUS = "textfield_auto_focus"
+    const val PREF_TEXT_FIELD_AUTO_FOCUS_DEFAULT = false
+
     const val PREF_SECURE_MODE = "secure_mode"
     const val PREF_SECURE_MODE_DEFAULT = false
 

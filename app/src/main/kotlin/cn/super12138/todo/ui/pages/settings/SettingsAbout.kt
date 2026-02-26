@@ -21,7 +21,7 @@ import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.icons.GitHubIcon
 import cn.super12138.todo.ui.pages.settings.components.SettingsContainer
 import cn.super12138.todo.ui.pages.settings.components.SettingsItem
-import cn.super12138.todo.utils.SystemUtils
+import cn.super12138.todo.utils.appVersion
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -60,7 +60,7 @@ fun SettingsAbout(
                 SettingsItem(
                     leadingIconRes = R.drawable.ic_numbers,
                     title = stringResource(R.string.pref_app_version),
-                    description = SystemUtils.getAppVersion(context),
+                    description = context.appVersion(),
                     onClick = {
                         clickCount++
                         if (clickCount == 5) {
