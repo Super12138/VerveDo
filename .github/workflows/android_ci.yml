@@ -31,9 +31,9 @@ jobs:
       - name: Export ANDROID_HOME to env
         run: echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
 
-      - name: Fix Permissions for Debug Keystore Path
-        if: github.ref != 'refs/heads/main'
-        run: sudo chmod -R 777 /home/runner/.config/.android
+      #- name: Fix Permissions for Debug Keystore Path
+        #if: github.ref != 'refs/heads/main'
+        #run: sudo chmod -R 777 /home/runner/.config/.android
 
       - name: Fix Permissions for NDK Path
         run: sudo chown -R $USER:$USER $ANDROID_HOME
