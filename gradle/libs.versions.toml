@@ -33,7 +33,7 @@ espressoCore = "3.7.0"
 # Plugins
 agp = "9.0.1"
 kotlin = "2.3.10"
-ksp = "2.3.5"
+ksp = "2.3.6"
 
 [libraries]
 # Android X
