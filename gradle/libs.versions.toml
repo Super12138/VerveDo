@@ -6,7 +6,7 @@ lifecycleRuntimeKtx = "2.10.0"
 datastore = "1.2.0"
 # Compose
 activityCompose = "1.12.4"
-composeBom = "2026.01.01"
+composeBom = "2026.02.01"
 liveData = "1.10.4"
 room = "2.8.4"
 material3 = "1.5.0-alpha15"
