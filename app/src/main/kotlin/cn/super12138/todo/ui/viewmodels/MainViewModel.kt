@@ -61,6 +61,7 @@ class MainViewModel : ViewModel() {
                     SortingMethod.Priority -> list.sortedWith(
                         comparator = compareBy<TodoEntity> { it.isCompleted }
                             .thenByDescending { it.priority }
+                            .thenBy(nullsLast()) { it.dueDate }
                     ) // 优先级高的在前
 
                     SortingMethod.Completion -> list.sortedWith(
@@ -82,7 +83,8 @@ class MainViewModel : ViewModel() {
 
                     SortingMethod.DueDate -> list.sortedWith(
                         comparator = compareBy<TodoEntity> { it.isCompleted }
-                            .thenBy { it.dueDate }
+                            // 确保未设置截止日期的任务在最下头
+                            .thenBy(nullsLast()) { it.dueDate }
                     )
                 }
             }
