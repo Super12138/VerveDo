@@ -49,7 +49,7 @@ fun ProgressCard(
     val progress = if (total == 0) 0f else completed / total.toFloat()
 
     Card(
-        modifier = modifier.height(VerveDoDefaults.overviewCardHeight * 2),
+        modifier = modifier.height(VerveDoDefaults.Sizes.overviewCardHeight * 2),
         colors = CardDefaults.cardColors(containerColor = containerColor),
         shape = VerveDoDefaults.defaultShape
     ) {

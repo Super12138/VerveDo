@@ -11,7 +11,7 @@ import androidx.navigation3.runtime.NavKey
 import cn.super12138.todo.VerveDoApp
 import cn.super12138.todo.constants.Constants
 import cn.super12138.todo.logic.Repository
-import cn.super12138.todo.logic.database.TodoEntity
+import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.logic.model.SortingMethod
 import cn.super12138.todo.ui.navigation.TopLevelBackStack
@@ -43,46 +43,46 @@ class MainViewModel : ViewModel() {
     val mainBackStack = TopLevelBackStack<NavKey>(VerveDoScreen.Overview)
 
     // 待办
-    private val toDos: Flow<List<TodoEntity>> = Repository.getAllTodos()
-    val sortedTodos: StateFlow<List<TodoEntity>> = DataStoreManager.sortingMethodFlow
+    private val taskList: Flow<List<TaskEntity>> = Repository.getAllTasks()
+    val sortedTaskList: StateFlow<List<TaskEntity>> = DataStoreManager.sortingMethodFlow
         .flatMapLatest { sortingMethod ->
-            toDos.map { list ->
+            taskList.map { list ->
                 when (SortingMethod.fromId(sortingMethod)) {
                     SortingMethod.Sequential -> list.sortedWith(
-                        comparator = compareBy<TodoEntity> { it.isCompleted } // 必须先要按照是否完成排序
+                        comparator = compareBy<TaskEntity> { it.isCompleted } // 必须先要按照是否完成排序
                             .thenBy { it.id }
                     )
 
                     SortingMethod.Category -> list.sortedWith(
-                        comparator = compareBy<TodoEntity> { it.isCompleted }
+                        comparator = compareBy<TaskEntity> { it.isCompleted }
                             .thenBy { it.category }
                     )
 
                     SortingMethod.Priority -> list.sortedWith(
-                        comparator = compareBy<TodoEntity> { it.isCompleted }
+                        comparator = compareBy<TaskEntity> { it.isCompleted }
                             .thenByDescending { it.priority }
                             .thenBy(nullsLast()) { it.dueDate }
                     ) // 优先级高的在前
 
                     SortingMethod.Completion -> list.sortedWith(
-                        comparator = compareBy<TodoEntity> { it.isCompleted }
+                        comparator = compareBy<TaskEntity> { it.isCompleted }
                             .thenBy { it.category }
                             .thenByDescending { it.priority }
                     ) // 未完成的在前
                     SortingMethod.AlphabeticalAscending -> list.sortedWith(
-                        comparator = compareBy<TodoEntity> { it.isCompleted }
+                        comparator = compareBy<TaskEntity> { it.isCompleted }
                             .thenBy { it.content }
                             .thenByDescending { it.priority }
                     )
 
                     SortingMethod.AlphabeticalDescending -> list.sortedWith(
-                        comparator = compareBy<TodoEntity> { it.isCompleted }
+                        comparator = compareBy<TaskEntity> { it.isCompleted }
                             .thenByDescending { it.content }
                             .thenByDescending { it.priority }
                     )
 
                     SortingMethod.DueDate -> list.sortedWith(
-                        comparator = compareBy<TodoEntity> { it.isCompleted }
+                        comparator = compareBy<TaskEntity> { it.isCompleted }
                             // 确保未设置截止日期的任务在最下头
                             .thenBy(nullsLast()) { it.dueDate }
                     )
@@ -105,21 +105,21 @@ class MainViewModel : ViewModel() {
     private val _selectedTodoIds = MutableStateFlow(listOf<Int>())
     val selectedTodoIds = _selectedTodoIds.asStateFlow()
 
-    fun addTodo(toDo: TodoEntity) {
+    fun addTask(task: TaskEntity) {
         viewModelScope.launch {
-            Repository.insertTodo(toDo)
+            Repository.insertTask(task)
         }
     }
 
-    fun updateTodo(toDo: TodoEntity) {
+    fun updateTask(task: TaskEntity) {
         viewModelScope.launch {
-            Repository.updateTodo(toDo)
+            Repository.updateTask(task)
         }
     }
 
-    fun deleteTodo(toDo: TodoEntity) {
+    fun deleteTask(task: TaskEntity) {
         viewModelScope.launch {
-            Repository.deleteTodo(toDo)
+            Repository.deleteTask(task)
         }
     }
 
@@ -132,14 +132,14 @@ class MainViewModel : ViewModel() {
     /**
      * 切换待办的选择状态
      */
-    fun toggleTodoSelection(toDo: TodoEntity) {
+    fun toggleTaskSelection(task: TaskEntity) {
         _selectedTodoIds.update { idList ->
-            if (idList.contains(toDo.id)) {
+            if (idList.contains(task.id)) {
                 // 若已经选择取消选择
-                idList - toDo.id
+                idList - task.id
             } else {
                 // 若未选择添加到列表中，立即选中
-                idList + toDo.id
+                idList + task.id
             }
         }
     }
@@ -147,11 +147,11 @@ class MainViewModel : ViewModel() {
     /**
      * 切换是否全选
      */
-    fun selectAllTodos() {
+    fun selectAllTask() {
         viewModelScope.launch {
-            toDos.firstOrNull()?.let { todos ->
+            taskList.firstOrNull()?.let { tasks ->
                 // 无论是否有选择都全选
-                val allIds = todos.map { it.id }
+                val allIds = tasks.map { it.id }
                 _selectedTodoIds.value = allIds
             }
         }
@@ -160,17 +160,17 @@ class MainViewModel : ViewModel() {
     /**
      * 清除全部已选择的待办
      */
-    fun clearAllTodoSelection() {
+    fun clearAllTaskSelection() {
         _selectedTodoIds.update { emptyList() }
     }
 
     /**
      * 删除选择的待办
      */
-    fun deleteSelectedTodo() {
+    fun deleteSelectedTask() {
         viewModelScope.launch {
-            Repository.deleteTodoFromIds(selectedTodoIds.value)
-            clearAllTodoSelection()
+            Repository.deleteTaskFromIds(selectedTodoIds.value)
+            clearAllTaskSelection()
         }
     }
 
@@ -228,7 +228,7 @@ class MainViewModel : ViewModel() {
      * * DataStore Preferences 文件
      */
     private fun getBackupFiles(context: Context): List<File> {
-        val dbPath = VerveDoApp.db.openHelper.writableDatabase.path
+        val dbPath = VerveDoApp.taskDatabase.openHelper.writableDatabase.path
         val prefPath = "${context.filesDir}/datastore"
         return listOf(
             context.getDatabasePath(Constants.DB_NAME), // 数据库

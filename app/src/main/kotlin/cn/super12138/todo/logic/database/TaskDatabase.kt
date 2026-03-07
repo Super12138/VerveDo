@@ -8,18 +8,18 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import cn.super12138.todo.constants.Constants
 
-@Database(entities = [TodoEntity::class], version = 5)
-abstract class TodoDatabase : RoomDatabase() {
-    abstract fun toDoDao(): TodoDao
+@Database(entities = [TaskEntity::class], version = 5)
+abstract class TaskDatabase : RoomDatabase() {
+    abstract fun taskDao(): TaskDao
 
     companion object {
         @Volatile
-        private var INSTANCE: TodoDatabase? = null
-        fun getDatabase(context: Context): TodoDatabase {
+        private var INSTANCE: TaskDatabase? = null
+        fun getDatabase(context: Context): TaskDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    TodoDatabase::class.java,
+                    TaskDatabase::class.java,
                     Constants.DB_NAME
                 )
                     .addMigrations(MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)

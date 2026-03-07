@@ -1,7 +1,7 @@
 package cn.super12138.todo.ui.navigation
 
 import androidx.navigation3.runtime.NavKey
-import cn.super12138.todo.logic.database.TodoEntity
+import cn.super12138.todo.logic.database.TaskEntity
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -51,6 +51,6 @@ sealed class VerveDoScreen : NavKey {
         data object Add : Editor()
 
         @Serializable
-        data class Edit(val toDo: TodoEntity) : Editor()
+        data class Edit(val toDo: TaskEntity) : Editor()
     }
 }

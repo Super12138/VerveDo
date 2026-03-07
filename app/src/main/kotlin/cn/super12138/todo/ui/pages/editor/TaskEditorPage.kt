@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import cn.super12138.todo.R
 import cn.super12138.todo.constants.Constants
-import cn.super12138.todo.logic.database.TodoEntity
+import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.ChipItem
@@ -56,7 +56,7 @@ import cn.super12138.todo.ui.pages.editor.state.rememberEditorState
 @Composable
 fun SharedTransitionScope.TaskAddPage(
     modifier: Modifier = Modifier,
-    onSave: (TodoEntity) -> Unit,
+    onSave: (TaskEntity) -> Unit,
     onNavigateUp: () -> Unit
 ) = TaskEditorPage(
     toDo = null,
@@ -75,8 +75,8 @@ fun SharedTransitionScope.TaskAddPage(
 @Composable
 fun SharedTransitionScope.TaskEditPage(
     modifier: Modifier = Modifier,
-    toDo: TodoEntity,
-    onSave: (TodoEntity) -> Unit,
+    toDo: TaskEntity,
+    onSave: (TaskEntity) -> Unit,
     onDelete: () -> Unit,
     onNavigateUp: () -> Unit
 ) = TaskEditorPage(
@@ -96,8 +96,8 @@ fun SharedTransitionScope.TaskEditPage(
 @Composable
 fun SharedTransitionScope.TaskEditorPage(
     modifier: Modifier = Modifier,
-    toDo: TodoEntity? = null,
-    onSave: (TodoEntity) -> Unit,
+    toDo: TaskEntity? = null,
+    onSave: (TaskEntity) -> Unit,
     onDelete: () -> Unit,
     onNavigateUp: () -> Unit
 ) {
@@ -183,7 +183,7 @@ fun SharedTransitionScope.TaskEditorPage(
                             return@TodoFloatingActionButton
                         } else {
                             uiState.clearError()
-                            val newTodo = TodoEntity(
+                            val newTodo = TaskEntity(
                                 id = toDo?.id ?: 0,
                                 content = uiState.toDoContent,
                                 category = if (isCustomCategory) uiState.categoryContent else categories[uiState.selectedCategoryIndex].name,

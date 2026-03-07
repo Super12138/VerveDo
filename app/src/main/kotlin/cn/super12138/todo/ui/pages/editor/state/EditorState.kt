@@ -9,9 +9,9 @@ import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import cn.super12138.todo.R
-import cn.super12138.todo.logic.database.TodoEntity
+import cn.super12138.todo.logic.database.TaskEntity
 
-class EditorState(val initialTodo: TodoEntity? = null) {
+class EditorState(val initialTodo: TaskEntity? = null) {
     /* companion object{
          fun Saver() =
              androidx.compose.runtime.saveable.Saver<EditorState, TodoEntity>(
@@ -105,7 +105,7 @@ class EditorState(val initialTodo: TodoEntity? = null) {
             val list = value as List<*>
             val initialTodoList = list[0] as? List<*>
             val initialTodo = initialTodoList?.let {
-                TodoEntity(
+                TaskEntity(
                     content = it[0] as String,
                     category = it[1] as String,
                     isCompleted = it[2] as Boolean,
@@ -131,5 +131,5 @@ class EditorState(val initialTodo: TodoEntity? = null) {
 }
 
 @Composable
-fun rememberEditorState(initialTodo: TodoEntity? = null): EditorState =
+fun rememberEditorState(initialTodo: TaskEntity? = null): EditorState =
     rememberSaveable(saver = EditorState.Saver) { EditorState(initialTodo) }

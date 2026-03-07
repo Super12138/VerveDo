@@ -30,7 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
-import cn.super12138.todo.logic.database.TodoEntity
+import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.model.Priority
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.EmptyTip
@@ -43,12 +43,12 @@ import cn.super12138.todo.utils.toRelativeTimeString
 fun ListCard(
     modifier: Modifier = Modifier,
     title: String,
-    list: List<TodoEntity>,
+    list: List<TaskEntity>,
     containerColor: Color = VerveDoDefaults.Colors.Container,
     emptyTipContainerColor: Color = MaterialTheme.colorScheme.secondaryContainer
 ) {
     Card(
-        modifier = modifier.height(VerveDoDefaults.overviewCardHeight * 2),
+        modifier = modifier.height(VerveDoDefaults.Sizes.overviewCardHeight * 2),
         colors = CardDefaults.cardColors(containerColor = containerColor),
         shape = VerveDoDefaults.defaultShape
     ) {

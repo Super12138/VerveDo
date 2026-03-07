@@ -26,8 +26,8 @@ import androidx.compose.ui.graphics.Color
  */
 
 private const val ProgressThreshold = 0.35f
-private const val DEFAULT_START_SCALE = 0.95f //0.92f
-private const val THRESHOLD_ALPHA = 0.5f
+// private const val DEFAULT_START_SCALE = 0.95f or 0.92f
+// private const val THRESHOLD_ALPHA = 0.5f
 
 private val Int.ForOutgoing: Int
     get() = (this * ProgressThreshold).toInt()

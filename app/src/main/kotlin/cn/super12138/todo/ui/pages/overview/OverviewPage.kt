@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
-import cn.super12138.todo.logic.database.TodoEntity
+import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.pages.overview.components.ListCard
 import cn.super12138.todo.ui.pages.overview.components.ProgressCard
@@ -30,7 +30,7 @@ fun OverviewPage(
     viewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
-    val toDos by viewModel.sortedTodos.collectAsState(initial = emptyList())
+    val toDos by viewModel.sortedTaskList.collectAsState(initial = emptyList())
     val totalTasks by remember { derivedStateOf { toDos.size } }
     val completedTasks by remember { derivedStateOf { toDos.count { it.isCompleted } } }
 
@@ -55,7 +55,7 @@ fun OverviewPage(
                     due in todayMillis..weekFromToday && !todo.isCompleted
                 }
                 .sortedWith(
-                    comparator = compareBy<TodoEntity> { it.dueDate }
+                    comparator = compareBy<TaskEntity> { it.dueDate }
                         .thenBy { it.category }
                         .thenByDescending { it.priority }
                 )

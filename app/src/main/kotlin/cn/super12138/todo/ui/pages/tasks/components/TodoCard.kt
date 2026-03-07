@@ -97,7 +97,7 @@ fun TodoCard(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .height(VerveDoDefaults.toDoCardHeight)
+            .height(VerveDoDefaults.Sizes.taskCardHeight)
             .clip(animatedShape)
             .combinedClickable(
                 interactionSource = interactionSource,

@@ -15,7 +15,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
 import cn.super12138.todo.ui.VerveDoDefaults
 
@@ -29,7 +28,7 @@ enum class EmptyTipType {
 fun EmptyTip(
     modifier: Modifier = Modifier,
     type: EmptyTipType,
-    size: Dp = 48.dp,
+    size: Dp = VerveDoDefaults.Sizes.emptyTipSize,
     containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     contentColor: Color = contentColorFor(containerColor)
 ) {

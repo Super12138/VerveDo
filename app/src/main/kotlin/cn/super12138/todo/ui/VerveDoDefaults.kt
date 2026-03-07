@@ -22,11 +22,6 @@ object VerveDoDefaults {
     val screenVerticalPadding = 8.dp
 
     /**
-     * 待办卡片默认高度
-     */
-    val toDoCardHeight = 86.dp
-
-    /**
      * 设置项水平边距
      */
     val settingsItemHorizontalPadding = 24.dp
@@ -38,36 +33,32 @@ object VerveDoDefaults {
 
     val settingsItemPadding = 4.dp
 
-    val overviewCardHeight = 120.dp
+    object Colors {
+        val Container: Color
+            @Composable get() = MaterialTheme.colorScheme.surfaceBright
+        val Background: Color
+            @Composable get() = MaterialTheme.colorScheme.surfaceContainer
+        val Green = Color(0xFF349938)
+    }
+
+    object Sizes {
+        val emptyTipSize = 48.dp
+        val taskCardHeight = 86.dp
+        val overviewCardHeight = 120.dp
+        val fadedEdgeWidth = 8.dp
+    }
 
     val ScreenContainerShape: Shape
-        @Composable
-        get() = MaterialTheme.shapes.large/*.copy(
+        @Composable get() = MaterialTheme.shapes.large/*.copy(
             bottomStart = ZeroCornerSize,
             bottomEnd = ZeroCornerSize
         )*/
 
-    object Colors {
-        val Container: Color
-            @Composable
-            get() = MaterialTheme.colorScheme.surfaceBright
-
-        val Background: Color
-            @Composable
-            get() = MaterialTheme.colorScheme.surfaceContainer
-
-        val Green = Color(0xFF349938)
-    }
-
-    val fadedEdgeWidth = 8.dp
-
     val defaultShape: CornerBasedShape
-        @Composable
-        get() = MaterialTheme.shapes.large
+        @Composable get() = MaterialTheme.shapes.large
 
     val pressedShape: CornerBasedShape
-        @Composable
-        get() = MaterialTheme.shapes.small
+        @Composable get() = MaterialTheme.shapes.small
 
 
     @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -79,6 +70,5 @@ object VerveDoDefaults {
 
     @OptIn(ExperimentalMaterial3ExpressiveApi::class)
     val shapesDefaultAnimationSpec: FiniteAnimationSpec<Float>
-        @Composable
-        get() = MaterialTheme.motionScheme.defaultEffectsSpec<Float>()
+        @Composable get() = MaterialTheme.motionScheme.defaultEffectsSpec()
 }

@@ -42,44 +42,36 @@ fun FilterChipGroup(
 
     FlowRow(modifier = modifier) {
         items.forEach { item ->
-            FilterChipItem(
-                selected = item.id == selectedItemIndex,
-                text = item.name,
+            val selected = selectedItemIndex == item.id
+            FilterChip(
+                selected = selected,
                 onClick = {
                     selectedItemIndex = item.id
                     VibrationUtils.performHapticFeedback(view)
                     onSelectedChanged(item.id)
-                }
+                },
+                label = {
+                    Text(
+                        text = item.name,
+                        maxLines = 1
+                    )
+                },
+                leadingIcon =
+                    if (selected) {
+                        {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_check),
+                                contentDescription = stringResource(R.string.tip_selected),
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                modifier = Modifier.padding(end = 10.dp)
             )
         }
     }
-}
-
-@Composable
-private fun FilterChipItem(
-    selected: Boolean,
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    FilterChip(
-        selected = selected,
-        onClick = onClick,
-        label = { Text(text) },
-        leadingIcon =
-            if (selected) {
-                {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_check),
-                        contentDescription = stringResource(R.string.tip_selected),
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
-                    )
-                }
-            } else {
-                null
-            },
-        modifier = modifier.padding(end = 10.dp)
-    )
 }
 
 data class ChipItem(

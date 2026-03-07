@@ -32,7 +32,7 @@ fun DarkModePicker(
         title = stringResource(R.string.pref_dark_mode),
         description = stringResource(R.string.pref_dark_mode_desc),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
-        fadedEdgeWidth = VerveDoDefaults.fadedEdgeWidth,
+        fadedEdgeWidth = VerveDoDefaults.Sizes.fadedEdgeWidth,
         modifier = modifier
     ) {
         items(items = darkModeList, key = { it.id }) {

@@ -1,29 +1,29 @@
 package cn.super12138.todo.logic
 
 import cn.super12138.todo.VerveDoApp
-import cn.super12138.todo.logic.database.TodoEntity
+import cn.super12138.todo.logic.database.TaskEntity
 import kotlinx.coroutines.flow.Flow
 
 object Repository : IRepository {
-    private val db get() = VerveDoApp.db
-    private val toDoDao = db.toDoDao()
+    private val database get() = VerveDoApp.taskDatabase
+    private val taskDao = database.taskDao()
 
-    override suspend fun insertTodo(toDo: TodoEntity) {
-        toDoDao.insert(toDo)
+    override suspend fun insertTask(task: TaskEntity) {
+        taskDao.insert(task)
     }
 
-    override fun getAllTodos(): Flow<List<TodoEntity>> = toDoDao.getAll()
+    override fun getAllTasks(): Flow<List<TaskEntity>> = taskDao.getAll()
 
-    override suspend fun updateTodo(toDo: TodoEntity) {
-        toDoDao.update(toDo)
+    override suspend fun updateTask(task: TaskEntity) {
+        taskDao.update(task)
     }
 
-    override suspend fun deleteTodo(toDo: TodoEntity) {
-        toDoDao.delete(toDo)
+    override suspend fun deleteTask(task: TaskEntity) {
+        taskDao.delete(task)
     }
 
-    override suspend fun deleteTodoFromIds(toDoItems: List<Int>) {
-        toDoDao.deleteFromIds(toDoItems.toSet())
+    override suspend fun deleteTaskFromIds(tasks: List<Int>) {
+        taskDao.deleteFromIds(tasks.toSet())
     }
 
     /*override suspend fun deleteAllTodo() {

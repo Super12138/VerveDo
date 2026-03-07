@@ -52,7 +52,7 @@ fun RoundedCornerCardLarge(
 
     val cardColors = CardDefaults.cardColors(containerColor = containerColor)
     Card(
-        modifier = modifier.height(VerveDoDefaults.overviewCardHeight),
+        modifier = modifier.height(VerveDoDefaults.Sizes.overviewCardHeight),
         colors = cardColors,
         shape = animatedShape
     ) {

@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import cn.super12138.todo.R
 import cn.super12138.todo.constants.Constants
-import cn.super12138.todo.logic.database.TodoEntity
+import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.model.Priority
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.ConfirmDialog
@@ -61,11 +61,11 @@ fun SharedTransitionScope.TasksPage(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel,
     toTodoAddPage: () -> Unit,
-    toTodoEditPage: (TodoEntity) -> Unit,
+    toTodoEditPage: (TaskEntity) -> Unit,
 ) {
     val animatedVisibilityScope = LocalNavAnimatedContentScope.current
 
-    val toDoList by viewModel.sortedTodos.collectAsState(initial = emptyList())
+    val toDoList by viewModel.sortedTaskList.collectAsState(initial = emptyList())
     val selectedTodos = viewModel.selectedTodoIds.collectAsState()
 
     // 状态持久化
@@ -86,7 +86,7 @@ fun SharedTransitionScope.TasksPage(
     val transitionSpec = fadeScale()
 
     // 当按下返回键（或进行返回操作）时清空选择，仅在非选择模式下生效
-    BackHandler(inSelectedMode) { viewModel.clearAllTodoSelection() }
+    BackHandler(inSelectedMode) { viewModel.clearAllTaskSelection() }
 
     // 选择时自动退出搜索模式
     LaunchedEffect(inSelectedMode) { if (inSelectedMode) viewModel.searchMode.value = false }
@@ -96,8 +96,8 @@ fun SharedTransitionScope.TasksPage(
             TodoTopAppBar(
                 selectedTodoIds = selectedTodoIds,
                 selectedMode = inSelectedMode,
-                onCancelSelect = { viewModel.clearAllTodoSelection() },
-                onSelectAll = { viewModel.selectAllTodos() },
+                onCancelSelect = { viewModel.clearAllTaskSelection() },
+                onSelectAll = { viewModel.selectAllTask() },
                 onDeleteSelectedTodo = { showDeleteConfirmDialog = true },
                 onSearchModeChange = { viewModel.searchMode.value = it },
                 searchMode = viewModel.searchMode.value,
@@ -189,14 +189,14 @@ fun SharedTransitionScope.TasksPage(
                                 selected = selectedTodoIds.contains(task.id),
                                 onCardClick = {
                                     if (inSelectedMode) {
-                                        viewModel.toggleTodoSelection(task)
+                                        viewModel.toggleTaskSelection(task)
                                     } else {
                                         toTodoEditPage(task)
                                     }
                                 },
-                                onCardLongClick = { viewModel.toggleTodoSelection(task) },
+                                onCardLongClick = { viewModel.toggleTaskSelection(task) },
                                 onChecked = {
-                                    viewModel.updateTodo(task.copy(isCompleted = true))
+                                    viewModel.updateTask(task.copy(isCompleted = true))
                                     viewModel.playConfetti()
                                 },
                                 modifier = Modifier
@@ -224,7 +224,7 @@ fun SharedTransitionScope.TasksPage(
             visible = showDeleteConfirmDialog,
             iconRes = R.drawable.ic_delete,
             text = stringResource(R.string.tip_delete_task, selectedTodoIds.size),
-            onConfirm = { viewModel.deleteSelectedTodo() },
+            onConfirm = { viewModel.deleteSelectedTask() },
             onDismiss = { showDeleteConfirmDialog = false }
         )
     }

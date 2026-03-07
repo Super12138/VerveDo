@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Entity(tableName = Constants.DB_TABLE_NAME)
-data class TodoEntity(
+data class TaskEntity(
     @ColumnInfo(name = "content") val content: String,
     @ColumnInfo(name = "category") val category: String = "",
     @ColumnInfo(name = "completed") val isCompleted: Boolean = false,

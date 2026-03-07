@@ -93,7 +93,7 @@ fun TopNavigation(
                 entry<VerveDoScreen.Editor.Add>(metadata = editorTransition()) {
                     TaskAddPage(
                         onSave = {
-                            viewModel.addTodo(it)
+                            viewModel.addTask(it)
                             onBack()
                         },
                         onNavigateUp = ::onBack
@@ -104,7 +104,7 @@ fun TopNavigation(
                     TaskEditPage(
                         toDo = editorArgs.toDo,
                         onSave = {
-                            viewModel.addTodo(it)
+                            viewModel.addTask(it)
                             // 如果原来的待办状态为未完成并且修改后状态为完成
                             if (!editorArgs.toDo.isCompleted && it.isCompleted) {
                                 viewModel.playConfetti()
@@ -112,7 +112,7 @@ fun TopNavigation(
                             onBack()
                         },
                         onDelete = {
-                            viewModel.deleteTodo(editorArgs.toDo)
+                            viewModel.deleteTask(editorArgs.toDo)
                             onBack()
                         },
                         onNavigateUp = ::onBack

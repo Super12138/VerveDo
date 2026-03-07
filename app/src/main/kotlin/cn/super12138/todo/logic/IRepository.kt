@@ -1,18 +1,18 @@
 package cn.super12138.todo.logic
 
-import cn.super12138.todo.logic.database.TodoEntity
+import cn.super12138.todo.logic.database.TaskEntity
 import kotlinx.coroutines.flow.Flow
 
 interface IRepository {
-    suspend fun insertTodo(toDo: TodoEntity)
+    suspend fun insertTask(task: TaskEntity)
 
-    fun getAllTodos(): Flow<List<TodoEntity>>
+    fun getAllTasks(): Flow<List<TaskEntity>>
 
-    suspend fun updateTodo(toDo: TodoEntity)
+    suspend fun updateTask(task: TaskEntity)
 
-    suspend fun deleteTodo(toDo: TodoEntity)
+    suspend fun deleteTask(task: TaskEntity)
 
-    suspend fun deleteTodoFromIds(toDoItems: List<Int>)
+    suspend fun deleteTaskFromIds(tasks: List<Int>)
 
     // suspend fun deleteAllTodo()
 }

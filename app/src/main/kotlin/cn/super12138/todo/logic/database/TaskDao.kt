@@ -10,21 +10,21 @@ import cn.super12138.todo.constants.Constants
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface TodoDao {
+interface TaskDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(toDo: TodoEntity)
+    suspend fun insert(task: TaskEntity)
 
     @Query("SELECT * FROM ${Constants.DB_TABLE_NAME}")
-    fun getAll(): Flow<List<TodoEntity>>
+    fun getAll(): Flow<List<TaskEntity>>
 
     @Update
-    suspend fun update(toDo: TodoEntity)
+    suspend fun update(task: TaskEntity)
 
     @Delete
-    suspend fun delete(toDo: TodoEntity)
+    suspend fun delete(task: TaskEntity)
 
-    @Query("DELETE FROM ${Constants.DB_TABLE_NAME} WHERE id in (:toDoIds)")
-    suspend fun deleteFromIds(toDoIds: Set<Int>)
+    @Query("DELETE FROM ${Constants.DB_TABLE_NAME} WHERE id in (:taskIds)")
+    suspend fun deleteFromIds(taskIds: Set<Int>)
 
     /*@Query("DELETE FROM todo")
     suspend fun deleteAllTodo()*/
