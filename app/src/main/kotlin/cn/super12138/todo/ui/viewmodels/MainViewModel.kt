@@ -4,7 +4,9 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation3.runtime.NavKey
@@ -98,7 +100,8 @@ class MainViewModel : ViewModel() {
     val showConfetti = mutableStateOf(false)
 
     val toDoListState = LazyListState()
-    val searchMode = mutableStateOf(false)
+    var searchMode by mutableStateOf(false)
+        private set
     val searchFieldState = TextFieldState()
 
     // 多选逻辑参考：https://github.com/X1nto/Mauth
@@ -176,6 +179,10 @@ class MainViewModel : ViewModel() {
 
     fun playConfetti() {
         showConfetti.value = true
+    }
+
+    fun setSearchModeEnabled(enabled: Boolean) {
+        searchMode = enabled
     }
 
     /**

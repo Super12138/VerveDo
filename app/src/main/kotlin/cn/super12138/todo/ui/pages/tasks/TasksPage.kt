@@ -76,7 +76,7 @@ fun SharedTransitionScope.TasksPage(
     val inSelectedMode by remember { derivedStateOf { !selectedTodoIds.isEmpty() } }
     val expandedFab by remember { derivedStateOf { viewModel.toDoListState.firstVisibleItemIndex == 0 } }
 
-    val filteredTodoList = if (viewModel.searchMode.value) toDoList.filter {
+    val filteredTodoList = if (viewModel.searchMode) toDoList.filter {
         it.content.contains(searchFieldState.text, ignoreCase = true) ||
                 it.category.contains(searchFieldState.text, ignoreCase = true) ||
                 it.dueDate?.toLocalDateString()
@@ -89,7 +89,7 @@ fun SharedTransitionScope.TasksPage(
     BackHandler(inSelectedMode) { viewModel.clearAllTaskSelection() }
 
     // 选择时自动退出搜索模式
-    LaunchedEffect(inSelectedMode) { if (inSelectedMode) viewModel.searchMode.value = false }
+    LaunchedEffect(inSelectedMode) { if (inSelectedMode) viewModel.setSearchModeEnabled(false) }
 
     TopAppBarScaffold(
         topBar = {
@@ -99,8 +99,8 @@ fun SharedTransitionScope.TasksPage(
                 onCancelSelect = { viewModel.clearAllTaskSelection() },
                 onSelectAll = { viewModel.selectAllTask() },
                 onDeleteSelectedTodo = { showDeleteConfirmDialog = true },
-                onSearchModeChange = { viewModel.searchMode.value = it },
-                searchMode = viewModel.searchMode.value,
+                onSearchModeChange = { viewModel.setSearchModeEnabled(it) },
+                searchMode = viewModel.searchMode,
             )
         },
         floatingActionButton = {
@@ -126,7 +126,7 @@ fun SharedTransitionScope.TasksPage(
     ) {
         Column {
             AnimatedVisibility(
-                visible = viewModel.searchMode.value,
+                visible = viewModel.searchMode,
                 enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()) + expandVertically(
                     MaterialTheme.motionScheme.fastSpatialSpec()
                 ),
@@ -135,8 +135,8 @@ fun SharedTransitionScope.TasksPage(
                 ),
             ) {
                 TodoSearchTextField(
-                    searchMode = viewModel.searchMode.value,
-                    onSearchModeChange = { viewModel.searchMode.value = it },
+                    searchMode = viewModel.searchMode,
+                    onSearchModeChange = { viewModel.setSearchModeEnabled(it) },
                     textFieldState = searchFieldState
                 )
             }
@@ -154,12 +154,12 @@ fun SharedTransitionScope.TasksPage(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         EmptyTip(
-                            type = if (viewModel.searchMode.value) EmptyTipType.Search else EmptyTipType.TaskCompleted,
+                            type = if (viewModel.searchMode) EmptyTipType.Search else EmptyTipType.TaskCompleted,
                             size = 96.dp
                         )
 
                         Text(
-                            text = stringResource(if (viewModel.searchMode.value) R.string.tip_search_task_not_found else R.string.tip_no_task),
+                            text = stringResource(if (viewModel.searchMode) R.string.tip_search_task_not_found else R.string.tip_no_task),
                             style = MaterialTheme.typography.titleMedium,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
