@@ -5,6 +5,8 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -14,16 +16,14 @@ import cn.super12138.todo.R
 
 @Composable
 fun TodoContentTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
+    state: TextFieldState,
     isError: Boolean,
     modifier: Modifier = Modifier
 ) {
     TextField(
-        value = value,
-        onValueChange = onValueChange,
+        state = state,
         label = { Text(stringResource(R.string.placeholder_add_todo)) },
-        maxLines = 3,
+        lineLimits = TextFieldLineLimits.MultiLine(maxHeightInLines = 3),
         isError = isError,
         supportingText = {
             AnimatedVisibility(

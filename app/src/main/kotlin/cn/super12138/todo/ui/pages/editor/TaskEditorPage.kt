@@ -59,7 +59,7 @@ fun SharedTransitionScope.TaskAddPage(
     onSave: (TaskEntity) -> Unit,
     onNavigateUp: () -> Unit
 ) = TaskEditorPage(
-    toDo = null,
+    task = null,
     modifier = modifier
         .sharedBounds(
             sharedContentState = rememberSharedContentState(key = Constants.KEY_TODO_FAB_TRANSITION),
@@ -75,14 +75,14 @@ fun SharedTransitionScope.TaskAddPage(
 @Composable
 fun SharedTransitionScope.TaskEditPage(
     modifier: Modifier = Modifier,
-    toDo: TaskEntity,
+    task: TaskEntity,
     onSave: (TaskEntity) -> Unit,
     onDelete: () -> Unit,
     onNavigateUp: () -> Unit
 ) = TaskEditorPage(
-    toDo = toDo,
+    task = task,
     modifier = modifier.sharedBounds(
-        sharedContentState = rememberSharedContentState(key = "${Constants.KEY_TODO_ITEM_TRANSITION}_${toDo.id}"),
+        sharedContentState = rememberSharedContentState(key = "${Constants.KEY_TODO_ITEM_TRANSITION}_${task.id}"),
         animatedVisibilityScope = LocalNavAnimatedContentScope.current,
         resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds
     ),
@@ -94,15 +94,15 @@ fun SharedTransitionScope.TaskEditPage(
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun SharedTransitionScope.TaskEditorPage(
+fun TaskEditorPage(
     modifier: Modifier = Modifier,
-    toDo: TaskEntity? = null,
+    task: TaskEntity? = null,
     onSave: (TaskEntity) -> Unit,
     onDelete: () -> Unit,
     onNavigateUp: () -> Unit
 ) {
     // TODO: 本页及其相关组件重组性能检查优化
-    val uiState = rememberEditorState(initialTodo = toDo)
+    val uiState = rememberEditorState(initialTodo = task)
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -117,14 +117,14 @@ fun SharedTransitionScope.TaskEditorPage(
         } + ChipItem(id = -1, name = stringResource(R.string.label_customization))
 
     var defaultIndex by remember { mutableIntStateOf(-1) }
-    LaunchedEffect(originalCategories, toDo) {
+    LaunchedEffect(originalCategories, task) {
         if (originalCategories.isEmpty()) return@LaunchedEffect
-        if (toDo == null) {
+        if (task == null) {
             val index = if (categories.size == 1) -1 else 0
             defaultIndex = index
             uiState.selectedCategoryIndex = index
         } else {
-            val index = categories.firstOrNull { it.name == toDo.category }?.id ?: -1
+            val index = categories.firstOrNull { it.name == task.category }?.id ?: -1
             defaultIndex = index
             uiState.selectedCategoryIndex = index
         }
@@ -159,13 +159,13 @@ fun SharedTransitionScope.TaskEditorPage(
     }
 
     TopAppBarScaffold(
-        title = stringResource(if (toDo != null) R.string.title_edit_task else R.string.action_add_task),
+        title = stringResource(if (task != null) R.string.title_edit_task else R.string.action_add_task),
         floatingActionButton = {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier.imePadding()
             ) {
-                if (toDo !== null) {
+                if (task !== null) {
                     TodoFloatingActionButton(
                         text = stringResource(R.string.action_delete),
                         iconRes = R.drawable.ic_delete,
@@ -184,8 +184,8 @@ fun SharedTransitionScope.TaskEditorPage(
                         } else {
                             uiState.clearError()
                             val newTodo = TaskEntity(
-                                id = toDo?.id ?: 0,
-                                content = uiState.toDoContent,
+                                id = task?.id ?: 0,
+                                content = uiState.taskTextFieldState.text.toString(),
                                 category = if (isCustomCategory) uiState.categoryContent else categories[uiState.selectedCategoryIndex].name,
                                 priority = uiState.priorityState,
                                 dueDate = uiState.dueDateState,
@@ -210,8 +210,7 @@ fun SharedTransitionScope.TaskEditorPage(
 
             item(key = 1) {
                 TodoContentTextField(
-                    value = uiState.toDoContent,
-                    onValueChange = { uiState.toDoContent = it },
+                    state = uiState.taskTextFieldState,
                     isError = uiState.isErrorContent,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -275,7 +274,7 @@ fun SharedTransitionScope.TaskEditorPage(
                     onValueChange = { uiState.dueDateState = it },
                     modifier = Modifier.fillMaxWidth()
                 )
-                if (toDo != null) {
+                if (task != null) {
                     TodoMarkAsCompletedCheckbox(
                         checked = uiState.isCompleted,
                         onCheckedChange = { uiState.isCompleted = it },

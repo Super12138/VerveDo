@@ -102,7 +102,7 @@ fun TopNavigation(
 
                 entry<VerveDoScreen.Editor.Edit>(metadata = editorTransition()) { editorArgs ->
                     TaskEditPage(
-                        toDo = editorArgs.toDo,
+                        task = editorArgs.toDo,
                         onSave = {
                             viewModel.addTask(it)
                             // 如果原来的待办状态为未完成并且修改后状态为完成

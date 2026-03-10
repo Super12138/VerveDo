@@ -1,5 +1,7 @@
 package cn.super12138.todo.ui.pages.editor.state
 
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -19,7 +21,7 @@ class EditorState(val initialTodo: TaskEntity? = null) {
                  restore = { EditorState(it) },
              )
      }*/
-    var toDoContent by mutableStateOf(initialTodo?.content ?: "")
+    val taskTextFieldState = TextFieldState(initialTodo?.content ?: "")
     var isErrorContent by mutableStateOf(false)
     var selectedCategoryIndex by mutableIntStateOf(-1)
     var categoryContent by mutableStateOf(initialTodo?.category ?: "")
@@ -39,7 +41,7 @@ class EditorState(val initialTodo: TaskEntity? = null) {
      * @return 它们二者是否都有效。有一者无效就返回 true
      */
     fun setErrorIfNotValid(): Boolean {
-        isErrorContent = toDoContent.trim().isEmpty()
+        isErrorContent = taskTextFieldState.text.trim().isEmpty()
         if (selectedCategoryIndex == -1 && categoryContent.trim().isEmpty()) {
             isErrorCategory = true
             categorySupportingText = R.string.error_no_content_entered
@@ -63,7 +65,7 @@ class EditorState(val initialTodo: TaskEntity? = null) {
     fun isModified(): Boolean {
         // Log.d("EditorState", "Initial: content='${initialTodo?.content ?: ""}', category='${initialTodo?.category ?: ""}', priority=${initialTodo?.priority ?: 0f}, isCompleted=${initialTodo?.isCompleted == true}, dueDate=${initialTodo?.dueDate} ; Now: content='$toDoContent', category='$categoryContent', priority=$priorityState, isCompleted=$isCompleted, dueDate=$dueDateState")
         var isModified = false
-        if ((initialTodo?.content ?: "") != toDoContent) isModified = true
+        if ((initialTodo?.content ?: "") != taskTextFieldState.text) isModified = true
         if ((initialTodo?.category ?: "") != categoryContent) isModified = true
         if ((initialTodo?.priority ?: 0f) != priorityState) isModified = true
         if ((initialTodo?.isCompleted == true) != isCompleted) isModified = true
@@ -88,7 +90,7 @@ class EditorState(val initialTodo: TaskEntity? = null) {
                         it.id
                     )
                 },
-                value.toDoContent,
+                value.taskTextFieldState.text,
                 value.isErrorContent,
                 value.selectedCategoryIndex,
                 value.categoryContent,
@@ -115,7 +117,7 @@ class EditorState(val initialTodo: TaskEntity? = null) {
                 )
             }
             return EditorState(initialTodo).apply {
-                toDoContent = list[1] as String
+                taskTextFieldState.setTextAndPlaceCursorAtEnd(list[1] as String)
                 isErrorContent = list[2] as Boolean
                 selectedCategoryIndex = list[3] as Int
                 categoryContent = list[4] as String
