@@ -16,20 +16,22 @@ import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.PaletteStyle
 import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.pages.settings.components.SettingsContainer
+import cn.super12138.todo.ui.pages.settings.components.SettingsItem
 import cn.super12138.todo.ui.pages.settings.components.SwitchSettingsItem
 import cn.super12138.todo.ui.pages.settings.components.appearance.contrast.ContrastPicker
-import cn.super12138.todo.ui.pages.settings.components.appearance.darkmode.DarkModePicker
 import cn.super12138.todo.ui.pages.settings.components.appearance.palette.PalettePicker
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsAppearance(
+    toDarkModePage: () -> Unit,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val dynamicColor by DataStoreManager.dynamicColorFlow.collectAsState(initial = Constants.PREF_DYNAMIC_COLOR_DEFAULT)
     val darkMode by DataStoreManager.darkModeFlow.collectAsState(initial = Constants.PREF_DARK_MODE_DEFAULT)
+    val pureBlackMode by DataStoreManager.pureBlackFlow.collectAsState(initial = Constants.PREF_PURE_BLACK_MODE_DEFAULT)
     val paletteStyle by DataStoreManager.paletteStyleFlow.collectAsState(initial = Constants.PREF_PALETTE_STYLE_DEFAULT)
     val contrastLevel by DataStoreManager.contrastLevelFlow.collectAsState(initial = Constants.PREF_CONTRAST_LEVEL_DEFAULT)
 
@@ -41,6 +43,16 @@ fun SettingsAppearance(
     ) {
         SettingsContainer(Modifier.fillMaxSize()) {
             item(key = 1) {
+                SettingsItem(
+                    leadingIconRes = R.drawable.ic_dark_mode,
+                    title = stringResource(R.string.pref_dark_mode),
+                    description = stringResource(R.string.pref_dark_mode_desc),
+                    onClick = toDarkModePage
+                )
+
+            }
+
+            item(key = 2) {
                 SwitchSettingsItem(
                     checked = dynamicColor,
                     leadingIconRes = R.drawable.ic_wand_stars,
@@ -50,19 +62,13 @@ fun SettingsAppearance(
                 )
             }
 
-            item(key = 2) {
-                DarkModePicker(
-                    currentDarkMode = { DarkMode.fromId(darkMode) },
-                    onDarkModeChange = { scope.launch { DataStoreManager.setDarkMode(it.id) } }
-                )
-            }
-
             item(key = 3) {
                 PalettePicker(
                     currentPalette = { PaletteStyle.fromId(paletteStyle) },
                     onPaletteChange = { scope.launch { DataStoreManager.setPaletteStyle(it.id) } },
                     isDynamicColor = dynamicColor,
                     isDarkMode = DarkMode.fromId(darkMode),
+                    pureBlackMode = pureBlackMode,
                     contrastLevel = ContrastLevel.fromFloat(contrastLevel)
                 )
             }

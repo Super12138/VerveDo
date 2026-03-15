@@ -30,7 +30,7 @@ fun DarkModePicker(
 
     LazyRowSettingsItem(
         title = stringResource(R.string.pref_dark_mode),
-        description = stringResource(R.string.pref_dark_mode_desc),
+        description = stringResource(R.string.pref_dark_mode_desc1),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         fadedEdgeWidth = VerveDoDefaults.Sizes.fadedEdgeWidth,
         modifier = modifier

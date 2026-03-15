@@ -54,6 +54,7 @@ class MainActivity : ComponentActivity() {
             val paletteStyle by DataStoreManager.paletteStyleFlow.collectAsState(initial = Constants.PREF_PALETTE_STYLE_DEFAULT)
             val contrastLevel by DataStoreManager.contrastLevelFlow.collectAsState(initial = Constants.PREF_CONTRAST_LEVEL_DEFAULT)
             val darkMode by DataStoreManager.darkModeFlow.collectAsState(initial = Constants.PREF_DARK_MODE_DEFAULT)
+            val pureBlackMode by DataStoreManager.pureBlackFlow.collectAsState(initial = Constants.PREF_PURE_BLACK_MODE_DEFAULT)
             val secureMode by DataStoreManager.secureModeFlow.collectAsState(initial = Constants.PREF_SECURE_MODE_DEFAULT)
             val hapticFeedback by DataStoreManager.hapticFeedbackFlow.collectAsState(initial = Constants.PREF_HAPTIC_FEEDBACK_DEFAULT)
 
@@ -101,6 +102,7 @@ class MainActivity : ComponentActivity() {
 
             VerveDoTheme(
                 darkTheme = darkTheme,
+                pureBlackMode = pureBlackMode,
                 style = PaletteStyle.fromId(paletteStyle),
                 contrastLevel = contrastLevel.toDouble(),
                 dynamicColor = dynamicColor

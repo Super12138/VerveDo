@@ -13,7 +13,7 @@ import androidx.compose.runtime.setValue
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.database.TaskEntity
 
-class EditorState(val initialTodo: TaskEntity? = null) {
+class EditorState(val initialTask: TaskEntity? = null) {
     /* companion object{
          fun Saver() =
              androidx.compose.runtime.saveable.Saver<EditorState, TodoEntity>(
@@ -21,14 +21,14 @@ class EditorState(val initialTodo: TaskEntity? = null) {
                  restore = { EditorState(it) },
              )
      }*/
-    val taskTextFieldState = TextFieldState(initialTodo?.content ?: "")
+    val taskTextFieldState = TextFieldState(initialTask?.content ?: "")
     var isErrorContent by mutableStateOf(false)
     var selectedCategoryIndex by mutableIntStateOf(-1)
-    var categoryContent by mutableStateOf(initialTodo?.category ?: "")
+    var categoryContent by mutableStateOf(initialTask?.category ?: "")
     var isErrorCategory by mutableStateOf(false)
-    var priorityState by mutableFloatStateOf(initialTodo?.priority ?: 0f)
-    var dueDateState by mutableStateOf(initialTodo?.dueDate)
-    var isCompleted by mutableStateOf(initialTodo?.isCompleted == true)
+    var priorityState by mutableFloatStateOf(initialTask?.priority ?: 0f)
+    var dueDateState by mutableStateOf(initialTask?.dueDate)
+    var isCompleted by mutableStateOf(initialTask?.isCompleted == true)
     var categorySupportingText by mutableIntStateOf(R.string.tip_short_category)
         private set
 
@@ -65,11 +65,11 @@ class EditorState(val initialTodo: TaskEntity? = null) {
     fun isModified(): Boolean {
         // Log.d("EditorState", "Initial: content='${initialTodo?.content ?: ""}', category='${initialTodo?.category ?: ""}', priority=${initialTodo?.priority ?: 0f}, isCompleted=${initialTodo?.isCompleted == true}, dueDate=${initialTodo?.dueDate} ; Now: content='$toDoContent', category='$categoryContent', priority=$priorityState, isCompleted=$isCompleted, dueDate=$dueDateState")
         var isModified = false
-        if ((initialTodo?.content ?: "") != taskTextFieldState.text) isModified = true
-        if ((initialTodo?.category ?: "") != categoryContent) isModified = true
-        if ((initialTodo?.priority ?: 0f) != priorityState) isModified = true
-        if ((initialTodo?.isCompleted == true) != isCompleted) isModified = true
-        if (initialTodo?.dueDate != dueDateState) isModified = true
+        if ((initialTask?.content ?: "") != taskTextFieldState.text) isModified = true
+        if ((initialTask?.category ?: "") != categoryContent) isModified = true
+        if ((initialTask?.priority ?: 0f) != priorityState) isModified = true
+        if ((initialTask?.isCompleted == true) != isCompleted) isModified = true
+        if (initialTask?.dueDate != dueDateState) isModified = true
         return isModified
     }
 
@@ -80,7 +80,7 @@ class EditorState(val initialTodo: TaskEntity? = null) {
         override fun SaverScope.save(value: EditorState): Any {
             return listOf(
                 // 避免错误：java.lang.RuntimeException: Parcel: unable to marshal value TodoEntity(...)
-                value.initialTodo?.let {
+                value.initialTask?.let {
                     listOf(
                         it.content,
                         it.category,

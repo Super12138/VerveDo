@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonShapes
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +31,8 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import cn.super12138.todo.logic.model.ContrastLevel
@@ -46,6 +48,7 @@ fun PaletteItem(
     modifier: Modifier = Modifier,
     isDynamicColor: Boolean,
     isDark: Boolean,
+    pureBlackMode: Boolean,
     paletteStyle: PaletteStyle,
     contrastLevel: ContrastLevel,
     selected: Boolean,
@@ -58,73 +61,76 @@ fun PaletteItem(
     val animatedShape =
         shapeByInteraction(shapes, pressed, VerveDoDefaults.shapesDefaultAnimationSpec)
 
-    Column(
-        modifier = modifier
-            .width(90.dp)
-            .clip(animatedShape)
-            .clickable(
-                interactionSource = interactionSource,
-                role = Role.Button,
-                onClick = {
-                    VibrationUtils.performHapticFeedback(view)
-                    onSelect()
-                }
-            )
-            .padding(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Surface(
+        onClick = {
+            VibrationUtils.performHapticFeedback(view)
+            onSelect()
+        },
+        modifier = modifier.semantics { role = Role.Button },
+        shape = animatedShape,
+        color = VerveDoDefaults.Colors.Container,
+        interactionSource = interactionSource,
     ) {
-        // 为不同主题样式设置不同色板
-        MaterialTheme(
-            colorScheme = dynamicColorScheme(
-                keyColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isDynamicColor) {
-                    colorResource(id = android.R.color.system_accent1_500)
-                } else {
-                    Color(0xFF0061A4)
-                },
-                isDark = isDark,
-                contrastLevel = contrastLevel.value.toDouble(),
-                style = paletteStyle
-            )
+        Column(
+            modifier = Modifier
+                .width(90.dp)
+                .padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val borderWidth by animateDpAsState(if (selected) 3.dp else (-1).dp)
-            // 颜色预览区域
-            Column(
-                modifier = Modifier
-                    .width(70.dp)
-                    .clip(MaterialTheme.shapes.large)
-                    .border(
-                        width = borderWidth,
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = MaterialTheme.shapes.large
-                    ),
-                verticalArrangement = Arrangement.spacedBy(2.dp)
+            // 为不同主题样式设置不同色板
+            MaterialTheme(
+                colorScheme = dynamicColorScheme(
+                    keyColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isDynamicColor) {
+                        colorResource(id = android.R.color.system_accent1_500)
+                    } else {
+                        Color(0xFF0061A4)
+                    },
+                    isDark = isDark,
+                    contrastLevel = contrastLevel.value.toDouble(),
+                    pureBlack = pureBlackMode,
+                    style = paletteStyle
+                )
             ) {
-                listOf(
-                    MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.secondary,
-                    MaterialTheme.colorScheme.tertiary,
-                    MaterialTheme.colorScheme.tertiaryContainer,
-                    MaterialTheme.colorScheme.secondaryContainer,
-                    MaterialTheme.colorScheme.primaryContainer,
-                ).fastForEach {
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(24.dp)
-                            .background(it)
-                    )
+                val borderWidth by animateDpAsState(if (selected) 3.dp else (-1).dp)
+                // 颜色预览区域
+                Column(
+                    modifier = Modifier
+                        .width(70.dp)
+                        .clip(MaterialTheme.shapes.large)
+                        .border(
+                            width = borderWidth,
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = MaterialTheme.shapes.large
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    listOf(
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.secondary,
+                        MaterialTheme.colorScheme.tertiary,
+                        MaterialTheme.colorScheme.tertiaryContainer,
+                        MaterialTheme.colorScheme.secondaryContainer,
+                        MaterialTheme.colorScheme.primaryContainer,
+                    ).fastForEach {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(24.dp)
+                                .background(it)
+                        )
+                    }
                 }
             }
+
+            Spacer(Modifier.size(8.dp))
+
+            Text(
+                text = stringResource(paletteStyle.nameRes),
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (selected) {
+                    MaterialTheme.colorScheme.primary
+                } else MaterialTheme.colorScheme.onSurface
+            )
         }
-
-        Spacer(Modifier.size(8.dp))
-
-        Text(
-            text = stringResource(paletteStyle.nameRes),
-            style = MaterialTheme.typography.bodyMedium,
-            color = if (selected) {
-                MaterialTheme.colorScheme.primary
-            } else MaterialTheme.colorScheme.onSurface
-        )
     }
 }

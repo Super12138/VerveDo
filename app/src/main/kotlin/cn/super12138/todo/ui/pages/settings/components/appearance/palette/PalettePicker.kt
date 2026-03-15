@@ -26,6 +26,7 @@ fun PalettePicker(
     onPaletteChange: (paletteStyle: PaletteStyle) -> Unit,
     isDynamicColor: Boolean,
     isDarkMode: DarkMode,
+    pureBlackMode: Boolean,
     contrastLevel: ContrastLevel,
 ) {
     val paletteOptions = remember { PaletteStyle.entries.toList() }
@@ -50,6 +51,7 @@ fun PalettePicker(
                 paletteStyle = it,
                 selected = isSelected,
                 contrastLevel = contrastLevel,
+                pureBlackMode = pureBlackMode,
                 onSelect = { onPaletteChange(it) }
             )
         }

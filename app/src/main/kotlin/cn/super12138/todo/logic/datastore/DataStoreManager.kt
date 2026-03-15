@@ -34,6 +34,7 @@ object DataStoreManager {
     private val DYNAMIC_COLOR = booleanPreferencesKey(Constants.PREF_DYNAMIC_COLOR)
     private val PALETTE_STYLE = intPreferencesKey(Constants.PREF_PALETTE_STYLE)
     private val DARK_MODE = intPreferencesKey(Constants.PREF_DARK_MODE)
+    private val PURE_BLACK_MODE = booleanPreferencesKey(Constants.PREF_PURE_BLACK_MODE)
     private val CONTRAST_LEVEL = floatPreferencesKey(Constants.PREF_CONTRAST_LEVEL)
 
     // 界面与交互
@@ -57,6 +58,10 @@ object DataStoreManager {
 
     val darkModeFlow = dataStore.data.map { preferences ->
         preferences[DARK_MODE] ?: Constants.PREF_DARK_MODE_DEFAULT
+    }
+
+    val pureBlackFlow = dataStore.data.map { preferences ->
+        preferences[PURE_BLACK_MODE] ?: Constants.PREF_PURE_BLACK_MODE_DEFAULT
     }
 
     val contrastLevelFlow = dataStore.data.map { preferences ->
@@ -103,6 +108,12 @@ object DataStoreManager {
     suspend fun setDarkMode(value: Int) {
         dataStore.edit { preferences ->
             preferences[DARK_MODE] = value
+        }
+    }
+
+    suspend fun setPureBlackMode(value: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PURE_BLACK_MODE] = value
         }
     }
 

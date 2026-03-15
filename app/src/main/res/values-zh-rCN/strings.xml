@@ -141,4 +141,7 @@
     <string name="title_today_task">今日任务进度</string>
     <string name="pref_text_field_auto_focus">自动聚焦文本框</string>
     <string name="pref_text_field_auto_focus_desc">在编辑待办页面自动聚焦待办内容文本框并拉起键盘</string>
+    <string name="pref_dark_mode_desc1">控制应用的深色模式</string>
+    <string name="pref_pure_black_mode">纯黑深色模式</string>
+    <string name="pref_pure_black_mode_desc">深色模式下压暗应用颜色并使应用背景变成纯黑色（在 OLED 屏幕上开启可获得更佳体验）</string>
 </resources>

@@ -1,7 +1,6 @@
 package cn.super12138.todo.ui.pages.overview.components
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -15,11 +14,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.ButtonShapes
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,11 +27,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorProducer
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.theme.shapeByInteraction
+import cn.super12138.todo.utils.VibrationUtils
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -45,25 +49,30 @@ fun RoundedCornerCardLarge(
     shapes: ButtonShapes = VerveDoDefaults.shapes(),
     onClick: () -> Unit = {}
 ) {
+
+    val view = LocalView.current
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     val animatedShape =
         shapeByInteraction(shapes, pressed, VerveDoDefaults.shapesDefaultAnimationSpec)
 
     val cardColors = CardDefaults.cardColors(containerColor = containerColor)
-    Card(
-        modifier = modifier.height(VerveDoDefaults.Sizes.overviewCardHeight),
-        colors = cardColors,
-        shape = animatedShape
+    Surface(
+        onClick = {
+            VibrationUtils.performHapticFeedback(view)
+            onClick()
+        },
+        modifier = modifier
+            .height(VerveDoDefaults.Sizes.overviewCardHeight)
+            .semantics { role = Role.Button },
+        shape = animatedShape,
+        color = cardColors.containerColor,
+        contentColor = cardColors.contentColor,
+        interactionSource = interactionSource,
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .clickable(
-                    enabled = true,
-                    onClick = onClick,
-                    interactionSource = interactionSource
-                )
                 .padding(VerveDoDefaults.screenHorizontalPadding),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)

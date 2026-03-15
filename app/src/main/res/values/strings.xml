@@ -29,7 +29,7 @@
     <string name="pref_app_version">Version</string>
     <string name="pref_developer">Developer</string>
     <string name="pref_licence">Open Source Licences</string>
-    <string name="pref_licence_desc">Check the open source libraries used by the application and their licences.</string>
+    <string name="pref_licence_desc">Check the open source libraries used by the application and their licences</string>
     <string name="label_category">Category</string>
     <string name="priority_not_urgent">Not Urgent</string>
     <string name="priority_not_important">Not Important</string>
@@ -143,4 +143,7 @@
     <string name="title_today_task">Today\'s Task Progress</string>
     <string name="pref_text_field_auto_focus">Auto Focus Text Field</string>
     <string name="pref_text_field_auto_focus_desc">Focus task content text field and pop up keyboard automatically in editor page</string>
+    <string name="pref_dark_mode_desc1">Control the dark mode for this app</string>
+    <string name="pref_pure_black_mode">Pure Black Mode</string>
+    <string name="pref_pure_black_mode_desc">Set the background to pure black and dim the colors when dark mode turns on (Enable on OLED screens for better experience)</string>
 </resources>

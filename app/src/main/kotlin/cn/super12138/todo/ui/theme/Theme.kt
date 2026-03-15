@@ -14,6 +14,7 @@ import cn.super12138.todo.logic.model.PaletteStyle
 fun VerveDoTheme(
     color: Color? = null,
     darkTheme: Boolean = isSystemInDarkTheme(),
+    pureBlackMode: Boolean = false,
     style: PaletteStyle = PaletteStyle.TonalSpot,
     contrastLevel: Double = 0.0,
     // Dynamic color is available on Android 12+
@@ -32,6 +33,7 @@ fun VerveDoTheme(
     val colorScheme = dynamicColorScheme(
         keyColor = keyColor,
         isDark = darkTheme,
+        pureBlack = pureBlackMode,
         style = style,
         contrastLevel = contrastLevel
     )

@@ -21,6 +21,9 @@ sealed class VerveDoScreen : NavKey {
         data object Appearance : Settings()
 
         @Serializable
+        data object AppearanceDarkMode : Settings()
+
+        @Serializable
         data object Interface : Settings()
 
         @Serializable

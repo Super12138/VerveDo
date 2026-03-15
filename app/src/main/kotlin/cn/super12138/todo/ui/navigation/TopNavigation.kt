@@ -15,6 +15,7 @@ import cn.super12138.todo.ui.pages.overview.OverviewPage
 import cn.super12138.todo.ui.pages.settings.SettingsAbout
 import cn.super12138.todo.ui.pages.settings.SettingsAboutLicence
 import cn.super12138.todo.ui.pages.settings.SettingsAppearance
+import cn.super12138.todo.ui.pages.settings.SettingsAppearanceDarkMode
 import cn.super12138.todo.ui.pages.settings.SettingsData
 import cn.super12138.todo.ui.pages.settings.SettingsDataCategory
 import cn.super12138.todo.ui.pages.settings.SettingsDeveloperOptions
@@ -129,7 +130,14 @@ fun TopNavigation(
                 }
 
                 entry<VerveDoScreen.Settings.Appearance>(metadata = settingsTransition()) {
-                    SettingsAppearance(onNavigateUp = ::onBack)
+                    SettingsAppearance(
+                        toDarkModePage = { backStack.add(VerveDoScreen.Settings.AppearanceDarkMode) },
+                        onNavigateUp = ::onBack
+                    )
+                }
+
+                entry<VerveDoScreen.Settings.AppearanceDarkMode>(metadata = settingsTransition()) {
+                    SettingsAppearanceDarkMode(onNavigateUp = ::onBack)
                 }
 
                 entry<VerveDoScreen.Settings.Interface>(metadata = settingsTransition()) {

@@ -21,6 +21,9 @@ object Constants {
     const val PREF_DARK_MODE = "dark_mode"
     const val PREF_DARK_MODE_DEFAULT = -1 // Follow System
 
+    const val PREF_PURE_BLACK_MODE = "pure_black"
+    const val PREF_PURE_BLACK_MODE_DEFAULT = false
+
     const val PREF_CONTRAST_LEVEL = "contrast_level"
     const val PREF_CONTRAST_LEVEL_DEFAULT = 0f // Normal
 
@@ -29,7 +32,6 @@ object Constants {
 
     const val PREF_SORTING_METHOD = "sorting_method"
     const val PREF_SORTING_METHOD_DEFAULT = 1
-
 
     const val PREF_TEXT_FIELD_AUTO_FOCUS = "textfield_auto_focus"
     const val PREF_TEXT_FIELD_AUTO_FOCUS_DEFAULT = false
@@ -42,6 +44,4 @@ object Constants {
 
     const val PREF_CATEGORIES = "categories"
     const val PREF_CATEGORIES_DEFAULT = "[]"
-
-
 }

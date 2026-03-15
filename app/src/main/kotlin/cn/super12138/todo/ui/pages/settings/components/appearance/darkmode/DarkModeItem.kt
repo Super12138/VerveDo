@@ -4,7 +4,6 @@ import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
@@ -16,6 +15,7 @@ import androidx.compose.material3.ButtonShapes
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.theme.shapeByInteraction
@@ -52,46 +54,47 @@ fun DarkModeItem(
         shapeByInteraction(shapes, pressed, VerveDoDefaults.shapesDefaultAnimationSpec)
 
     val borderWidth by animateDpAsState(if (selected) 3.dp else (-1).dp)
-    Column(
-        modifier = modifier
-            .clip(animatedShape)
-            .clickable(
-                interactionSource = interactionSource,
-                role = Role.Button,
-                onClick = {
-                    VibrationUtils.performHapticFeedback(view)
-                    onSelect()
-                }
-            )
-            .padding(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Surface(
+        onClick = {
+            VibrationUtils.performHapticFeedback(view)
+            onSelect()
+        },
+        modifier = modifier.semantics { role = Role.Button },
+        shape = animatedShape,
+        color = VerveDoDefaults.Colors.Container,
+        interactionSource = interactionSource,
     ) {
-        Box(
-            modifier = Modifier
-                .size(90.dp)
-                .clip(MaterialTheme.shapes.large)
-                .background(containerColor)
-                .border(
-                    width = borderWidth,
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = MaterialTheme.shapes.large
-                ),
+        Column(
+            modifier = Modifier.padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                painter = painterResource(iconRes),
-                contentDescription = null,
-                tint = contentColor,
+            Box(
                 modifier = Modifier
-                    .size(30.dp)
-                    .align(Alignment.Center)
+                    .size(90.dp)
+                    .clip(MaterialTheme.shapes.large)
+                    .background(containerColor)
+                    .border(
+                        width = borderWidth,
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = MaterialTheme.shapes.large
+                    ),
+            ) {
+                Icon(
+                    painter = painterResource(iconRes),
+                    contentDescription = null,
+                    tint = contentColor,
+                    modifier = Modifier
+                        .size(30.dp)
+                        .align(Alignment.Center)
+                )
+            }
+
+            Spacer(Modifier.size(8.dp))
+
+            Text(
+                text = name,
+                style = MaterialTheme.typography.bodyMedium
             )
         }
-
-        Spacer(Modifier.size(8.dp))
-
-        Text(
-            text = name,
-            style = MaterialTheme.typography.bodyMedium
-        )
     }
 }
