@@ -33,7 +33,7 @@ junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 # Plugins
 agp = "9.1.0"
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 ksp = "2.3.6"
 
 [libraries]
