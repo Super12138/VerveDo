@@ -15,7 +15,7 @@ adaptive = "1.2.0"
 nav3Core = "1.0.1"
 # AboutLibraries
 aboutLibsRelease = "14.0.0-b02"
-aboutLibsReleasePlugin = "14.0.0-b02"
+aboutLibsReleasePlugin = "14.0.0-b03"
 # M3 Color
 m3color = "2025.4"
 # Capsule
