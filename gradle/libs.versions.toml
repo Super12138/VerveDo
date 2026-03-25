@@ -6,7 +6,7 @@ lifecycleRuntimeKtx = "2.10.0"
 datastore = "1.2.1"
 # Compose
 activityCompose = "1.13.0"
-composeBom = "2026.03.00"
+composeBom = "2026.03.01"
 liveData = "1.10.5"
 room = "2.8.4"
 # 注意，在1.5.0alpha15中，filterchip排版出现抽动问题，临时降级到14版本
