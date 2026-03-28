@@ -6,11 +6,11 @@
   "author": "Super12138",
   "main": "index.js",
   "scripts": {
-    "build": "tsc updateVersionCode.ts",
+    "build": "tsc -p tsconfig.json",
     "replace": "tsc updateVersionCode.ts && node updateVersionCode.js"
   },
-  "dependencies": {
-    "@types/node": "^25.2.1",
-    "typescript": "^6.0.0"
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^6.0.2"
   }
 }
