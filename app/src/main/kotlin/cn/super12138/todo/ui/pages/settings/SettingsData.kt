@@ -54,14 +54,8 @@ fun SettingsData(
                     uri = it,
                     context = context,
                     onResult = { success ->
-                        if (success) {
-                            scope.launch {
-                                snackbarHostState.showSnackbar(tipBackupSuccess)
-                            }
-                        } else {
-                            scope.launch {
-                                snackbarHostState.showSnackbar(tipBackupFailed)
-                            }
+                        scope.launch {
+                            snackbarHostState.showSnackbar(if (success) tipBackupSuccess else tipBackupFailed)
                         }
                     }
                 )

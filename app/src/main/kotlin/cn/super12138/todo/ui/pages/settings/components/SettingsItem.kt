@@ -1,8 +1,6 @@
 package cn.super12138.todo.ui.pages.settings.components
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Column
@@ -14,13 +12,13 @@ import androidx.compose.material3.ButtonShapes
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -42,14 +40,12 @@ fun SettingsItem(
     @DrawableRes leadingIconRes: Int,
     title: String,
     description: String? = null,
-    enableClick: Boolean = true,
     onClick: () -> Unit = {}
 ) = SettingsItem(
     leadingIcon = painterResource(leadingIconRes),
     title = title,
     description = description,
     trailingContent = null,
-    enableClick = enableClick,
     onClick = onClick,
     modifier = modifier
 )
@@ -65,7 +61,6 @@ fun SettingsItem(
     trailingContent: (@Composable () -> Unit)? = null,
     background: Color = VerveDoDefaults.Colors.Container,
     shapes: ButtonShapes = VerveDoDefaults.shapes(),
-    enableClick: Boolean = true,
     onClick: () -> Unit = {}
 ) = SettingsItem(
     leadingIcon = {
@@ -94,7 +89,6 @@ fun SettingsItem(
     trailingContent = trailingContent,
     background = background,
     shapes = shapes,
-    enableClick = enableClick,
     onClick = onClick,
     modifier = modifier
 )
@@ -107,14 +101,12 @@ fun SettingsItem(
     leadingIcon: ImageVector? = null,
     title: String,
     description: String? = null,
-    enableClick: Boolean = true,
     onClick: () -> Unit = {}
 ) = SettingsItem(
     leadingIcon = leadingIcon,
     title = title,
     description = description,
     trailingContent = null,
-    enableClick = enableClick,
     onClick = onClick,
     modifier = modifier
 )
@@ -129,7 +121,6 @@ fun SettingsItem(
     trailingContent: (@Composable () -> Unit)? = null,
     background: Color = VerveDoDefaults.Colors.Container,
     shapes: ButtonShapes = VerveDoDefaults.shapes(),
-    enableClick: Boolean = true,
     onClick: () -> Unit = {}
 ) = SettingsItem(
     leadingIcon = {
@@ -146,7 +137,6 @@ fun SettingsItem(
     description = description,
     trailingContent = trailingContent,
     background = background,
-    enableClick = enableClick,
     shapes = shapes,
     onClick = onClick,
     modifier = modifier
@@ -163,7 +153,6 @@ fun SettingsItem(
     trailingContent: (@Composable () -> Unit)? = null,
     background: Color = VerveDoDefaults.Colors.Container,
     shapes: ButtonShapes = VerveDoDefaults.shapes(),
-    enableClick: Boolean = true,
     onClick: () -> Unit = {},
 ) = SettingsItem(
     modifier = modifier,
@@ -194,7 +183,6 @@ fun SettingsItem(
     trailingContent = trailingContent,
     background = background,
     shapes = shapes,
-    enableClick = enableClick,
     onClick = onClick
 )
 
@@ -209,7 +197,6 @@ fun SettingsItem(
     background: Color = VerveDoDefaults.Colors.Container,
     shapes: ButtonShapes = VerveDoDefaults.shapes(),
     interactionSource: MutableInteractionSource? = null,
-    enableClick: Boolean = true,
     onClick: () -> Unit = {},
 ) {
     val view = LocalView.current
@@ -218,33 +205,35 @@ fun SettingsItem(
     val animatedShape =
         shapeByInteraction(shapes, pressed, VerveDoDefaults.shapesDefaultAnimationSpec)
 
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .clip(animatedShape)
-            .clickable(
-                interactionSource = userInteractionSource,
-                enabled = enableClick,
-                onClick = {
-                    VibrationUtils.performHapticFeedback(view)
-                    onClick()
-                }
-            )
-            .background(background)
-            .padding(
-                horizontal = VerveDoDefaults.settingsItemHorizontalPadding,
-                vertical = VerveDoDefaults.settingsItemVerticalPadding
-            ),
-        verticalAlignment = Alignment.CenterVertically
+    Surface(
+        onClick = {
+            VibrationUtils.performHapticFeedback(view)
+            onClick()
+        },
+        modifier = modifier.fillMaxWidth(),
+        //.semantics { role = Role.Button },
+        shape = animatedShape,
+        color = background,
+        interactionSource = userInteractionSource,
     ) {
-        leadingIcon?.let { it() }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(
+                    horizontal = VerveDoDefaults.settingsItemHorizontalPadding,
+                    vertical = VerveDoDefaults.settingsItemVerticalPadding
+                ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            leadingIcon?.let { it() }
 
-        Column(modifier = Modifier.weight(1f)) {
-            headlineContent?.let { it() }
-            supportingContent?.let { it() }
+            Column(modifier = Modifier.weight(1f)) {
+                headlineContent?.let { it() }
+                supportingContent?.let { it() }
+            }
+
+            trailingContent?.let { it() }
         }
-
-        trailingContent?.let { it() }
     }
 }
