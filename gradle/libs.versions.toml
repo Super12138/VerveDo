@@ -13,7 +13,7 @@ material3 = "1.5.0-alpha16"
 adaptive = "1.2.0"
 nav3Core = "1.0.1"
 # AboutLibraries
-aboutLibsRelease = "14.0.0-b03"
+aboutLibsRelease = "14.0.0"
 aboutLibsReleasePlugin = "14.0.0"
 # M3 Color
 m3color = "2025.4"
