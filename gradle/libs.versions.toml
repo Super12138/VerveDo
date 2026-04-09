@@ -11,7 +11,7 @@ liveData = "1.10.6"
 room = "2.8.4"
 material3 = "1.5.0-alpha17"
 adaptive = "1.2.0"
-nav3Core = "1.0.1"
+nav3Core = "1.1.0"
 # AboutLibraries
 aboutLibsRelease = "14.0.0"
 aboutLibsReleasePlugin = "14.0.0"
