@@ -99,7 +99,7 @@ class MainViewModel : ViewModel() {
 
     val showConfetti = mutableStateOf(false)
 
-    val toDoListState = LazyListState()
+    val taskListState = LazyListState()
     var searchMode by mutableStateOf(false)
         private set
     val searchFieldState = TextFieldState()

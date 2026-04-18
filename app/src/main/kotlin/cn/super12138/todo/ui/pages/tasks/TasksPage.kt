@@ -74,7 +74,7 @@ fun SharedTransitionScope.TasksPage(
 
     val selectedTodoIds by remember { derivedStateOf { selectedTodos.value } }
     val inSelectedMode by remember { derivedStateOf { !selectedTodoIds.isEmpty() } }
-    val expandedFab by remember { derivedStateOf { viewModel.toDoListState.firstVisibleItemIndex == 0 } }
+    val expandedFab by remember { derivedStateOf { viewModel.taskListState.firstVisibleItemIndex == 0 } }
 
     val filteredTodoList = if (viewModel.searchMode) toDoList.filter {
         it.content.contains(searchFieldState.text, ignoreCase = true) ||
@@ -167,7 +167,7 @@ fun SharedTransitionScope.TasksPage(
                     }
                 } else {
                     LazyColumn(
-                        state = viewModel.toDoListState,
+                        state = viewModel.taskListState,
                         verticalArrangement = Arrangement.spacedBy(VerveDoDefaults.settingsItemPadding),
                         modifier = Modifier
                             .fillMaxSize()

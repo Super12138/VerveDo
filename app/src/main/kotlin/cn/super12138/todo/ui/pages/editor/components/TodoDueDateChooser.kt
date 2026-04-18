@@ -17,6 +17,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,14 +32,16 @@ import cn.super12138.todo.utils.toLocalDateString
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TodoDueDateChooser(
-    value: Long?,
+    value: () -> Long?,
     onValueChange: (Long?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val view = LocalView.current
 
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = value)
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = value())
     val openDialog = remember { mutableStateOf(false) }
+
+    val dateValue by remember { derivedStateOf { value() } }
 
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
@@ -50,7 +53,7 @@ fun TodoDueDateChooser(
     }
 
     TextField(
-        value = value.toLocalDateString(),
+        value = dateValue.toLocalDateString(),
         onValueChange = {},
         label = { Text(stringResource(R.string.label_due_date)) },
         readOnly = true,

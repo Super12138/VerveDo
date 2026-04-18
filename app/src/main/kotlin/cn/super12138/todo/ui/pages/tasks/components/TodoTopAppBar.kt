@@ -10,6 +10,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -123,7 +124,7 @@ fun TodoTopAppBar(
         actions = {
             AnimatedContent(
                 targetState = selectedMode,
-                transitionSpec = { defaultTransitionSpec }
+                transitionSpec = { navIconEnterTransition togetherWith navIconExitTransition }
             ) {
                 if (it) {
                     ActionMultipleSelection(

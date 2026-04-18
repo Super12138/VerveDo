@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -270,7 +271,7 @@ fun TaskEditorPage(
                 )
                 Spacer(modifier = Modifier.size(4.dp))
                 TodoDueDateChooser(
-                    value = uiState.dueDateState,
+                    value = { uiState.dueDateState },
                     onValueChange = { uiState.dueDateState = it },
                     modifier = Modifier.fillMaxWidth()
                 )
