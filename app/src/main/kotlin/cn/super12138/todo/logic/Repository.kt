@@ -19,8 +19,8 @@ class Repository(private val taskDao: TaskDao) : IRepository {
         taskDao.delete(task)
     }
 
-    override suspend fun deleteTaskFromIds(tasks: List<Int>) {
-        taskDao.deleteFromIds(tasks.toSet())
+    override suspend fun deleteTaskFromIds(tasks: Set<Int>) {
+        taskDao.deleteFromIds(tasks)
     }
 
     /*override suspend fun deleteAllTodo() {

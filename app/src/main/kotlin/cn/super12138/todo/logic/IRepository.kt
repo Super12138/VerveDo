@@ -12,7 +12,7 @@ interface IRepository {
 
     suspend fun deleteTask(task: TaskEntity)
 
-    suspend fun deleteTaskFromIds(tasks: List<Int>)
+    suspend fun deleteTaskFromIds(tasks: Set<Int>)
 
     // suspend fun deleteAllTodo()
 }

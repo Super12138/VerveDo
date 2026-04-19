@@ -1,91 +1,47 @@
 package cn.super12138.todo.ui.pages.tasks
 
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.logic.IRepository
 import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.datastore.DataStoreManager
+import cn.super12138.todo.logic.model.ScreenMode
 import cn.super12138.todo.logic.model.SortingMethod
+import cn.super12138.todo.utils.sort
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/*.stateIn(
+scope = viewModelScope,
+started = SharingStarted.WhileSubscribed(5000),
+initialValue = emptyList()
+)*/
+@OptIn(ExperimentalCoroutinesApi::class)
 class TaskViewModel(
     private val repository: IRepository,
     private val dataStoreManager: DataStoreManager
 ) : ViewModel() {
-    private val taskList: Flow<List<TaskEntity>> = repository.getAllTasks()
-    val sortedTaskList: StateFlow<List<TaskEntity>> = dataStoreManager.sortingMethodFlow
-        .flatMapLatest { sortingMethod ->
-            taskList.map { list ->
-                when (SortingMethod.Companion.fromId(sortingMethod)) {
-                    SortingMethod.Sequential -> list.sortedWith(
-                        comparator = compareBy<TaskEntity> { it.isCompleted } // 必须先要按照是否完成排序
-                            .thenBy { it.id }
-                    )
+    private val _uiState = MutableStateFlow(TasksPageUiState())
+    val uiState: StateFlow<TasksPageUiState> = _uiState
 
-                    SortingMethod.Category -> list.sortedWith(
-                        comparator = compareBy<TaskEntity> { it.isCompleted }
-                            .thenBy { it.category }
-                    )
-
-                    SortingMethod.Priority -> list.sortedWith(
-                        comparator = compareBy<TaskEntity> { it.isCompleted }
-                            .thenByDescending { it.priority }
-                            .thenBy(nullsLast()) { it.dueDate }
-                    ) // 优先级高的在前
-
-                    SortingMethod.Completion -> list.sortedWith(
-                        comparator = compareBy<TaskEntity> { it.isCompleted }
-                            .thenBy { it.category }
-                            .thenByDescending { it.priority }
-                    ) // 未完成的在前
-                    SortingMethod.AlphabeticalAscending -> list.sortedWith(
-                        comparator = compareBy<TaskEntity> { it.isCompleted }
-                            .thenBy { it.content }
-                            .thenByDescending { it.priority }
-                    )
-
-                    SortingMethod.AlphabeticalDescending -> list.sortedWith(
-                        comparator = compareBy<TaskEntity> { it.isCompleted }
-                            .thenByDescending { it.content }
-                            .thenByDescending { it.priority }
-                    )
-
-                    SortingMethod.DueDate -> list.sortedWith(
-                        comparator = compareBy<TaskEntity> { it.isCompleted }
-                            // 确保未设置截止日期的任务在最下头
-                            .thenBy(nullsLast()) { it.dueDate }
-                    )
-                }
+    init {
+        val taskList: Flow<List<TaskEntity>> = repository.getAllTasks()
+        // 业务状态流合并
+        dataStoreManager.sortingMethodFlow
+            .flatMapLatest { method -> taskList.map { it.sort(SortingMethod.fromId(method)) } }
+            .onEach { sortedList ->
+                _uiState.update { it.copy(originalTaskList = sortedList) }
             }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Companion.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
-
-    val taskListState = LazyListState()
-    var searchMode by mutableStateOf(false)
-        private set
-    val searchFieldState = TextFieldState()
-
-    // 多选逻辑参考：https://github.com/X1nto/Mauth
-    private val _selectedTodoIds = MutableStateFlow(listOf<Int>())
-    val selectedTodoIds = _selectedTodoIds.asStateFlow()
+            .launchIn(viewModelScope)
+    }
 
     fun addTask(task: TaskEntity) {
         viewModelScope.launch {
@@ -115,14 +71,19 @@ class TaskViewModel(
      * 切换待办的选择状态
      */
     fun toggleTaskSelection(task: TaskEntity) {
-        _selectedTodoIds.update { idList ->
-            if (idList.contains(task.id)) {
-                // 若已经选择取消选择
-                idList - task.id
+        _uiState.update {
+            val newIds = if (it.selectedTaskIds.contains(task.id)) { // 已选择的Id里包含切换选择状态的Id
+                it.selectedTaskIds - task.id // 那么就给他删了
             } else {
-                // 若未选择添加到列表中，立即选中
-                idList + task.id
+                it.selectedTaskIds + task.id // 不然给他加上
             }
+            val newMode = if (newIds.isEmpty()) {
+                // 如果之前是搜索模式，回到搜索模式，否则回到普通模式
+                if (uiState.value.searchTextState.text.isNotEmpty()) ScreenMode.Search else ScreenMode.Default
+            } else {
+                ScreenMode.Selection
+            }
+            it.copy(selectedTaskIds = newIds, screenMode = newMode)
         }
     }
 
@@ -130,34 +91,33 @@ class TaskViewModel(
      * 切换是否全选
      */
     fun selectAllTask() {
-        viewModelScope.launch {
-            taskList.firstOrNull()?.let { tasks ->
-                // 无论是否有选择都全选
-                val allIds = tasks.map { it.id }
-                _selectedTodoIds.value = allIds
-            }
-        }
+        val allIds = uiState.value.taskList.map { it.id }.toSet()
+        _uiState.update { it.copy(selectedTaskIds = allIds) }
     }
 
     /**
      * 清除全部已选择的待办
      */
-    fun clearAllTaskSelection() {
-        _selectedTodoIds.update { emptyList() }
-    }
+    fun clearAllTaskSelection() = _uiState.update { it.copy(selectedTaskIds = emptySet()) }
 
     /**
      * 删除选择的待办
      */
     fun deleteSelectedTask() {
         viewModelScope.launch {
-            repository.deleteTaskFromIds(selectedTodoIds.value)
+            repository.deleteTaskFromIds(uiState.value.selectedTaskIds)
             clearAllTaskSelection()
         }
     }
 
+    fun enterMultiSelectMode(id: Int) =
+        _uiState.update { it.copy(selectedTaskIds = setOf(id), screenMode = ScreenMode.Selection) }
 
-    fun setSearchModeEnabled(enabled: Boolean) {
-        searchMode = enabled
-    }
+    fun exitMultiSelectMode() =
+        _uiState.update { it.copy(selectedTaskIds = emptySet(), screenMode = ScreenMode.Default) }
+
+    fun enterSearchMode() = _uiState.update { it.copy(screenMode = ScreenMode.Search) }
+    fun exitSearchMode() = _uiState.update { it.copy(screenMode = ScreenMode.Default) }
+    fun showDeleteConfirmDialog() = _uiState.update { it.copy(showDeleteConfirmDialog = true) }
+    fun hideDeleteConfirmDialog() = _uiState.update { it.copy(showDeleteConfirmDialog = false) }
 }
