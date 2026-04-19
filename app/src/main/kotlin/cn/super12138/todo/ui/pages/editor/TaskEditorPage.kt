@@ -17,14 +17,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,13 +33,12 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import cn.super12138.todo.R
 import cn.super12138.todo.constants.Constants
 import cn.super12138.todo.logic.database.TaskEntity
-import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.ui.VerveDoDefaults
-import cn.super12138.todo.ui.components.ChipItem
 import cn.super12138.todo.ui.components.ConfirmDialog
 import cn.super12138.todo.ui.components.TodoFloatingActionButton
 import cn.super12138.todo.ui.components.TopAppBarScaffold
@@ -52,7 +48,8 @@ import cn.super12138.todo.ui.pages.editor.components.TodoContentTextField
 import cn.super12138.todo.ui.pages.editor.components.TodoDueDateChooser
 import cn.super12138.todo.ui.pages.editor.components.TodoMarkAsCompletedCheckbox
 import cn.super12138.todo.ui.pages.editor.components.TodoPrioritySlider
-import cn.super12138.todo.ui.pages.editor.state.rememberEditorState
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun SharedTransitionScope.TaskAddPage(
@@ -100,36 +97,14 @@ fun TaskEditorPage(
     task: TaskEntity? = null,
     onSave: (TaskEntity) -> Unit,
     onDelete: () -> Unit,
-    onNavigateUp: () -> Unit
+    onNavigateUp: () -> Unit,
+    viewModel: EditorViewModel = koinViewModel { parametersOf(task) }
 ) {
     // TODO: 本页及其相关组件重组性能检查优化
-    val uiState = rememberEditorState(initialTodo = task)
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    val textFieldAutoFocus by DataStoreManager.textFieldAutoFocusFlow.collectAsState(initial = Constants.PREF_TEXT_FIELD_AUTO_FOCUS_DEFAULT)
-    val originalCategories by DataStoreManager.categoriesFlow.collectAsState(initial = emptyList())
-    val categories = originalCategories
-        .mapIndexed { index, category ->
-            ChipItem(
-                id = index,
-                name = category
-            )
-        } + ChipItem(id = -1, name = stringResource(R.string.label_customization))
-
-    var defaultIndex by remember { mutableIntStateOf(-1) }
-    LaunchedEffect(originalCategories, task) {
-        if (originalCategories.isEmpty()) return@LaunchedEffect
-        if (task == null) {
-            val index = if (categories.size == 1) -1 else 0
-            defaultIndex = index
-            uiState.selectedCategoryIndex = index
-        } else {
-            val index = categories.firstOrNull { it.name == task.category }?.id ?: -1
-            defaultIndex = index
-            uiState.selectedCategoryIndex = index
-        }
-    }
 
     val isCustomCategory by remember {
         derivedStateOf {
@@ -139,7 +114,7 @@ fun TaskEditorPage(
 
     fun checkModifiedBeforeBack() {
         if (uiState.isModified()) {
-            uiState.showExitConfirmDialog = true
+            viewModel.showExitConfirmDialog()
         } else {
             onNavigateUp()
         }
@@ -150,8 +125,8 @@ fun TaskEditorPage(
     // 控制只有第一次进入界面才聚焦待办内容文本框
     var isFirstEntry by rememberSaveable { mutableStateOf(true) }
 
-    LaunchedEffect(isFirstEntry, textFieldAutoFocus) {
-        if (isFirstEntry && textFieldAutoFocus) {
+    LaunchedEffect(isFirstEntry, uiState.isTextFieldAutoFocus) {
+        if (isFirstEntry && uiState.isTextFieldAutoFocus) {
             withFrameNanos { }
             focusRequester.requestFocus()
             keyboardController?.show()
@@ -172,7 +147,7 @@ fun TaskEditorPage(
                         iconRes = R.drawable.ic_delete,
                         expanded = true,
                         containerColor = MaterialTheme.colorScheme.errorContainer,
-                        onClick = { uiState.showDeleteConfirmDialog = true }
+                        onClick = { viewModel.showDeleteConfirmDialog() }
                     )
                 }
                 TodoFloatingActionButton(
@@ -180,19 +155,19 @@ fun TaskEditorPage(
                     iconRes = R.drawable.ic_save,
                     expanded = true,
                     onClick = {
-                        if (uiState.setErrorIfNotValid()) {
+                        if (viewModel.setErrorIfNotValid()) {
                             return@TodoFloatingActionButton
                         } else {
-                            uiState.clearError()
-                            val newTodo = TaskEntity(
+                            viewModel.clearError()
+                            /*val newTodo = TaskEntity(
                                 id = task?.id ?: 0,
                                 content = uiState.taskTextFieldState.text.toString(),
                                 category = if (isCustomCategory) uiState.categoryContent else categories[uiState.selectedCategoryIndex].name,
                                 priority = uiState.priorityState,
                                 dueDate = uiState.dueDateState,
                                 isCompleted = uiState.isCompleted
-                            )
-                            onSave(newTodo)
+                            )*/
+                            onSave(uiState.getNewTaskEntity())
                         }
                     }
                 )
@@ -211,8 +186,8 @@ fun TaskEditorPage(
 
             item(key = 1) {
                 TodoContentTextField(
-                    state = uiState.taskTextFieldState,
-                    isError = uiState.isErrorContent,
+                    state = uiState.taskContentState,
+                    isError = uiState.isContentError,
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester)
@@ -226,10 +201,10 @@ fun TaskEditorPage(
                 )
 
                 TodoCategoryChip(
-                    items = categories,
-                    defaultSelectedItemIndex = defaultIndex,
-                    isLoading = originalCategories.isEmpty(),
-                    onCategorySelected = { uiState.selectedCategoryIndex = it },
+                    items = uiState.categoryList,
+                    defaultSelectedItemIndex = uiState.selectedCategoryIndex,
+                    isLoading = (uiState.categoryList.size - 1) == 0,
+                    onCategorySelected = { viewModel.setSelectedCategory(it) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -243,9 +218,8 @@ fun TaskEditorPage(
                     )
                 ) {
                     TodoCategoryTextField(
-                        value = uiState.categoryContent,
-                        onValueChange = { uiState.categoryContent = it },
-                        isError = uiState.isErrorCategory,
+                        state = uiState.categoryContentState,
+                        isError = uiState.isCategoryError,
                         supportingText = stringResource(uiState.categorySupportingText),
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -260,7 +234,7 @@ fun TaskEditorPage(
 
                 TodoPrioritySlider(
                     value = { uiState.priorityState },
-                    onValueChange = { uiState.priorityState = it },
+                    onValueChange = { viewModel.setPriority(it) },
                 )
             }
 
@@ -272,13 +246,13 @@ fun TaskEditorPage(
                 Spacer(modifier = Modifier.size(4.dp))
                 TodoDueDateChooser(
                     value = { uiState.dueDateState },
-                    onValueChange = { uiState.dueDateState = it },
+                    onValueChange = { viewModel.setDueDate(it) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 if (task != null) {
                     TodoMarkAsCompletedCheckbox(
                         checked = uiState.isCompleted,
-                        onCheckedChange = { uiState.isCompleted = it },
+                        onCheckedChange = { viewModel.setCompleted(it) },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -295,10 +269,10 @@ fun TaskEditorPage(
         iconRes = R.drawable.ic_undo,
         text = stringResource(R.string.tip_discard_changes),
         onConfirm = {
-            uiState.showExitConfirmDialog = false
+            viewModel.hideExitConfirmDialog()
             onNavigateUp()
         },
-        onDismiss = { uiState.showExitConfirmDialog = false }
+        onDismiss = { viewModel.hideExitConfirmDialog() }
     )
 
     ConfirmDialog(
@@ -306,6 +280,6 @@ fun TaskEditorPage(
         iconRes = R.drawable.ic_delete,
         text = stringResource(R.string.tip_delete_task, 1),
         onConfirm = onDelete,
-        onDismiss = { uiState.showDeleteConfirmDialog = false }
+        onDismiss = { viewModel.hideDeleteConfirmDialog() }
     )
 }

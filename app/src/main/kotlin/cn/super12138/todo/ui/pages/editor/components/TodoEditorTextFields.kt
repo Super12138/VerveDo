@@ -40,19 +40,17 @@ fun TodoContentTextField(
 
 @Composable
 fun TodoCategoryTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    state: TextFieldState,
     isError: Boolean,
-    supportingText: String = stringResource(R.string.tip_short_category),
-    modifier: Modifier = Modifier
+    supportingText: String = stringResource(R.string.tip_short_category)
 ) {
     TextField(
-        value = value,
-        onValueChange = onValueChange,
+        state = state,
         label = { Text(stringResource(R.string.label_enter_category_name)) },
         isError = isError,
         supportingText = { Text(supportingText) },
-        maxLines = 1,
+        lineLimits = TextFieldLineLimits.SingleLine,
         modifier = modifier
     )
 }
