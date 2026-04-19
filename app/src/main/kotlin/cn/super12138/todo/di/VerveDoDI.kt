@@ -15,9 +15,9 @@ import cn.super12138.todo.logic.database.TaskDatabase
 import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.ui.navigation.TopLevelBackStack
 import cn.super12138.todo.ui.navigation.VerveDoScreen
-import cn.super12138.todo.ui.viewmodels.EditorViewModel
+import cn.super12138.todo.ui.pages.editor.EditorViewModel
 import cn.super12138.todo.ui.viewmodels.MainViewModel
-import cn.super12138.todo.ui.viewmodels.OverviewViewModel
+import cn.super12138.todo.ui.pages.overview.OverviewViewModel
 import cn.super12138.todo.ui.viewmodels.SettingsViewModel
 import cn.super12138.todo.ui.pages.tasks.TaskViewModel
 import org.koin.android.ext.koin.androidApplication

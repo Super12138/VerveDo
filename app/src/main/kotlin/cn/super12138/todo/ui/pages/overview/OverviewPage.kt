@@ -8,22 +8,16 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cn.super12138.todo.R
-import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.pages.overview.components.ListCard
 import cn.super12138.todo.ui.pages.overview.components.ProgressCard
 import cn.super12138.todo.ui.pages.overview.components.RoundedCornerCardLarge
-import cn.super12138.todo.ui.viewmodels.MainViewModel
-import cn.super12138.todo.ui.viewmodels.OverviewViewModel
-import cn.super12138.todo.utils.SystemUtils
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -32,38 +26,7 @@ fun OverviewPage(
     modifier: Modifier = Modifier,
     viewModel: OverviewViewModel = koinViewModel()
 ) {
-    val toDos by viewModel.sortedTaskList.collectAsState(initial = emptyList())
-    val totalTasks by remember { derivedStateOf { toDos.size } }
-    val completedTasks by remember { derivedStateOf { toDos.count { it.isCompleted } } }
-
-    val todayMillis = SystemUtils.getTodayEightAM()
-    val dayMillis = 24L * 60 * 60 * 1000
-
-    val todayTodo by remember {
-        derivedStateOf {
-            toDos.filter { todo ->
-                val due = todo.dueDate ?: return@filter false
-                due == todayMillis
-            }
-        }
-    }
-
-    val nextWeekTodo by remember {
-        derivedStateOf {
-            val weekFromToday = todayMillis + 7 * dayMillis
-            toDos
-                .filter { todo ->
-                    val due = todo.dueDate ?: return@filter false
-                    due in todayMillis..weekFromToday && !todo.isCompleted
-                }
-                .sortedWith(
-                    comparator = compareBy<TaskEntity> { it.dueDate }
-                        .thenBy { it.category }
-                        .thenByDescending { it.priority }
-                )
-        }
-    }
-
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     TopAppBarScaffold(
         title = stringResource(R.string.page_overview),
@@ -80,14 +43,14 @@ fun OverviewPage(
                     RoundedCornerCardLarge(
                         iconRes = R.drawable.ic_apps,
                         title = stringResource(R.string.title_all_task),
-                        count = totalTasks
+                        count = uiState.totalTasks
                     )
                 }
                 item {
                     RoundedCornerCardLarge(
                         iconRes = R.drawable.ic_check_circle,
                         title = stringResource(R.string.title_completed_task),
-                        count = completedTasks,
+                        count = uiState.completedTasks,
                         containerColor = MaterialTheme.colorScheme.secondaryContainer
                     )
                 }
@@ -95,22 +58,22 @@ fun OverviewPage(
                     RoundedCornerCardLarge(
                         iconRes = R.drawable.ic_pending,
                         title = stringResource(R.string.title_pending_task),
-                        count = totalTasks - completedTasks,
+                        count = uiState.totalTasks - uiState.completedTasks,
                         containerColor = MaterialTheme.colorScheme.errorContainer
                     )
                 }
                 item {
                     ProgressCard(
                         title = stringResource(R.string.title_today_task),
-                        total = todayTodo.size,
-                        completed = todayTodo.count { it.isCompleted }
+                        total = uiState.todayTasks.size,
+                        completed = uiState.todayTasks.count { it.isCompleted }
                     )
                 }
 
                 item {
                     ListCard(
                         title = stringResource(R.string.title_upcoming_task),
-                        list = nextWeekTodo
+                        list = uiState.nextWeekTasks
                     )
                 }
             }
