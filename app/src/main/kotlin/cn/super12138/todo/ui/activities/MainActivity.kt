@@ -22,31 +22,41 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation3.runtime.NavKey
 import cn.super12138.todo.constants.Constants
 import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.PaletteStyle
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.Konfetti
+import cn.super12138.todo.ui.navigation.TopLevelBackStack
 import cn.super12138.todo.ui.navigation.TopNavigation
 import cn.super12138.todo.ui.navigation.VerveDoDestinations
 import cn.super12138.todo.ui.theme.VerveDoTheme
 import cn.super12138.todo.ui.viewmodels.MainViewModel
 import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.configureEdgeToEdge
+import org.koin.android.ext.android.get
+import org.koin.android.scope.AndroidScopeComponent
+import org.koin.androidx.scope.activityRetainedScope
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.scope.Scope
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), AndroidScopeComponent {
+    override val scope: Scope by activityRetainedScope()
+
+    @OptIn(KoinExperimentalAPI::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         configureEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
-            val mainViewModel: MainViewModel = viewModel()
+            val mainViewModel: MainViewModel = koinViewModel()
 
             val showConfetti = mainViewModel.showConfetti
 
-            val mainBackStack = mainViewModel.mainBackStack
+            val backStack: TopLevelBackStack<NavKey> = get()
             val navigationScaffoldState = rememberNavigationSuiteScaffoldState()
 
             // 主题
@@ -90,9 +100,10 @@ class MainActivity : ComponentActivity() {
             }
 
             // 当BackStack出现非顶层路由时，隐藏底部导航栏
-            LaunchedEffect(mainBackStack.backStack.lastOrNull()) {
+            // TODO: BACKSTACK优化代码，减少重复间接调用
+            LaunchedEffect(backStack.backStack.lastOrNull()) {
                 val isTopLevel =
-                    mainBackStack.backStack.lastOrNull() in VerveDoDestinations.entries.map { it.route }
+                    backStack.backStack.lastOrNull() in VerveDoDestinations.entries.map { it.route }
                 if (isTopLevel) {
                     if (navigationScaffoldState.currentValue != NavigationSuiteScaffoldValue.Visible) navigationScaffoldState.show()
                 } else {
@@ -116,7 +127,7 @@ class MainActivity : ComponentActivity() {
                         state = navigationScaffoldState,
                         navigationSuiteItems = {
                             VerveDoDestinations.entries.forEach { destination ->
-                                val selected = destination.route == mainBackStack.topLevelKey
+                                val selected = destination.route == backStack.topLevelKey
                                 item(
                                     icon = {
                                         Crossfade(selected) {
@@ -137,7 +148,7 @@ class MainActivity : ComponentActivity() {
                                     selected = selected,
                                     onClick = {
                                         VibrationUtils.performHapticFeedback(view)
-                                        mainBackStack.addTopLevel(destination.route)
+                                        backStack.addTopLevel(destination.route)
                                     }
                                 )
                             }
@@ -146,8 +157,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize()
                     ) {
                         TopNavigation(
-                            backStack = mainBackStack,
-                            viewModel = mainViewModel,
+                            backStack = backStack,
                             modifier = Modifier.fillMaxSize()
                         )
                     }

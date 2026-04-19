@@ -25,17 +25,19 @@ import cn.super12138.todo.ui.pages.settings.components.SettingsCategory
 import cn.super12138.todo.ui.pages.settings.components.SettingsContainer
 import cn.super12138.todo.ui.pages.settings.components.SettingsItem
 import cn.super12138.todo.ui.viewmodels.MainViewModel
+import cn.super12138.todo.ui.viewmodels.SettingsViewModel
 import cn.super12138.todo.utils.SystemUtils
 import cn.super12138.todo.utils.restartApp
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsData(
-    viewModel: MainViewModel,
+    modifier: Modifier = Modifier,
     toCategoryManager: () -> Unit,
     onNavigateUp: () -> Unit,
-    modifier: Modifier = Modifier
+    viewModel: SettingsViewModel= koinViewModel()
 ) {
     val context = LocalContext.current
     var showRestoreDialog by rememberSaveable { mutableStateOf(false) }

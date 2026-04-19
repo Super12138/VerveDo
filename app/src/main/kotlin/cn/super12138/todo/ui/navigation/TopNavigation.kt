@@ -27,13 +27,14 @@ import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.ui.theme.materialSharedAxisX
 import cn.super12138.todo.ui.theme.veilFade
 import cn.super12138.todo.ui.viewmodels.MainViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TopNavigation(
     backStack: TopLevelBackStack<NavKey>,
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel
+    viewModel: MainViewModel= koinViewModel()
 ) {
     fun onBack() {
         backStack.removeLast()

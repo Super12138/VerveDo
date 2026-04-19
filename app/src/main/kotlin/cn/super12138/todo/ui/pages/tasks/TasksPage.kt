@@ -54,14 +54,15 @@ import cn.super12138.todo.ui.pages.tasks.components.TodoTopAppBar
 import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.ui.viewmodels.MainViewModel
 import cn.super12138.todo.utils.toLocalDateString
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SharedTransitionScope.TasksPage(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel,
     toTodoAddPage: () -> Unit,
     toTodoEditPage: (TaskEntity) -> Unit,
+    viewModel: MainViewModel= koinViewModel()
 ) {
     val animatedVisibilityScope = LocalNavAnimatedContentScope.current
 

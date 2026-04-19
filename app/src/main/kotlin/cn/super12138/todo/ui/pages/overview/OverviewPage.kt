@@ -22,13 +22,15 @@ import cn.super12138.todo.ui.pages.overview.components.ListCard
 import cn.super12138.todo.ui.pages.overview.components.ProgressCard
 import cn.super12138.todo.ui.pages.overview.components.RoundedCornerCardLarge
 import cn.super12138.todo.ui.viewmodels.MainViewModel
+import cn.super12138.todo.ui.viewmodels.OverviewViewModel
 import cn.super12138.todo.utils.SystemUtils
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun OverviewPage(
-    viewModel: MainViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: OverviewViewModel = koinViewModel()
 ) {
     val toDos by viewModel.sortedTaskList.collectAsState(initial = emptyList())
     val totalTasks by remember { derivedStateOf { toDos.size } }

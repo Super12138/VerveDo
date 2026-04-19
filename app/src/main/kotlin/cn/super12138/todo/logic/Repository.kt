@@ -1,13 +1,10 @@
 package cn.super12138.todo.logic
 
-import cn.super12138.todo.VerveDoApp
+import cn.super12138.todo.logic.database.TaskDao
 import cn.super12138.todo.logic.database.TaskEntity
 import kotlinx.coroutines.flow.Flow
 
-object Repository : IRepository {
-    private val database get() = VerveDoApp.taskDatabase
-    private val taskDao = database.taskDao()
-
+class Repository(private val taskDao: TaskDao) : IRepository {
     override suspend fun insertTask(task: TaskEntity) {
         taskDao.insert(task)
     }
