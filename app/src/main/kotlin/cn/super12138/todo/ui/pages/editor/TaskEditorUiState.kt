@@ -38,7 +38,7 @@ data class TaskEditorUiState(
         return isModified
     }
 
-    fun getNewTaskEntity(): TaskEntity {
+    /*fun getNewTaskEntity(): TaskEntity {
         return TaskEntity(
             id = initialTask?.id ?: 0,
             content = taskContentState.text.toString(),
@@ -47,5 +47,5 @@ data class TaskEditorUiState(
             isCompleted = isCompleted,
             dueDate = dueDateState
         )
-    }
+    }*/
 }

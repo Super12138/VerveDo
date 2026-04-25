@@ -2,13 +2,36 @@ package cn.super12138.todo.ui.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import cn.super12138.todo.logic.IRepository
+import cn.super12138.todo.logic.database.TaskEntity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class MainViewModel : ViewModel() {
+class MainViewModel(private val repository: IRepository) : ViewModel() {
     val showConfetti = mutableStateOf(false)
 
     fun playConfetti() {
         showConfetti.value = true
     }
+
+    fun addTask(task: TaskEntity) {
+        viewModelScope.launch {
+            repository.insertTask(task)
+        }
+    }
+
+    fun updateTask(task: TaskEntity) {
+        viewModelScope.launch {
+            repository.updateTask(task)
+        }
+    }
+
+    fun deleteTask(task: TaskEntity) {
+        viewModelScope.launch {
+            repository.deleteTask(task)
+        }
+    }
+
 }

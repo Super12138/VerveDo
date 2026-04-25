@@ -43,21 +43,9 @@ class TaskViewModel(
             .launchIn(viewModelScope)
     }
 
-    fun addTask(task: TaskEntity) {
-        viewModelScope.launch {
-            repository.insertTask(task)
-        }
-    }
-
     fun updateTask(task: TaskEntity) {
         viewModelScope.launch {
             repository.updateTask(task)
-        }
-    }
-
-    fun deleteTask(task: TaskEntity) {
-        viewModelScope.launch {
-            repository.deleteTask(task)
         }
     }
 

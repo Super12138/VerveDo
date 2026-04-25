@@ -52,13 +52,13 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
         super.onCreate(savedInstanceState)
         setContent {
             val mainViewModel: MainViewModel = koinViewModel()
+            val settingsViewModel: SettingsViewModel = koinViewModel()
 
             val showConfetti = mainViewModel.showConfetti
 
             val backStack: TopLevelBackStack<NavKey> = get()
             val navigationScaffoldState = rememberNavigationSuiteScaffoldState()
 
-            val settingsViewModel: SettingsViewModel = koinViewModel()
             val appearanceUiState by settingsViewModel.appearanceUiState.collectAsStateWithLifecycle(
                 SettingsAppearanceUiState()
             )

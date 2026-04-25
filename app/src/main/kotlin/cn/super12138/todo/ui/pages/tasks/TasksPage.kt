@@ -48,6 +48,7 @@ import cn.super12138.todo.ui.pages.tasks.components.TasksTopAppBar
 import cn.super12138.todo.ui.pages.tasks.components.TodoCard
 import cn.super12138.todo.ui.pages.tasks.components.TodoSearchTextField
 import cn.super12138.todo.ui.theme.fadeScale
+import cn.super12138.todo.ui.viewmodels.MainViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -56,7 +57,8 @@ fun SharedTransitionScope.TasksPage(
     modifier: Modifier = Modifier,
     toTodoAddPage: () -> Unit,
     toTodoEditPage: (TaskEntity) -> Unit,
-    viewModel: TaskViewModel = koinViewModel()
+    viewModel: TaskViewModel = koinViewModel(),
+    mainViewModel: MainViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val animatedVisibilityScope = LocalNavAnimatedContentScope.current
@@ -180,7 +182,7 @@ fun SharedTransitionScope.TasksPage(
                                 },
                                 onChecked = {
                                     viewModel.updateTask(task.copy(isCompleted = true))
-                                    // TODO: viewModel.playConfetti()
+                                    mainViewModel.playConfetti()
                                 },
                                 modifier = Modifier
                                     .sharedBounds(

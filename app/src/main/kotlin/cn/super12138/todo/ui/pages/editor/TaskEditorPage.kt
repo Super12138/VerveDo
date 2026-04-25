@@ -54,6 +54,7 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun SharedTransitionScope.TaskAddPage(
     modifier: Modifier = Modifier,
+    onSave: (TaskEntity) -> Unit,
     onNavigateUp: () -> Unit
 ) = TaskEditorPage(
     task = null,
@@ -64,6 +65,8 @@ fun SharedTransitionScope.TaskAddPage(
             resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds
         )
         .skipToLookaheadSize(), // 这个修饰符必须放后面
+    onSave = onSave,
+    onDelete = {},
     onNavigateUp = onNavigateUp
 )
 
@@ -71,6 +74,8 @@ fun SharedTransitionScope.TaskAddPage(
 fun SharedTransitionScope.TaskEditPage(
     modifier: Modifier = Modifier,
     task: TaskEntity,
+    onSave: (TaskEntity) -> Unit,
+    onDelete: () -> Unit,
     onNavigateUp: () -> Unit
 ) = TaskEditorPage(
     task = task,
@@ -80,6 +85,8 @@ fun SharedTransitionScope.TaskEditPage(
         resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds
     ),
     //TODO: 没想好加不加 .skipToLookaheadSize(),
+    onSave = onSave,
+    onDelete = onDelete,
     onNavigateUp = onNavigateUp
 )
 
@@ -89,6 +96,8 @@ fun TaskEditorPage(
     modifier: Modifier = Modifier,
     task: TaskEntity? = null,
     onNavigateUp: () -> Unit,
+    onSave: (TaskEntity) -> Unit,
+    onDelete: () -> Unit,
     viewModel: EditorViewModel = koinViewModel { parametersOf(task) }
 ) {
     // TODO: 本页及其相关组件重组性能检查优化
@@ -150,16 +159,16 @@ fun TaskEditorPage(
                             return@TodoFloatingActionButton
                         } else {
                             viewModel.clearError()
-                            /*val newTodo = TaskEntity(
+                            val newTask = TaskEntity(
                                 id = task?.id ?: 0,
-                                content = uiState.taskTextFieldState.text.toString(),
-                                category = if (isCustomCategory) uiState.categoryContent else categories[uiState.selectedCategoryIndex].name,
+                                content = uiState.taskContentState.text.toString(),
+                                category = if (isCustomCategory) uiState.categoryContentState.text.toString() else uiState.categoryList[uiState.selectedCategoryIndex].name,
                                 priority = uiState.priorityState,
                                 dueDate = uiState.dueDateState,
                                 isCompleted = uiState.isCompleted
-                            )*/
-                            viewModel.addTask(uiState.getNewTaskEntity())
-                            onNavigateUp()
+                            )
+                            onSave(newTask)
+                            viewModel.resetUiState()
                         }
                     }
                 )
@@ -272,8 +281,8 @@ fun TaskEditorPage(
         iconRes = R.drawable.ic_delete,
         text = stringResource(R.string.tip_delete_task, 1),
         onConfirm = {
-            task?.let { viewModel.deleteTask(it) }
-            onNavigateUp()
+            onDelete()
+            viewModel.resetUiState()
         },
         onDismiss = { viewModel.hideDeleteConfirmDialog() }
     )

@@ -63,24 +63,6 @@ class EditorViewModel(
             .launchIn(viewModelScope)
     }
 
-    fun addTask(task: TaskEntity) {
-        viewModelScope.launch {
-            repository.insertTask(task)
-        }
-    }
-
-    fun updateTask(task: TaskEntity) {
-        viewModelScope.launch {
-            repository.updateTask(task)
-        }
-    }
-
-    fun deleteTask(task: TaskEntity) {
-        viewModelScope.launch {
-            repository.deleteTask(task)
-        }
-    }
-
     fun setPriority(priority: Float) = _uiState.update { it.copy(priorityState = priority) }
     fun setDueDate(dueDate: Long?) = _uiState.update { it.copy(dueDateState = dueDate) }
     fun setCompleted(isCompleted: Boolean) = _uiState.update { it.copy(isCompleted = isCompleted) }
@@ -111,5 +93,10 @@ class EditorViewModel(
         }
 
         return hasError
+    }
+
+    // TODO: 修复状态重置问题
+    fun resetUiState() {
+        _uiState.value = TaskEditorUiState(null)
     }
 }
