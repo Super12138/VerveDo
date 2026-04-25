@@ -180,7 +180,7 @@ fun SharedTransitionScope.TasksPage(
                                 },
                                 onChecked = {
                                     viewModel.updateTask(task.copy(isCompleted = true))
-                                    viewModel.playConfetti()
+                                    // TODO: viewModel.playConfetti()
                                 },
                                 modifier = Modifier
                                     .sharedBounds(

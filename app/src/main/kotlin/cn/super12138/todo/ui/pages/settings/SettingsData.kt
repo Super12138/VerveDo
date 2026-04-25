@@ -24,8 +24,6 @@ import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.pages.settings.components.SettingsCategory
 import cn.super12138.todo.ui.pages.settings.components.SettingsContainer
 import cn.super12138.todo.ui.pages.settings.components.SettingsItem
-import cn.super12138.todo.ui.viewmodels.MainViewModel
-import cn.super12138.todo.ui.viewmodels.SettingsViewModel
 import cn.super12138.todo.utils.SystemUtils
 import cn.super12138.todo.utils.restartApp
 import kotlinx.coroutines.launch
@@ -37,7 +35,7 @@ fun SettingsData(
     modifier: Modifier = Modifier,
     toCategoryManager: () -> Unit,
     onNavigateUp: () -> Unit,
-    viewModel: SettingsViewModel= koinViewModel()
+    viewModel: SettingsViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
     var showRestoreDialog by rememberSaveable { mutableStateOf(false) }

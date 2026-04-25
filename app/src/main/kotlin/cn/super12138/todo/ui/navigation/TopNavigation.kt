@@ -26,15 +26,12 @@ import cn.super12138.todo.ui.pages.tasks.TasksPage
 import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.ui.theme.materialSharedAxisX
 import cn.super12138.todo.ui.theme.veilFade
-import cn.super12138.todo.ui.viewmodels.MainViewModel
-import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TopNavigation(
     backStack: TopLevelBackStack<NavKey>,
-    modifier: Modifier = Modifier,
-    viewModel: MainViewModel= koinViewModel()
+    modifier: Modifier = Modifier
 ) {
     fun onBack() {
         backStack.removeLast()
@@ -81,42 +78,27 @@ fun TopNavigation(
             predictivePopTransitionSpec = { defaultTransition },
             entryProvider = entryProvider {
                 entry<VerveDoScreen.Overview> {
-                    OverviewPage(viewModel = viewModel)
+                    OverviewPage()
                 }
 
                 entry<VerveDoScreen.Tasks> {
                     TasksPage(
-                        viewModel = viewModel,
                         toTodoAddPage = { backStack.add(VerveDoScreen.Editor.Add) },
                         toTodoEditPage = { backStack.add(VerveDoScreen.Editor.Edit(it)) }
                     )
                 }
 
                 entry<VerveDoScreen.Editor.Add>(metadata = editorTransition()) {
-                    TaskAddPage(
-                        onSave = {
-                            viewModel.addTask(it)
-                            onBack()
-                        },
-                        onNavigateUp = ::onBack
-                    )
+                    TaskAddPage(onNavigateUp = ::onBack)
                 }
 
                 entry<VerveDoScreen.Editor.Edit>(metadata = editorTransition()) { editorArgs ->
+                    /*// 如果原来的待办状态为未完成并且修改后状态为完成
+                    if (!editorArgs.toDo.isCompleted && it.isCompleted) {
+                        viewModel.playConfetti()
+                    }*/
                     TaskEditPage(
-                        task = editorArgs.toDo,
-                        onSave = {
-                            viewModel.addTask(it)
-                            // 如果原来的待办状态为未完成并且修改后状态为完成
-                            if (!editorArgs.toDo.isCompleted && it.isCompleted) {
-                                viewModel.playConfetti()
-                            }
-                            onBack()
-                        },
-                        onDelete = {
-                            viewModel.deleteTask(editorArgs.toDo)
-                            onBack()
-                        },
+                        task = editorArgs.task,
                         onNavigateUp = ::onBack
                     )
                 }
@@ -147,7 +129,6 @@ fun TopNavigation(
 
                 entry<VerveDoScreen.Settings.Data>(metadata = settingsTransition()) {
                     SettingsData(
-                        viewModel = viewModel,
                         toCategoryManager = { backStack.add(VerveDoScreen.Settings.DataCategory) },
                         onNavigateUp = ::onBack
                     )

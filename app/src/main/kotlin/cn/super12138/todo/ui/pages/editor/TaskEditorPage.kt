@@ -54,7 +54,6 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun SharedTransitionScope.TaskAddPage(
     modifier: Modifier = Modifier,
-    onSave: (TaskEntity) -> Unit,
     onNavigateUp: () -> Unit
 ) = TaskEditorPage(
     task = null,
@@ -65,8 +64,6 @@ fun SharedTransitionScope.TaskAddPage(
             resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds
         )
         .skipToLookaheadSize(), // 这个修饰符必须放后面
-    onSave = onSave,
-    onDelete = {},
     onNavigateUp = onNavigateUp
 )
 
@@ -74,8 +71,6 @@ fun SharedTransitionScope.TaskAddPage(
 fun SharedTransitionScope.TaskEditPage(
     modifier: Modifier = Modifier,
     task: TaskEntity,
-    onSave: (TaskEntity) -> Unit,
-    onDelete: () -> Unit,
     onNavigateUp: () -> Unit
 ) = TaskEditorPage(
     task = task,
@@ -85,8 +80,6 @@ fun SharedTransitionScope.TaskEditPage(
         resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds
     ),
     //TODO: 没想好加不加 .skipToLookaheadSize(),
-    onSave = onSave,
-    onDelete = onDelete,
     onNavigateUp = onNavigateUp
 )
 
@@ -95,8 +88,6 @@ fun SharedTransitionScope.TaskEditPage(
 fun TaskEditorPage(
     modifier: Modifier = Modifier,
     task: TaskEntity? = null,
-    onSave: (TaskEntity) -> Unit,
-    onDelete: () -> Unit,
     onNavigateUp: () -> Unit,
     viewModel: EditorViewModel = koinViewModel { parametersOf(task) }
 ) {
@@ -167,7 +158,8 @@ fun TaskEditorPage(
                                 dueDate = uiState.dueDateState,
                                 isCompleted = uiState.isCompleted
                             )*/
-                            onSave(uiState.getNewTaskEntity())
+                            viewModel.addTask(uiState.getNewTaskEntity())
+                            onNavigateUp()
                         }
                     }
                 )
@@ -279,7 +271,10 @@ fun TaskEditorPage(
         visible = uiState.showDeleteConfirmDialog,
         iconRes = R.drawable.ic_delete,
         text = stringResource(R.string.tip_delete_task, 1),
-        onConfirm = onDelete,
+        onConfirm = {
+            task?.let { viewModel.deleteTask(it) }
+            onNavigateUp()
+        },
         onDismiss = { viewModel.hideDeleteConfirmDialog() }
     )
 }

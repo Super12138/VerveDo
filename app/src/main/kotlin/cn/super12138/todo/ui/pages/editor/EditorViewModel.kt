@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.R
+import cn.super12138.todo.logic.IRepository
+import cn.super12138.todo.logic.Repository
 import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.ui.components.ChipItem
@@ -13,11 +15,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class EditorViewModel(
     private val initialTask: TaskEntity? = null,
     private val context: Context,
-    private val dataStoreManager: DataStoreManager
+    private val repository: IRepository,
+    private val dataStoreManager: DataStoreManager,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(TaskEditorUiState())
     val uiState: StateFlow<TaskEditorUiState> = _uiState
@@ -57,6 +61,24 @@ class EditorViewModel(
                 }
             }
             .launchIn(viewModelScope)
+    }
+
+    fun addTask(task: TaskEntity) {
+        viewModelScope.launch {
+            repository.insertTask(task)
+        }
+    }
+
+    fun updateTask(task: TaskEntity) {
+        viewModelScope.launch {
+            repository.updateTask(task)
+        }
+    }
+
+    fun deleteTask(task: TaskEntity) {
+        viewModelScope.launch {
+            repository.deleteTask(task)
+        }
     }
 
     fun setPriority(priority: Float) = _uiState.update { it.copy(priorityState = priority) }

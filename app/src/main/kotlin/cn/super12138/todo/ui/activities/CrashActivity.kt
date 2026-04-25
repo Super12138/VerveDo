@@ -6,20 +6,21 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cn.super12138.todo.R
-import cn.super12138.todo.constants.Constants
-import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.logic.model.DarkMode
-import cn.super12138.todo.logic.model.PaletteStyle
 import cn.super12138.todo.ui.pages.crash.CrashPage
+import cn.super12138.todo.ui.pages.settings.SettingsAppearanceUiState
+import cn.super12138.todo.ui.pages.settings.SettingsInterfaceUiState
+import cn.super12138.todo.ui.pages.settings.SettingsViewModel
 import cn.super12138.todo.ui.theme.VerveDoTheme
 import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.configureEdgeToEdge
+import org.koin.compose.viewmodel.koinViewModel
 
 class CrashActivity : ComponentActivity() {
     companion object {
@@ -37,37 +38,38 @@ class CrashActivity : ComponentActivity() {
         val crashLogs = intent.getStringExtra("crash_logs")
 
         setContent {
-            val dynamicColor by DataStoreManager.dynamicColorFlow.collectAsState(initial = Constants.PREF_DYNAMIC_COLOR_DEFAULT)
-            val paletteStyle by DataStoreManager.paletteStyleFlow.collectAsState(initial = Constants.PREF_PALETTE_STYLE_DEFAULT)
-            val contrastLevel by DataStoreManager.contrastLevelFlow.collectAsState(initial = Constants.PREF_CONTRAST_LEVEL_DEFAULT)
-            val darkMode by DataStoreManager.darkModeFlow.collectAsState(initial = Constants.PREF_DARK_MODE_DEFAULT)
-            val pureBlackMode by DataStoreManager.pureBlackFlow.collectAsState(initial = Constants.PREF_PURE_BLACK_MODE_DEFAULT)
-            val hapticFeedback by DataStoreManager.hapticFeedbackFlow.collectAsState(initial = Constants.PREF_HAPTIC_FEEDBACK_DEFAULT)
+            val settingsViewModel: SettingsViewModel = koinViewModel()
+            val appearanceUiState by settingsViewModel.appearanceUiState.collectAsStateWithLifecycle(
+                SettingsAppearanceUiState()
+            )
+            val interfaceUiState by settingsViewModel.interfaceUiState.collectAsStateWithLifecycle(
+                SettingsInterfaceUiState()
+            )
 
-            val darkTheme = when (DarkMode.fromId(darkMode)) {
+            val darkTheme = when (appearanceUiState.darkMode) {
                 DarkMode.FollowSystem -> isSystemInDarkTheme()
                 DarkMode.Light -> false
                 DarkMode.Dark -> true
             }
             // 配置状态栏和底部导航栏的颜色（在用户切换深色模式时）
             // https://github.com/dn0ne/lotus/blob/master/app/src/main/java/com/dn0ne/player/MainActivity.kt#L266
-            LaunchedEffect(darkMode) {
+            LaunchedEffect(appearanceUiState.darkMode) {
                 WindowCompat.getInsetsController(window, window.decorView).apply {
                     isAppearanceLightStatusBars = !darkTheme
                     isAppearanceLightNavigationBars = !darkTheme
                 }
             }
 
-            LaunchedEffect(hapticFeedback) {
-                VibrationUtils.setEnabled(hapticFeedback)
+            LaunchedEffect(interfaceUiState.hapticFeedback) {
+                VibrationUtils.setEnabled(interfaceUiState.hapticFeedback)
             }
 
             VerveDoTheme(
                 darkTheme = darkTheme,
-                pureBlackMode = pureBlackMode,
-                style = PaletteStyle.fromId(paletteStyle),
-                contrastLevel = contrastLevel.toDouble(),
-                dynamicColor = dynamicColor
+                pureBlackMode = appearanceUiState.pureBlackMode,
+                style = appearanceUiState.paletteStyle,
+                contrastLevel = appearanceUiState.contrastLevel.value.toDouble(),
+                dynamicColor = appearanceUiState.dynamicColor
             ) {
                 CrashPage(
                     crashLog = crashLogs ?: stringResource(R.string.tip_no_crash_logs),

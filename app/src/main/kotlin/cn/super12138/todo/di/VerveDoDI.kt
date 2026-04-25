@@ -16,13 +16,14 @@ import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.ui.navigation.TopLevelBackStack
 import cn.super12138.todo.ui.navigation.VerveDoScreen
 import cn.super12138.todo.ui.pages.editor.EditorViewModel
-import cn.super12138.todo.ui.viewmodels.MainViewModel
 import cn.super12138.todo.ui.pages.overview.OverviewViewModel
-import cn.super12138.todo.ui.viewmodels.SettingsViewModel
+import cn.super12138.todo.ui.pages.settings.SettingsViewModel
 import cn.super12138.todo.ui.pages.tasks.TaskViewModel
+import cn.super12138.todo.ui.viewmodels.MainViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.scope.dsl.activityRetainedScope
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -67,7 +68,17 @@ object VerveDoDI {
         viewModelOf(::MainViewModel)
         viewModelOf(::OverviewViewModel)
         viewModelOf(::TaskViewModel)
-        viewModelOf(::EditorViewModel)
+
+        // https://insert-koin.io/docs/reference/koin-compose/compose-viewmodel#classic-dsl-with-parameters
+        viewModel<EditorViewModel> {
+            EditorViewModel(
+                initialTask = it.getOrNull(),
+                context = androidApplication(),
+                repository = get(),
+                dataStoreManager = get()
+            )
+        }
+
         viewModelOf(::SettingsViewModel)
     }
 

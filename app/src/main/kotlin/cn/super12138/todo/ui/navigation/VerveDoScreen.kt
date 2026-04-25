@@ -54,6 +54,6 @@ sealed class VerveDoScreen : NavKey {
         data object Add : Editor()
 
         @Serializable
-        data class Edit(val toDo: TaskEntity) : Editor()
+        data class Edit(val task: TaskEntity) : Editor()
     }
 }
