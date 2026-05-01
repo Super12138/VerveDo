@@ -79,12 +79,13 @@ fun SharedTransitionScope.TaskEditPage(
     onNavigateUp: () -> Unit
 ) = TaskEditorPage(
     task = task,
-    modifier = modifier.sharedBounds(
-        sharedContentState = rememberSharedContentState(key = "${Constants.KEY_TODO_ITEM_TRANSITION}_${task.id}"),
-        animatedVisibilityScope = LocalNavAnimatedContentScope.current,
-        resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds
-    ),
-    //TODO: 没想好加不加 .skipToLookaheadSize(),
+    modifier = modifier
+        .sharedBounds(
+            sharedContentState = rememberSharedContentState(key = "${Constants.KEY_TODO_ITEM_TRANSITION}_${task.id}"),
+            animatedVisibilityScope = LocalNavAnimatedContentScope.current,
+            resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds
+        )
+        .skipToLookaheadSize(),
     onSave = onSave,
     onDelete = onDelete,
     onNavigateUp = onNavigateUp
@@ -115,6 +116,10 @@ fun TaskEditorPage(
             keyboardController?.show()
             isFirstEntry = false
         }
+    }
+
+    LaunchedEffect(isFirstEntry) {
+        viewModel.setTaskEntity(task)
     }
 
     fun checkModifiedBeforeBack() {
@@ -271,10 +276,7 @@ fun TaskEditorPage(
         visible = uiState.showDeleteConfirmDialog,
         iconRes = R.drawable.ic_delete,
         text = stringResource(R.string.tip_delete_task, 1),
-        onConfirm = {
-            onDelete()
-            viewModel.resetUiState()
-        },
+        onConfirm = onDelete,
         onDismiss = { viewModel.hideDeleteConfirmDialog() }
     )
 }
