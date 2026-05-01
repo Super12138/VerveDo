@@ -20,7 +20,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,8 +35,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cn.super12138.todo.R
-import cn.super12138.todo.logic.datastore.DataStoreManager
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.EmptyTip
 import cn.super12138.todo.ui.components.EmptyTipType
 import cn.super12138.todo.ui.components.TodoFloatingActionButton
@@ -47,24 +48,24 @@ import cn.super12138.todo.ui.pages.settings.components.SettingsItem
 import cn.super12138.todo.ui.pages.settings.components.category.CategoryPromptDialog
 import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.utils.VibrationUtils
-import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsDataCategory(
     onNavigateUp: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = koinViewModel()
 ) {
+    val uiState by viewModel.dataUiState.collectAsStateWithLifecycle()
+
     // TODO: 本页及其相关组件重组性能检查优化
     val view = LocalView.current
     val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
     var initialCategory by rememberSaveable { mutableStateOf("") }
     var showDialog by rememberSaveable { mutableStateOf(false) }
-
-    val categories by DataStoreManager.categoriesFlow.collectAsState(initial = emptyList())
 
     val isExpanded by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
 
@@ -88,7 +89,7 @@ fun SettingsDataCategory(
         modifier = modifier,
     ) {
         AnimatedContent(
-            targetState = categories.isEmpty(),
+            targetState = uiState.categories.isEmpty(),
             transitionSpec = { transitionSpec }
         ) {
             if (it) {
@@ -101,7 +102,7 @@ fun SettingsDataCategory(
                 ) {
                     EmptyTip(
                         type = EmptyTipType.List,
-                        size = 96.dp
+                        size = VerveDoDefaults.Sizes.EmptyTip.large
                     )
 
                     Text(
@@ -114,7 +115,7 @@ fun SettingsDataCategory(
             } else {
                 SettingsContainer(Modifier.fillMaxSize()) {
                     items(
-                        items = categories,
+                        items = uiState.categories,
                         key = { category -> category }
                     ) { category ->
                         SettingsItem(
@@ -132,7 +133,7 @@ fun SettingsDataCategory(
                                     shapes = IconButtonDefaults.shapes(),
                                     onClick = {
                                         VibrationUtils.performHapticFeedback(view)
-                                        scope.launch { DataStoreManager.setCategories(categories - category) }
+                                        viewModel.setCategories(uiState.categories - category)
                                     }
                                 ) {
                                     Icon(
@@ -161,26 +162,17 @@ fun SettingsDataCategory(
             initialCategory = initialCategory,
             onSave = { oldCategory, newCategory ->
                 if (oldCategory.isEmpty()) {
-                    if (!categories.contains(newCategory)) {
-                        scope.launch {
-                            DataStoreManager.setCategories(categories + newCategory)
-                        }
+                    if (!uiState.categories.contains(newCategory)) {
+                        viewModel.setCategories(uiState.categories + newCategory)
                     } else {
-                        scope.launch {
-                            /*snackbarHostState.showSnackbar(
-                            message = context.getString(R.string.error_category_duplicate)
-                        )*/
-                            // 调换分类位置
-                            val tempList = categories - newCategory
-                            DataStoreManager.setCategories(tempList + newCategory)
-                        }
+                        // 调换分类位置
+                        val tempList = uiState.categories - newCategory
+                        viewModel.setCategories(tempList + newCategory)
                     }
                 } else {
                     if (oldCategory != newCategory) {
-                        scope.launch {
-                            val tempList = categories - oldCategory
-                            DataStoreManager.setCategories(tempList + newCategory)
-                        }
+                        val tempList = uiState.categories - oldCategory
+                        viewModel.setCategories(tempList + newCategory)
                     }
                 }
             },

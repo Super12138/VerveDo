@@ -28,7 +28,7 @@ enum class EmptyTipType {
 fun EmptyTip(
     modifier: Modifier = Modifier,
     type: EmptyTipType,
-    size: Dp = VerveDoDefaults.Sizes.emptyTipSize,
+    size: Dp = VerveDoDefaults.Sizes.EmptyTip.default,
     containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     contentColor: Color = contentColorFor(containerColor)
 ) {

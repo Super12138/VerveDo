@@ -1,14 +1,11 @@
 package cn.super12138.todo.ui.pages.tasks.components
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Row
@@ -23,8 +20,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -33,18 +28,17 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import cn.super12138.todo.R
+import cn.super12138.todo.logic.model.ScreenMode
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.utils.VibrationUtils
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun TodoTopAppBar(
-    searchMode: Boolean,
-    selectedMode: Boolean,
-    selectedTodoIds: List<Int>,
+fun TasksTopAppBar(
+    screenMode: ScreenMode,
+    selectedTodoIds: Set<Int>,
     onSearchModeChange: (Boolean) -> Unit,
     onCancelSelect: () -> Unit,
     onSelectAll: () -> Unit,
@@ -70,7 +64,7 @@ fun TodoTopAppBar(
     val view = LocalView.current
     val animatedContainerColor by animateColorAsState(
         animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec(),
-        targetValue = if (selectedMode) {
+        targetValue = if (screenMode == ScreenMode.Selection) {
             MaterialTheme.colorScheme.surfaceContainerHighest
         } else {
             VerveDoDefaults.Colors.Background
@@ -80,7 +74,7 @@ fun TodoTopAppBar(
     TopAppBar(
         navigationIcon = {
             AnimatedVisibility(
-                visible = selectedMode,
+                visible = screenMode == ScreenMode.Selection,
                 enter = navIconEnterTransition,
                 exit = navIconExitTransition
             ) {
@@ -100,7 +94,7 @@ fun TodoTopAppBar(
         },
         title = {
             AnimatedContent(
-                targetState = !selectedMode,
+                targetState = screenMode != ScreenMode.Selection,
                 transitionSpec = { defaultTransitionSpec }
             ) {
                 if (it) {
@@ -123,59 +117,40 @@ fun TodoTopAppBar(
         },
         actions = {
             AnimatedContent(
-                targetState = selectedMode,
+                targetState = screenMode,
                 transitionSpec = { navIconEnterTransition togetherWith navIconExitTransition }
             ) {
-                if (it) {
-                    ActionMultipleSelection(
-                        onSelectAll = onSelectAll,
-                        onDeleteSelectedTodo = onDeleteSelectedTodo
-                    )
-                } else {
-                    ActionSearch(
-                        searchMode = searchMode,
-                        onSearchModeChange = onSearchModeChange,
-                    )
+                when (it) {
+                    ScreenMode.Default -> {
+                        IconButton(
+                            shapes = IconButtonDefaults.shapes(),
+                            onClick = {
+                                VibrationUtils.performHapticFeedback(view)
+                                onSearchModeChange(screenMode != ScreenMode.Search)
+                            },
+                            modifier = modifier
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_search),
+                                contentDescription = stringResource(R.string.action_search)
+                            )
+                        }
+                    }
+
+                    ScreenMode.Selection -> {
+                        ActionMultipleSelection(
+                            onSelectAll = onSelectAll,
+                            onDeleteSelectedTodo = onDeleteSelectedTodo
+                        )
+                    }
+
+                    ScreenMode.Search -> {}
                 }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors().copy(containerColor = Color.Transparent),
-        modifier = modifier.drawBehind {
-            drawRect(animatedContainerColor)
-        }
+        modifier = modifier.drawBehind { drawRect(animatedContainerColor) }
     )
-}
-
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-private fun ActionSearch(
-    searchMode: Boolean,
-    onSearchModeChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val view = LocalView.current
-
-    BackHandler(enabled = searchMode) { onSearchModeChange(false) }
-
-    AnimatedVisibility(
-        visible = !searchMode,
-        enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()) + scaleIn(MaterialTheme.motionScheme.fastSpatialSpec()),
-        exit = fadeOut(MaterialTheme.motionScheme.fastEffectsSpec()) + scaleOut(MaterialTheme.motionScheme.fastSpatialSpec()),
-    ) {
-        IconButton(
-            shapes = IconButtonDefaults.shapes(),
-            onClick = {
-                VibrationUtils.performHapticFeedback(view)
-                onSearchModeChange(!searchMode)
-            },
-            modifier = modifier
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_search),
-                contentDescription = stringResource(R.string.action_search)
-            )
-        }
-    }
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -217,6 +192,7 @@ fun ActionMultipleSelection(
     }
 }
 
+/*
 @Preview(locale = "zh-rCN", showBackground = true)
 @Composable
 private fun TodoTopAppBarPreview() {
@@ -224,10 +200,10 @@ private fun TodoTopAppBarPreview() {
     TodoTopAppBar(
         searchMode = true,
         onSearchModeChange = {},
-        selectedTodoIds = (1..10).toList(),
+        selectedTodoIds = (1..10).toSet(),
         selectedMode = selectedMode.value,
         onCancelSelect = { selectedMode.value = !selectedMode.value },
         onSelectAll = { },
         onDeleteSelectedTodo = { }
     )
-}
+}*/

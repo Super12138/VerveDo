@@ -1,34 +1,18 @@
 package cn.super12138.todo.logic.datastore
 
-import android.content.Context
-import androidx.datastore.preferences.SharedPreferencesMigration
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import cn.super12138.todo.VerveDoApp
 import cn.super12138.todo.constants.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 
-object DataStoreManager {
-    private val Context.dataStore by preferencesDataStore(
-        name = Constants.SP_NAME,
-        produceMigrations = { context ->
-            listOf(
-                SharedPreferencesMigration(
-                    context = context,
-                    sharedPreferencesName = Constants.SP_NAME,
-                )
-            )
-        }
-    )
-
-    val dataStore = VerveDoApp.context.dataStore
-
+class DataStoreManager(val dataStore: DataStore<Preferences>) {
     // Keys
     // 外观与个性化
     private val DYNAMIC_COLOR = booleanPreferencesKey(Constants.PREF_DYNAMIC_COLOR)

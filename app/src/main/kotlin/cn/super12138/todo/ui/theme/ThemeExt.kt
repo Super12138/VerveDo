@@ -53,10 +53,31 @@ fun dynamicColorScheme(
         PaletteStyle.TonalSpot -> SchemeTonalSpot(hct, isDark, contrastLevel, specVersion, platform)
         PaletteStyle.Neutral -> SchemeNeutral(hct, isDark, contrastLevel, specVersion, platform)
         PaletteStyle.Vibrant -> SchemeVibrant(hct, isDark, contrastLevel, specVersion, platform)
-        PaletteStyle.Expressive -> SchemeExpressive(hct, isDark, contrastLevel, specVersion, platform)
+        PaletteStyle.Expressive -> SchemeExpressive(
+            hct,
+            isDark,
+            contrastLevel,
+            specVersion,
+            platform
+        )
+
         PaletteStyle.Rainbow -> SchemeRainbow(hct, isDark, contrastLevel, specVersion, platform)
-        PaletteStyle.FruitSalad -> SchemeFruitSalad(hct, isDark, contrastLevel, specVersion, platform)
-        PaletteStyle.Monochrome -> SchemeMonochrome(hct, isDark, contrastLevel, specVersion, platform)
+        PaletteStyle.FruitSalad -> SchemeFruitSalad(
+            hct,
+            isDark,
+            contrastLevel,
+            specVersion,
+            platform
+        )
+
+        PaletteStyle.Monochrome -> SchemeMonochrome(
+            hct,
+            isDark,
+            contrastLevel,
+            specVersion,
+            platform
+        )
+
         PaletteStyle.Fidelity -> SchemeFidelity(hct, isDark, contrastLevel, specVersion, platform)
         PaletteStyle.Content -> SchemeContent(hct, isDark, contrastLevel, specVersion, platform)
     }

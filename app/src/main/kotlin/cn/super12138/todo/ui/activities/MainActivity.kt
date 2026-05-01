@@ -1,7 +1,6 @@
 package cn.super12138.todo.ui.activities
 
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.Crossfade
@@ -14,7 +13,6 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldValue
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
@@ -22,77 +20,75 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
-import cn.super12138.todo.constants.Constants
-import cn.super12138.todo.logic.datastore.DataStoreManager
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.NavKey
 import cn.super12138.todo.logic.model.DarkMode
-import cn.super12138.todo.logic.model.PaletteStyle
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.Konfetti
+import cn.super12138.todo.ui.navigation.TopLevelBackStack
 import cn.super12138.todo.ui.navigation.TopNavigation
 import cn.super12138.todo.ui.navigation.VerveDoDestinations
+import cn.super12138.todo.ui.pages.settings.SettingsAppearanceUiState
+import cn.super12138.todo.ui.pages.settings.SettingsInterfaceUiState
+import cn.super12138.todo.ui.pages.settings.SettingsViewModel
 import cn.super12138.todo.ui.theme.VerveDoTheme
 import cn.super12138.todo.ui.viewmodels.MainViewModel
 import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.configureEdgeToEdge
+import org.koin.android.ext.android.get
+import org.koin.android.scope.AndroidScopeComponent
+import org.koin.androidx.scope.activityRetainedScope
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.core.scope.Scope
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), AndroidScopeComponent {
+    override val scope: Scope by activityRetainedScope()
+
+    @OptIn(KoinExperimentalAPI::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         configureEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
-            val mainViewModel: MainViewModel = viewModel()
+            val mainViewModel: MainViewModel = koinViewModel()
+            val settingsViewModel: SettingsViewModel = koinViewModel()
 
             val showConfetti = mainViewModel.showConfetti
 
-            val mainBackStack = mainViewModel.mainBackStack
+            val backStack: TopLevelBackStack<NavKey> = get()
             val navigationScaffoldState = rememberNavigationSuiteScaffoldState()
 
-            // 主题
-            val dynamicColor by DataStoreManager.dynamicColorFlow.collectAsState(initial = Constants.PREF_DYNAMIC_COLOR_DEFAULT)
-            val paletteStyle by DataStoreManager.paletteStyleFlow.collectAsState(initial = Constants.PREF_PALETTE_STYLE_DEFAULT)
-            val contrastLevel by DataStoreManager.contrastLevelFlow.collectAsState(initial = Constants.PREF_CONTRAST_LEVEL_DEFAULT)
-            val darkMode by DataStoreManager.darkModeFlow.collectAsState(initial = Constants.PREF_DARK_MODE_DEFAULT)
-            val pureBlackMode by DataStoreManager.pureBlackFlow.collectAsState(initial = Constants.PREF_PURE_BLACK_MODE_DEFAULT)
-            val secureMode by DataStoreManager.secureModeFlow.collectAsState(initial = Constants.PREF_SECURE_MODE_DEFAULT)
-            val hapticFeedback by DataStoreManager.hapticFeedbackFlow.collectAsState(initial = Constants.PREF_HAPTIC_FEEDBACK_DEFAULT)
+            val appearanceUiState by settingsViewModel.appearanceUiState.collectAsStateWithLifecycle(
+                SettingsAppearanceUiState()
+            )
+            val interfaceUiState by settingsViewModel.interfaceUiState.collectAsStateWithLifecycle(
+                SettingsInterfaceUiState()
+            )
 
-            // 深色模式
-            val darkTheme = when (DarkMode.fromId(darkMode)) {
+            val darkTheme = when (appearanceUiState.darkMode) {
                 DarkMode.FollowSystem -> isSystemInDarkTheme()
                 DarkMode.Light -> false
                 DarkMode.Dark -> true
             }
             // 配置状态栏和底部导航栏的颜色（在用户切换深色模式时）
             // https://github.com/dn0ne/lotus/blob/master/app/src/main/java/com/dn0ne/player/MainActivity.kt#L266
-            LaunchedEffect(darkMode) {
+            LaunchedEffect(appearanceUiState.darkMode) {
                 WindowCompat.getInsetsController(window, window.decorView).apply {
                     isAppearanceLightStatusBars = !darkTheme
                     isAppearanceLightNavigationBars = !darkTheme
                 }
             }
 
-            // 阻止截屏相关配置
-            LaunchedEffect(secureMode) {
-                if (secureMode) {
-                    window.setFlags(
-                        WindowManager.LayoutParams.FLAG_SECURE,
-                        WindowManager.LayoutParams.FLAG_SECURE
-                    )
-                } else {
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-                }
-            }
-
-            LaunchedEffect(hapticFeedback) {
-                VibrationUtils.setEnabled(hapticFeedback)
+            LaunchedEffect(interfaceUiState.hapticFeedback) {
+                VibrationUtils.setEnabled(interfaceUiState.hapticFeedback)
             }
 
             // 当BackStack出现非顶层路由时，隐藏底部导航栏
-            LaunchedEffect(mainBackStack.backStack.lastOrNull()) {
+            // TODO: BACKSTACK优化代码，减少重复间接调用
+            LaunchedEffect(backStack.backStack.lastOrNull()) {
                 val isTopLevel =
-                    mainBackStack.backStack.lastOrNull() in VerveDoDestinations.entries.map { it.route }
+                    backStack.backStack.lastOrNull() in VerveDoDestinations.entries.map { it.route }
                 if (isTopLevel) {
                     if (navigationScaffoldState.currentValue != NavigationSuiteScaffoldValue.Visible) navigationScaffoldState.show()
                 } else {
@@ -102,10 +98,10 @@ class MainActivity : ComponentActivity() {
 
             VerveDoTheme(
                 darkTheme = darkTheme,
-                pureBlackMode = pureBlackMode,
-                style = PaletteStyle.fromId(paletteStyle),
-                contrastLevel = contrastLevel.toDouble(),
-                dynamicColor = dynamicColor
+                pureBlackMode = appearanceUiState.pureBlackMode,
+                style = appearanceUiState.paletteStyle,
+                contrastLevel = appearanceUiState.contrastLevel.value.toDouble(),
+                dynamicColor = appearanceUiState.dynamicColor
             ) {
                 Surface(
                     color = VerveDoDefaults.Colors.Background,
@@ -116,7 +112,7 @@ class MainActivity : ComponentActivity() {
                         state = navigationScaffoldState,
                         navigationSuiteItems = {
                             VerveDoDestinations.entries.forEach { destination ->
-                                val selected = destination.route == mainBackStack.topLevelKey
+                                val selected = destination.route == backStack.topLevelKey
                                 item(
                                     icon = {
                                         Crossfade(selected) {
@@ -137,7 +133,7 @@ class MainActivity : ComponentActivity() {
                                     selected = selected,
                                     onClick = {
                                         VibrationUtils.performHapticFeedback(view)
-                                        mainBackStack.addTopLevel(destination.route)
+                                        backStack.addTopLevel(destination.route)
                                     }
                                 )
                             }
@@ -146,8 +142,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize()
                     ) {
                         TopNavigation(
-                            backStack = mainBackStack,
-                            viewModel = mainViewModel,
+                            backStack = backStack,
                             modifier = Modifier.fillMaxSize()
                         )
                     }

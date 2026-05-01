@@ -42,10 +42,14 @@ object VerveDoDefaults {
     }
 
     object Sizes {
-        val emptyTipSize = 48.dp
         val taskCardHeight = 86.dp
         val overviewCardHeight = 120.dp
         val fadedEdgeWidth = 8.dp
+
+        object EmptyTip {
+            val default = 48.dp
+            val large = 96.dp
+        }
     }
 
     val ScreenContainerShape: Shape

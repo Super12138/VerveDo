@@ -25,7 +25,7 @@ fun PalettePicker(
     currentPalette: () -> PaletteStyle,
     onPaletteChange: (paletteStyle: PaletteStyle) -> Unit,
     isDynamicColor: Boolean,
-    isDarkMode: DarkMode,
+    darkMode: DarkMode,
     pureBlackMode: Boolean,
     contrastLevel: ContrastLevel,
 ) {
@@ -43,7 +43,7 @@ fun PalettePicker(
 
             PaletteItem(
                 isDynamicColor = isDynamicColor,
-                isDark = when (isDarkMode) {
+                isDark = when (darkMode) {
                     DarkMode.FollowSystem -> isSystemInDarkTheme()
                     DarkMode.Light -> false
                     DarkMode.Dark -> true

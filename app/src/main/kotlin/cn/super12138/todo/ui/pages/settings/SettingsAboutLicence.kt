@@ -41,7 +41,7 @@ import com.mikepenz.aboutlibraries.ui.compose.util.htmlReadyLicenseContent
 @Composable
 fun SettingsAboutLicence(
     onNavigateUp: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val libraries by produceLibraries(R.raw.aboutlibraries)
     val view = LocalView.current

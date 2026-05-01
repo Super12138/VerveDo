@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -23,20 +24,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.animateFloatingActionButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import cn.super12138.todo.R
 import cn.super12138.todo.constants.Constants
@@ -48,59 +44,41 @@ import cn.super12138.todo.ui.components.EmptyTip
 import cn.super12138.todo.ui.components.EmptyTipType
 import cn.super12138.todo.ui.components.TodoFloatingActionButton
 import cn.super12138.todo.ui.components.TopAppBarScaffold
+import cn.super12138.todo.ui.pages.tasks.components.TasksTopAppBar
 import cn.super12138.todo.ui.pages.tasks.components.TodoCard
 import cn.super12138.todo.ui.pages.tasks.components.TodoSearchTextField
-import cn.super12138.todo.ui.pages.tasks.components.TodoTopAppBar
 import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.ui.viewmodels.MainViewModel
-import cn.super12138.todo.utils.toLocalDateString
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SharedTransitionScope.TasksPage(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel,
     toTodoAddPage: () -> Unit,
     toTodoEditPage: (TaskEntity) -> Unit,
+    viewModel: TaskViewModel = koinViewModel(),
+    mainViewModel: MainViewModel = koinViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val taskListState = rememberLazyListState()
     val animatedVisibilityScope = LocalNavAnimatedContentScope.current
-
-    val toDoList by viewModel.sortedTaskList.collectAsState(initial = emptyList())
-    val selectedTodos = viewModel.selectedTodoIds.collectAsState()
-
-    // 状态持久化
-    val searchFieldState = viewModel.searchFieldState
-    var showDeleteConfirmDialog by rememberSaveable { mutableStateOf(false) }
-
-    val selectedTodoIds by remember { derivedStateOf { selectedTodos.value } }
-    val inSelectedMode by remember { derivedStateOf { !selectedTodoIds.isEmpty() } }
-    val expandedFab by remember { derivedStateOf { viewModel.taskListState.firstVisibleItemIndex == 0 } }
-
-    val filteredTodoList = if (viewModel.searchMode) toDoList.filter {
-        it.content.contains(searchFieldState.text, ignoreCase = true) ||
-                it.category.contains(searchFieldState.text, ignoreCase = true) ||
-                it.dueDate?.toLocalDateString()
-                    ?.contains(searchFieldState.text, ignoreCase = true) == true
-    } else toDoList
-
+    val expandedFab by remember { derivedStateOf { taskListState.firstVisibleItemIndex == 0 } }
     val transitionSpec = fadeScale()
 
     // 当按下返回键（或进行返回操作）时清空选择，仅在非选择模式下生效
-    BackHandler(inSelectedMode) { viewModel.clearAllTaskSelection() }
-
-    // 选择时自动退出搜索模式
-    LaunchedEffect(inSelectedMode) { if (inSelectedMode) viewModel.setSearchModeEnabled(false) }
+    BackHandler(uiState.isInSelectionMode) { viewModel.exitMultiSelectMode() }
+    BackHandler(uiState.isInSearchMode) { viewModel.exitSearchMode() }
 
     TopAppBarScaffold(
         topBar = {
-            TodoTopAppBar(
-                selectedTodoIds = selectedTodoIds,
-                selectedMode = inSelectedMode,
-                onCancelSelect = { viewModel.clearAllTaskSelection() },
+            TasksTopAppBar(
+                screenMode = uiState.screenMode,
+                selectedTodoIds = uiState.selectedTaskIds,
+                onCancelSelect = { viewModel.exitMultiSelectMode() },
                 onSelectAll = { viewModel.selectAllTask() },
-                onDeleteSelectedTodo = { showDeleteConfirmDialog = true },
-                onSearchModeChange = { viewModel.setSearchModeEnabled(it) },
-                searchMode = viewModel.searchMode,
+                onDeleteSelectedTodo = { viewModel.showDeleteConfirmDialog() },
+                onSearchModeChange = { if (it) viewModel.enterSearchMode() else viewModel.exitSearchMode() },
             )
         },
         floatingActionButton = {
@@ -116,7 +94,7 @@ fun SharedTransitionScope.TasksPage(
                         resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds
                     )
                     .animateFloatingActionButton(
-                        visible = !inSelectedMode,
+                        visible = !uiState.isInSelectionMode,
                         alignment = Alignment.BottomEnd,
                     )
             )
@@ -126,7 +104,7 @@ fun SharedTransitionScope.TasksPage(
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(VerveDoDefaults.settingsItemPadding)) {
             AnimatedVisibility(
-                visible = viewModel.searchMode,
+                visible = uiState.isInSearchMode,
                 enter = fadeIn(MaterialTheme.motionScheme.fastEffectsSpec()) + expandVertically(
                     MaterialTheme.motionScheme.fastSpatialSpec()
                 ),
@@ -135,13 +113,13 @@ fun SharedTransitionScope.TasksPage(
                 ),
             ) {
                 TodoSearchTextField(
-                    searchMode = viewModel.searchMode,
-                    onSearchModeChange = { viewModel.setSearchModeEnabled(it) },
-                    textFieldState = searchFieldState
+                    searchMode = uiState.isInSearchMode,
+                    onSearchModeChange = { viewModel.exitSearchMode() },
+                    textFieldState = uiState.searchTextState
                 )
             }
             AnimatedContent(
-                targetState = filteredTodoList.isEmpty(),
+                targetState = uiState.taskList.isEmpty(),
                 transitionSpec = { transitionSpec }
             ) {
                 if (it) {
@@ -154,12 +132,12 @@ fun SharedTransitionScope.TasksPage(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         EmptyTip(
-                            type = if (viewModel.searchMode) EmptyTipType.Search else EmptyTipType.TaskCompleted,
-                            size = 96.dp
+                            type = if (uiState.isInSearchMode) EmptyTipType.Search else EmptyTipType.TaskCompleted,
+                            size = VerveDoDefaults.Sizes.EmptyTip.large
                         )
 
                         Text(
-                            text = stringResource(if (viewModel.searchMode) R.string.tip_search_task_not_found else R.string.tip_no_task),
+                            text = stringResource(if (uiState.isInSearchMode) R.string.tip_search_task_not_found else R.string.tip_no_task),
                             style = MaterialTheme.typography.titleMedium,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
@@ -167,7 +145,7 @@ fun SharedTransitionScope.TasksPage(
                     }
                 } else {
                     LazyColumn(
-                        state = viewModel.taskListState,
+                        state = taskListState,
                         verticalArrangement = Arrangement.spacedBy(VerveDoDefaults.settingsItemPadding),
                         modifier = Modifier
                             .fillMaxSize()
@@ -178,7 +156,7 @@ fun SharedTransitionScope.TasksPage(
                         }
 
                         items(
-                            items = filteredTodoList,
+                            items = uiState.taskList,
                             key = { task -> task.id }
                         ) { task ->
                             TodoCard(
@@ -188,18 +166,24 @@ fun SharedTransitionScope.TasksPage(
                                 completed = task.isCompleted,
                                 dueDate = task.dueDate,
                                 priority = Priority.fromFloat(task.priority),
-                                selected = selectedTodoIds.contains(task.id),
+                                selected = uiState.selectedTaskIds.contains(task.id),
                                 onCardClick = {
-                                    if (inSelectedMode) {
+                                    if (uiState.isInSelectionMode) {
                                         viewModel.toggleTaskSelection(task)
                                     } else {
                                         toTodoEditPage(task)
                                     }
                                 },
-                                onCardLongClick = { viewModel.toggleTaskSelection(task) },
+                                onCardLongClick = {
+                                    if (!uiState.isInSelectionMode) {
+                                        viewModel.enterMultiSelectMode(task.id)
+                                    } else {
+                                        viewModel.toggleTaskSelection(task)
+                                    }
+                                },
                                 onChecked = {
                                     viewModel.updateTask(task.copy(isCompleted = true))
-                                    viewModel.playConfetti()
+                                    mainViewModel.playConfetti()
                                 },
                                 modifier = Modifier
                                     .sharedBounds(
@@ -223,11 +207,14 @@ fun SharedTransitionScope.TasksPage(
             }
         }
         ConfirmDialog(
-            visible = showDeleteConfirmDialog,
+            visible = uiState.showDeleteConfirmDialog,
             iconRes = R.drawable.ic_delete,
-            text = stringResource(R.string.tip_delete_task, selectedTodoIds.size),
-            onConfirm = { viewModel.deleteSelectedTask() },
-            onDismiss = { showDeleteConfirmDialog = false }
+            text = stringResource(R.string.tip_delete_task, uiState.selectedTaskIds.size),
+            onConfirm = {
+                viewModel.deleteSelectedTask()
+                viewModel.exitMultiSelectMode()
+            },
+            onDismiss = { viewModel.hideDeleteConfirmDialog() }
         )
     }
 }

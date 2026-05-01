@@ -15,7 +15,9 @@ import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.core.graphics.ColorUtils
 import cn.super12138.todo.R
+import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.model.Priority
+import cn.super12138.todo.logic.model.SortingMethod
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -161,3 +163,44 @@ fun disabledContentColor(alpha: Float = 0.38f): Color =
 @Composable
 fun disabledContainerColor(alpha: Float = 0.12f): Color =
     MaterialTheme.colorScheme.onSurface.copy(alpha = alpha)
+
+fun List<TaskEntity>.sort(sortingMethod: SortingMethod): List<TaskEntity> = when (sortingMethod) {
+    SortingMethod.Sequential -> this.sortedWith(
+        comparator = compareBy<TaskEntity> { it.isCompleted } // 必须先要按照是否完成排序
+            .thenBy { it.id }
+    )
+
+    SortingMethod.Category -> this.sortedWith(
+        comparator = compareBy<TaskEntity> { it.isCompleted }
+            .thenBy { it.category }
+    )
+
+    SortingMethod.Priority -> this.sortedWith(
+        comparator = compareBy<TaskEntity> { it.isCompleted }
+            .thenByDescending { it.priority }
+            .thenBy(nullsLast()) { it.dueDate }
+    ) // 优先级高的在前
+
+    SortingMethod.Completion -> this.sortedWith(
+        comparator = compareBy<TaskEntity> { it.isCompleted }
+            .thenBy { it.category }
+            .thenByDescending { it.priority }
+    ) // 未完成的在前
+    SortingMethod.AlphabeticalAscending -> this.sortedWith(
+        comparator = compareBy<TaskEntity> { it.isCompleted }
+            .thenBy { it.content }
+            .thenByDescending { it.priority }
+    )
+
+    SortingMethod.AlphabeticalDescending -> this.sortedWith(
+        comparator = compareBy<TaskEntity> { it.isCompleted }
+            .thenByDescending { it.content }
+            .thenByDescending { it.priority }
+    )
+
+    SortingMethod.DueDate -> this.sortedWith(
+        comparator = compareBy<TaskEntity> { it.isCompleted }
+            // 确保未设置截止日期的任务在最下头
+            .thenBy(nullsLast()) { it.dueDate }
+    )
+}

@@ -4,17 +4,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cn.super12138.todo.R
-import cn.super12138.todo.constants.Constants
-import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.logic.model.SortingMethod
 import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.pages.settings.components.SettingsCategory
@@ -24,21 +22,17 @@ import cn.super12138.todo.ui.pages.settings.components.SettingsPlainBox
 import cn.super12138.todo.ui.pages.settings.components.SettingsRadioDialog
 import cn.super12138.todo.ui.pages.settings.components.SettingsRadioOptions
 import cn.super12138.todo.ui.pages.settings.components.SwitchSettingsItem
-import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsInterface(
     onNavigateUp: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = koinViewModel()
 ) {
-    // val showCompleted by DataStoreManager.showCompletedFlow.collectAsState(initial = Constants.PREF_SHOW_COMPLETED_DEFAULT)
-    val secureMode by DataStoreManager.secureModeFlow.collectAsState(initial = Constants.PREF_SECURE_MODE_DEFAULT)
-    val textFieldAutoFocus by DataStoreManager.textFieldAutoFocusFlow.collectAsState(initial = Constants.PREF_TEXT_FIELD_AUTO_FOCUS_DEFAULT)
-    val sortingMethod by DataStoreManager.sortingMethodFlow.collectAsState(initial = Constants.PREF_SORTING_METHOD_DEFAULT)
-    val hapticFeedback by DataStoreManager.hapticFeedbackFlow.collectAsState(initial = Constants.PREF_HAPTIC_FEEDBACK_DEFAULT)
+    val uiState by viewModel.interfaceUiState.collectAsStateWithLifecycle()
 
-    val scope = rememberCoroutineScope()
     var showSortingMethodDialog by rememberSaveable { mutableStateOf(false) }
     TopAppBarScaffold(
         title = stringResource(R.string.pref_interface_interaction),
@@ -61,7 +55,7 @@ fun SettingsInterface(
                 SettingsItem(
                     leadingIconRes = R.drawable.ic_sort,
                     title = stringResource(R.string.pref_sorting_method),
-                    description = stringResource(SortingMethod.fromId(sortingMethod).nameRes),
+                    description = stringResource(uiState.sortingMethod.nameRes),
                     onClick = { showSortingMethodDialog = true }
                 )
             }
@@ -71,29 +65,29 @@ fun SettingsInterface(
                     leadingIconRes = R.drawable.ic_eye_tracking,
                     title = stringResource(R.string.pref_text_field_auto_focus),
                     description = stringResource(R.string.pref_text_field_auto_focus_desc),
-                    checked = textFieldAutoFocus,
-                    onCheckedChange = { scope.launch { DataStoreManager.setTextFieldAutoFocus(it) } }
+                    checked = uiState.textFieldAutoFocus,
+                    onCheckedChange = { viewModel.setTextFieldAutoFocus(it) }
                 )
             }
 
             item {
                 SettingsCategory(stringResource(R.string.pref_category_global))
                 SwitchSettingsItem(
-                    checked = secureMode,
+                    checked = uiState.secureMode,
                     leadingIconRes = R.drawable.ic_shield,
                     title = stringResource(R.string.pref_secure_mode),
                     description = stringResource(R.string.pref_secure_mode_desc),
-                    onCheckedChange = { scope.launch { DataStoreManager.setSecureMode(it) } }
+                    onCheckedChange = { viewModel.setSecureMode(it) }
                 )
             }
 
             item {
                 SwitchSettingsItem(
-                    checked = hapticFeedback,
+                    checked = uiState.hapticFeedback,
                     leadingIconRes = R.drawable.ic_touch_long,
                     title = stringResource(R.string.pref_haptic_feedback),
                     description = stringResource(R.string.pref_haptic_feedback_desc),
-                    onCheckedChange = { scope.launch { DataStoreManager.setHapticFeedback(it) } }
+                    onCheckedChange = { viewModel.setHapticFeedback(it) }
                 )
                 SettingsPlainBox(stringResource(R.string.pref_haptic_feedback_more_info))
             }
@@ -109,11 +103,11 @@ fun SettingsInterface(
             visible = showSortingMethodDialog,
             title = stringResource(R.string.pref_sorting_method),
             currentOptions = SettingsRadioOptions(
-                id = sortingMethod,
-                text = stringResource(SortingMethod.fromId(sortingMethod).nameRes)
+                id = uiState.sortingMethod.id,
+                text = stringResource(uiState.sortingMethod.nameRes)
             ),
             options = sortingList,
-            onSelect = { scope.launch { DataStoreManager.setSortingMethod(it) } },
+            onSelect = { viewModel.setSortingMethod(it) },
             onDismiss = { showSortingMethodDialog = false }
         )
     }
