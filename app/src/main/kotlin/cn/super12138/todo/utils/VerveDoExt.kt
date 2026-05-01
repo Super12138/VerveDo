@@ -109,50 +109,55 @@ fun Long?.toLocalDateString(): String {
 fun Long?.toRelativeTimeString(context: Context): String {
     if (this == null) return ""
     val today = SystemUtils.getTodayEightAM()
-    val diff = (this - today).milliseconds
 
-    return diff.toComponents { days, _, _, _, _ ->
-        when {
-            days.days == 1.days -> context.getString(R.string.time_tomorrow)
-            days.days > 1.days && days.days < 7.days -> context.getString(
-                R.string.time_in_days,
-                days.toInt()
-            )
+    return when (this - today) {
+        in 0L..0L -> context.getString(R.string.time_today)
 
-            days.days in 7.days..<30.days -> context.getString(
-                R.string.time_in_weeks,
-                (days / 7).toInt()
-            )
+        // 将来的时间
+        in 1.days.inWholeMilliseconds..1.days.inWholeMilliseconds -> context.getString(R.string.time_tomorrow)
+        in 2.days.inWholeMilliseconds..6.days.inWholeMilliseconds -> context.getString(
+            R.string.time_in_days,
+            ((this - today).milliseconds.inWholeDays).toInt()
+        )
 
-            days.days in 30.days..<365.days -> context.getString(
-                R.string.time_in_months,
-                (days / 30).toInt()
-            )
+        in 7.days.inWholeMilliseconds..29.days.inWholeMilliseconds -> context.getString(
+            R.string.time_in_weeks,
+            ((this - today).milliseconds.inWholeDays / 7).toInt()
+        )
 
-            days.days >= 365.days -> context.getString(R.string.time_in_years, (days / 365).toInt())
-            days.days == (-1).days -> context.getString(R.string.time_yesterday)
-            days.days < (-1).days && days.days > (-7).days -> context.getString(
-                R.string.time_days_ago,
-                -days.toInt()
-            )
+        in 30.days.inWholeMilliseconds..364.days.inWholeMilliseconds -> context.getString(
+            R.string.time_in_months,
+            ((this - today).milliseconds.inWholeDays / 30).toInt()
+        )
 
-            days.days in (-7).days..<(-30).days -> context.getString(
-                R.string.time_weeks_ago,
-                -(days / 7).toInt()
-            )
+        in 365.days.inWholeMilliseconds..Long.MAX_VALUE -> context.getString(
+            R.string.time_in_years,
+            ((this - today).milliseconds.inWholeDays / 365).toInt()
+        )
 
-            days.days in (-30).days..<(-365).days -> context.getString(
-                R.string.time_months_ago,
-                -(days / 30).toInt()
-            )
+        // 过去的时间
+        in (-1).days.inWholeMilliseconds..(-1).days.inWholeMilliseconds -> context.getString(R.string.time_yesterday)
+        in (-6).days.inWholeMilliseconds..(-2).days.inWholeMilliseconds -> context.getString(
+            R.string.time_days_ago,
+            (-(this - today).milliseconds.inWholeDays).toInt()
+        )
 
-            days.days <= (-365).days -> context.getString(
-                R.string.time_years_ago,
-                -(days / 365).toInt()
-            )
+        in (-29).days.inWholeMilliseconds..(-7).days.inWholeMilliseconds -> context.getString(
+            R.string.time_weeks_ago,
+            (-(this - today).milliseconds.inWholeDays / 7).toInt()
+        )
 
-            else -> context.getString(R.string.time_today)
-        }
+        in (-364).days.inWholeMilliseconds..(-30).days.inWholeMilliseconds -> context.getString(
+            R.string.time_months_ago,
+            (-(this - today).milliseconds.inWholeDays / 30).toInt()
+        )
+
+        in Long.MIN_VALUE..(-365).days.inWholeMilliseconds -> context.getString(
+            R.string.time_years_ago,
+            (-(this - today).milliseconds.inWholeDays / 365).toInt()
+        )
+
+        else -> context.getString(R.string.time_today)
     }
 }
 
