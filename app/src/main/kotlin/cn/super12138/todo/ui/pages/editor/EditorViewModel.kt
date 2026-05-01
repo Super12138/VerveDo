@@ -1,6 +1,7 @@
 package cn.super12138.todo.ui.pages.editor
 
 import android.content.Context
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.R
@@ -88,8 +89,25 @@ class EditorViewModel(
         return hasError
     }
 
-    // TODO: 修复状态重置问题
-    fun resetUiState() {
-
+    fun setTaskEntity(task: TaskEntity?) = localUiState.update {
+        if (task == null) {
+            it.copy(
+                initialTask = null,
+                taskContentState = TextFieldState(),
+                categoryContentState = TextFieldState(),
+                priorityState = 0f,
+                dueDateState = null,
+                isCompleted = false
+            )
+        } else {
+            it.copy(
+                initialTask = task,
+                taskContentState = TextFieldState(task.content),
+                categoryContentState = TextFieldState(task.category),
+                priorityState = task.priority,
+                dueDateState = task.dueDate,
+                isCompleted = task.isCompleted
+            )
+        }
     }
 }
