@@ -168,7 +168,6 @@ fun TaskEditorPage(
                                 isCompleted = uiState.isCompleted
                             )
                             onSave(newTask)
-                            viewModel.resetUiState()
                         }
                     }
                 )

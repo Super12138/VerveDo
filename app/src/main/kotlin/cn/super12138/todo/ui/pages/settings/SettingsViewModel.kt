@@ -13,8 +13,8 @@ import cn.super12138.todo.logic.model.PaletteStyle
 import cn.super12138.todo.logic.model.SortingMethod
 import cn.super12138.todo.utils.FileUtils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -32,7 +32,7 @@ class SettingsViewModel(
     private val dataStoreManager: DataStoreManager
 ) : ViewModel() {
     // 把整体Ui状态流拆成3个小流以保证类型安全
-    val appearanceUiState: Flow<SettingsAppearanceUiState> = combine(
+    val appearanceUiState: StateFlow<SettingsAppearanceUiState> = combine(
         dataStoreManager.dynamicColorFlow,
         dataStoreManager.paletteStyleFlow,
         dataStoreManager.darkModeFlow,
@@ -52,7 +52,7 @@ class SettingsViewModel(
         initialValue = SettingsAppearanceUiState()
     )
 
-    val interfaceUiState: Flow<SettingsInterfaceUiState> = combine(
+    val interfaceUiState: StateFlow<SettingsInterfaceUiState> = combine(
         dataStoreManager.sortingMethodFlow,
         dataStoreManager.textFieldAutoFocusFlow,
         dataStoreManager.secureModeFlow,
@@ -70,7 +70,7 @@ class SettingsViewModel(
         initialValue = SettingsInterfaceUiState()
     )
 
-    val dataUiState: Flow<SettingsDataUiState> = dataStoreManager.categoriesFlow.map {
+    val dataUiState: StateFlow<SettingsDataUiState> = dataStoreManager.categoriesFlow.map {
         SettingsDataUiState(categories = it)
     }.stateIn(
         scope = viewModelScope,

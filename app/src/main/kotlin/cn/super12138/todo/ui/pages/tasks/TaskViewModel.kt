@@ -9,13 +9,11 @@ import cn.super12138.todo.logic.model.ScreenMode
 import cn.super12138.todo.logic.model.SortingMethod
 import cn.super12138.todo.utils.sort
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -29,19 +27,19 @@ class TaskViewModel(
     private val repository: IRepository,
     private val dataStoreManager: DataStoreManager
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(TasksPageUiState())
-    val uiState: StateFlow<TasksPageUiState> = _uiState
-
-    init {
-        val taskList: Flow<List<TaskEntity>> = repository.getAllTasks()
-        // 业务状态流合并
-        dataStoreManager.sortingMethodFlow
-            .flatMapLatest { method -> taskList.map { it.sort(SortingMethod.fromId(method)) } }
-            .onEach { sortedList ->
-                _uiState.update { it.copy(originalTaskList = sortedList) }
-            }
-            .launchIn(viewModelScope)
-    }
+    private val localUiState = MutableStateFlow(TasksPageUiState())
+    val uiState: StateFlow<TasksPageUiState> = combine(
+        repository.getAllTasks(),
+        dataStoreManager.sortingMethodFlow,
+        localUiState
+    ) { taskList, sortingMethod, localUiState ->
+        val sortedList = taskList.sort(SortingMethod.fromId(sortingMethod))
+        localUiState.copy(originalTaskList = sortedList)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = TasksPageUiState()
+    )
 
     fun updateTask(task: TaskEntity) {
         viewModelScope.launch {
@@ -59,7 +57,7 @@ class TaskViewModel(
      * 切换待办的选择状态
      */
     fun toggleTaskSelection(task: TaskEntity) {
-        _uiState.update {
+        localUiState.update {
             val newIds = if (it.selectedTaskIds.contains(task.id)) { // 已选择的Id里包含切换选择状态的Id
                 it.selectedTaskIds - task.id // 那么就给他删了
             } else {
@@ -80,13 +78,13 @@ class TaskViewModel(
      */
     fun selectAllTask() {
         val allIds = uiState.value.taskList.map { it.id }.toSet()
-        _uiState.update { it.copy(selectedTaskIds = allIds) }
+        localUiState.update { it.copy(selectedTaskIds = allIds) }
     }
 
     /**
      * 清除全部已选择的待办
      */
-    fun clearAllTaskSelection() = _uiState.update { it.copy(selectedTaskIds = emptySet()) }
+    fun clearAllTaskSelection() = localUiState.update { it.copy(selectedTaskIds = emptySet()) }
 
     /**
      * 删除选择的待办
@@ -99,13 +97,23 @@ class TaskViewModel(
     }
 
     fun enterMultiSelectMode(id: Int) =
-        _uiState.update { it.copy(selectedTaskIds = setOf(id), screenMode = ScreenMode.Selection) }
+        localUiState.update {
+            it.copy(
+                selectedTaskIds = setOf(id),
+                screenMode = ScreenMode.Selection
+            )
+        }
 
     fun exitMultiSelectMode() =
-        _uiState.update { it.copy(selectedTaskIds = emptySet(), screenMode = ScreenMode.Default) }
+        localUiState.update {
+            it.copy(
+                selectedTaskIds = emptySet(),
+                screenMode = ScreenMode.Default
+            )
+        }
 
-    fun enterSearchMode() = _uiState.update { it.copy(screenMode = ScreenMode.Search) }
-    fun exitSearchMode() = _uiState.update { it.copy(screenMode = ScreenMode.Default) }
-    fun showDeleteConfirmDialog() = _uiState.update { it.copy(showDeleteConfirmDialog = true) }
-    fun hideDeleteConfirmDialog() = _uiState.update { it.copy(showDeleteConfirmDialog = false) }
+    fun enterSearchMode() = localUiState.update { it.copy(screenMode = ScreenMode.Search) }
+    fun exitSearchMode() = localUiState.update { it.copy(screenMode = ScreenMode.Default) }
+    fun showDeleteConfirmDialog() = localUiState.update { it.copy(showDeleteConfirmDialog = true) }
+    fun hideDeleteConfirmDialog() = localUiState.update { it.copy(showDeleteConfirmDialog = false) }
 }

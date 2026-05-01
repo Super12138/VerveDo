@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -61,8 +62,9 @@ fun SharedTransitionScope.TasksPage(
     mainViewModel: MainViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val taskListState = rememberLazyListState()
     val animatedVisibilityScope = LocalNavAnimatedContentScope.current
-    val expandedFab by remember { derivedStateOf { uiState.taskListState.firstVisibleItemIndex == 0 } }
+    val expandedFab by remember { derivedStateOf { taskListState.firstVisibleItemIndex == 0 } }
     val transitionSpec = fadeScale()
 
     // 当按下返回键（或进行返回操作）时清空选择，仅在非选择模式下生效
@@ -144,7 +146,7 @@ fun SharedTransitionScope.TasksPage(
                     }
                 } else {
                     LazyColumn(
-                        state = uiState.taskListState,
+                        state = taskListState,
                         verticalArrangement = Arrangement.spacedBy(VerveDoDefaults.settingsItemPadding),
                         modifier = Modifier
                             .fillMaxSize()

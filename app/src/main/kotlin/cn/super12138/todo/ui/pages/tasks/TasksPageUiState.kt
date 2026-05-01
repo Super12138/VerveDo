@@ -8,7 +8,6 @@ import cn.super12138.todo.utils.toLocalDateString
 
 data class TasksPageUiState(
     private val originalTaskList: List<TaskEntity> = emptyList(),
-    val taskListState: LazyListState = LazyListState(),
     val screenMode: ScreenMode = ScreenMode.Default,
     val selectedTaskIds: Set<Int> = emptySet(),
     val searchTextState: TextFieldState = TextFieldState(),
