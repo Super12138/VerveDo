@@ -1,6 +1,7 @@
 package cn.super12138.todo.ui.activities
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.Crossfade
@@ -28,8 +29,6 @@ import cn.super12138.todo.ui.components.Konfetti
 import cn.super12138.todo.ui.navigation.TopLevelBackStack
 import cn.super12138.todo.ui.navigation.TopNavigation
 import cn.super12138.todo.ui.navigation.VerveDoDestinations
-import cn.super12138.todo.ui.pages.settings.SettingsAppearanceUiState
-import cn.super12138.todo.ui.pages.settings.SettingsInterfaceUiState
 import cn.super12138.todo.ui.pages.settings.SettingsViewModel
 import cn.super12138.todo.ui.theme.VerveDoTheme
 import cn.super12138.todo.ui.viewmodels.MainViewModel
@@ -53,18 +52,11 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
         setContent {
             val mainViewModel: MainViewModel = koinViewModel()
             val settingsViewModel: SettingsViewModel = koinViewModel()
-
-            val showConfetti = mainViewModel.showConfetti
-
             val backStack: TopLevelBackStack<NavKey> = get()
-            val navigationScaffoldState = rememberNavigationSuiteScaffoldState()
 
-            val appearanceUiState by settingsViewModel.appearanceUiState.collectAsStateWithLifecycle(
-                SettingsAppearanceUiState()
-            )
-            val interfaceUiState by settingsViewModel.interfaceUiState.collectAsStateWithLifecycle(
-                SettingsInterfaceUiState()
-            )
+            val appearanceUiState by settingsViewModel.appearanceUiState.collectAsStateWithLifecycle()
+            val interfaceUiState by settingsViewModel.interfaceUiState.collectAsStateWithLifecycle()
+            val navigationScaffoldState = rememberNavigationSuiteScaffoldState()
 
             val darkTheme = when (appearanceUiState.darkMode) {
                 DarkMode.FollowSystem -> isSystemInDarkTheme()
@@ -80,12 +72,23 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
                 }
             }
 
+            // 安全模式相关配置
+            LaunchedEffect(interfaceUiState.secureMode) {
+                if (interfaceUiState.secureMode) {
+                    window.setFlags(
+                        WindowManager.LayoutParams.FLAG_SECURE,
+                        WindowManager.LayoutParams.FLAG_SECURE
+                    )
+                } else {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                }
+            }
+
             LaunchedEffect(interfaceUiState.hapticFeedback) {
                 VibrationUtils.setEnabled(interfaceUiState.hapticFeedback)
             }
 
             // 当BackStack出现非顶层路由时，隐藏底部导航栏
-            // TODO: BACKSTACK优化代码，减少重复间接调用
             LaunchedEffect(backStack.backStack.lastOrNull()) {
                 val isTopLevel =
                     backStack.backStack.lastOrNull() in VerveDoDestinations.entries.map { it.route }
@@ -147,7 +150,7 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
                         )
                     }
                     Konfetti(
-                        state = showConfetti,
+                        state = mainViewModel.showConfetti,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
