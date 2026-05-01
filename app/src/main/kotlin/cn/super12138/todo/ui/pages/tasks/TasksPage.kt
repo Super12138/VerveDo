@@ -32,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import cn.super12138.todo.R
@@ -211,7 +210,10 @@ fun SharedTransitionScope.TasksPage(
             visible = uiState.showDeleteConfirmDialog,
             iconRes = R.drawable.ic_delete,
             text = stringResource(R.string.tip_delete_task, uiState.selectedTaskIds.size),
-            onConfirm = { viewModel.deleteSelectedTask() },
+            onConfirm = {
+                viewModel.deleteSelectedTask()
+                viewModel.exitMultiSelectMode()
+            },
             onDismiss = { viewModel.hideDeleteConfirmDialog() }
         )
     }
