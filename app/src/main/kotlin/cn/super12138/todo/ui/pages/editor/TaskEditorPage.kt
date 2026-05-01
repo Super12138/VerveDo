@@ -102,13 +102,18 @@ fun TaskEditorPage(
 ) {
     // TODO: 本页及其相关组件重组性能检查优化
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isCustomCategory by remember { derivedStateOf { uiState.selectedCategoryIndex == -1 } }
 
+    // 控制只有第一次进入界面才聚焦待办内容文本框
+    var isFirstEntry by rememberSaveable { mutableStateOf(true) }
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    val isCustomCategory by remember {
-        derivedStateOf {
-            uiState.selectedCategoryIndex == -1
+    LaunchedEffect(isFirstEntry, uiState.isTextFieldAutoFocus) {
+        if (isFirstEntry && uiState.isTextFieldAutoFocus) {
+            withFrameNanos { }
+            focusRequester.requestFocus()
+            keyboardController?.show()
+            isFirstEntry = false
         }
     }
 
@@ -119,20 +124,7 @@ fun TaskEditorPage(
             onNavigateUp()
         }
     }
-
     BackHandler(onBack = ::checkModifiedBeforeBack)
-
-    // 控制只有第一次进入界面才聚焦待办内容文本框
-    var isFirstEntry by rememberSaveable { mutableStateOf(true) }
-
-    LaunchedEffect(isFirstEntry, uiState.isTextFieldAutoFocus) {
-        if (isFirstEntry && uiState.isTextFieldAutoFocus) {
-            withFrameNanos { }
-            focusRequester.requestFocus()
-            keyboardController?.show()
-            isFirstEntry = false
-        }
-    }
 
     TopAppBarScaffold(
         title = stringResource(if (task != null) R.string.title_edit_task else R.string.action_add_task),

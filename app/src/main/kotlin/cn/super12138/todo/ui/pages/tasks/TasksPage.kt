@@ -134,7 +134,7 @@ fun SharedTransitionScope.TasksPage(
                     ) {
                         EmptyTip(
                             type = if (uiState.isInSearchMode) EmptyTipType.Search else EmptyTipType.TaskCompleted,
-                            size = 96.dp
+                            size = VerveDoDefaults.Sizes.EmptyTip.large
                         )
 
                         Text(

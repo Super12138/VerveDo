@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cn.super12138.todo.R
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.EmptyTip
 import cn.super12138.todo.ui.components.EmptyTipType
 import cn.super12138.todo.ui.components.TodoFloatingActionButton
@@ -101,7 +102,7 @@ fun SettingsDataCategory(
                 ) {
                     EmptyTip(
                         type = EmptyTipType.List,
-                        size = 96.dp
+                        size = VerveDoDefaults.Sizes.EmptyTip.large
                     )
 
                     Text(
