@@ -24,7 +24,7 @@ fun SettingsAppearance(
     onNavigateUp: () -> Unit,
     viewModel: SettingsViewModel = koinViewModel()
 ) {
-    val uiState by viewModel.appearanceUiState.collectAsStateWithLifecycle(SettingsAppearanceUiState())
+    val uiState by viewModel.appearanceUiState.collectAsStateWithLifecycle()
 
     TopAppBarScaffold(
         title = stringResource(R.string.pref_appearance),

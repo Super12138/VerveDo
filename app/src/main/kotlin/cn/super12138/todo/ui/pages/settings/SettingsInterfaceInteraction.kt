@@ -31,11 +31,7 @@ fun SettingsInterface(
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = koinViewModel()
 ) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val uiState by viewModel.interfaceUiState.collectAsStateWithLifecycle(
-        initialValue = SettingsInterfaceUiState(),
-        lifecycle = lifecycleOwner.lifecycle
-    )
+    val uiState by viewModel.interfaceUiState.collectAsStateWithLifecycle()
 
     var showSortingMethodDialog by rememberSaveable { mutableStateOf(false) }
     TopAppBarScaffold(

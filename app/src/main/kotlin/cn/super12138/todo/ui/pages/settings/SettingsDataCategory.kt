@@ -56,16 +56,11 @@ fun SettingsDataCategory(
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = koinViewModel()
 ) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val uiState by viewModel.dataUiState.collectAsStateWithLifecycle(
-        initialValue = SettingsDataUiState(),
-        lifecycle = lifecycleOwner.lifecycle
-    )
+    val uiState by viewModel.dataUiState.collectAsStateWithLifecycle()
 
     // TODO: 本页及其相关组件重组性能检查优化
     val view = LocalView.current
     val snackbarHostState = remember { SnackbarHostState() }
-    rememberCoroutineScope()
     val listState = rememberLazyListState()
 
     var initialCategory by rememberSaveable { mutableStateOf("") }

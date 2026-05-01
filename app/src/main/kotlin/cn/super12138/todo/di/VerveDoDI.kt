@@ -74,7 +74,6 @@ object VerveDoDI {
             EditorViewModel(
                 initialTask = it.getOrNull(),
                 context = androidApplication(),
-                repository = get(),
                 dataStoreManager = get()
             )
         }
