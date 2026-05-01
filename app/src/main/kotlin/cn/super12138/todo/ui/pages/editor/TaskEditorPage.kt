@@ -263,8 +263,8 @@ fun TaskEditorPage(
                 )
                 Spacer(modifier = Modifier.size(4.dp))
                 TodoDueDateChooser(
-                    value = { uiState.dueDateState },
-                    onValueChange = { viewModel.setDueDate(it) },
+                    dateMillis = uiState.dueDateState,
+                    onDateChange = { viewModel.setDueDate(it) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 if (task != null) {

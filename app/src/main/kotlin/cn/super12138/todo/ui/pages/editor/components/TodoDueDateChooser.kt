@@ -1,5 +1,6 @@
 package cn.super12138.todo.ui.pages.editor.components
 
+import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -15,9 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.setDisplayedMonth
+import androidx.compose.material3.setSelectedDate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,21 +29,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
 import cn.super12138.todo.utils.VibrationUtils
+import cn.super12138.todo.utils.toLocalDate
 import cn.super12138.todo.utils.toLocalDateString
+import java.time.YearMonth
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TodoDueDateChooser(
-    value: () -> Long?,
-    onValueChange: (Long?) -> Unit,
+    dateMillis: Long?,
+    onDateChange: (Long?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val view = LocalView.current
 
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = value())
+    val datePickerState = rememberDatePickerState()
     val openDialog = remember { mutableStateOf(false) }
-
-    val dateValue by remember { derivedStateOf { value() } }
 
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
@@ -49,11 +51,21 @@ fun TodoDueDateChooser(
         if (pressed) {
             VibrationUtils.performHapticFeedback(view)
             openDialog.value = true
+            // 时间戳转LocalDate
+            val date = dateMillis?.toLocalDate()
+            datePickerState.apply {
+                setSelectedDate(date)
+                date?.let { setDisplayedMonth(YearMonth.of(it.year, date.month)) }
+            }
+            Log.d(
+                "Editor",
+                "DatePicker: getTime: $dateMillis, stateTime: ${datePickerState.selectedDateMillis}"
+            )
         }
     }
 
     TextField(
-        value = dateValue.toLocalDateString(),
+        value = dateMillis.toLocalDateString(),
         onValueChange = {},
         label = { Text(stringResource(R.string.label_due_date)) },
         readOnly = true,
@@ -108,7 +120,7 @@ fun TodoDueDateChooser(
                 FilledTonalButton(
                     onClick = {
                         VibrationUtils.performHapticFeedback(view)
-                        onValueChange(datePickerState.selectedDateMillis)
+                        onDateChange(datePickerState.selectedDateMillis)
                         openDialog.value = false
                     },
                     shapes = ButtonDefaults.shapes(),
@@ -139,7 +151,6 @@ fun TodoDueDateChooser(
                 }
             },
             onDismissRequest = {
-                onValueChange(null)
                 openDialog.value = false
             }
         ) {

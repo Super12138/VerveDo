@@ -19,6 +19,8 @@ import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.model.Priority
 import cn.super12138.todo.logic.model.SortingMethod
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import kotlin.time.Duration.Companion.days
@@ -159,6 +161,17 @@ fun Long?.toRelativeTimeString(context: Context): String {
 
         else -> context.getString(R.string.time_today)
     }
+}
+
+fun Long.toLocalDate(): LocalDate {
+    val date = Date(this)
+    val calendar = Calendar.getInstance()
+    calendar.time = date
+    return LocalDate.of(
+        calendar.get(Calendar.YEAR),
+        calendar.get(Calendar.MONTH) + 1,
+        calendar.get(Calendar.DAY_OF_MONTH)
+    )
 }
 
 @Composable

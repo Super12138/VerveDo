@@ -38,9 +38,9 @@ android {
 
     defaultConfig {
         applicationId = "cn.super12138.todo"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
-        versionCode = 1097
+        versionCode = 1099
         versionName = "3.2.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
