@@ -1,5 +1,6 @@
 package cn.super12138.todo.ui.pages.editor
 
+import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.database.TaskEntity
@@ -29,6 +30,14 @@ data class TaskEditorUiState(
     fun isValid(): Boolean = isContentValid() && isCategoryValid()
 
     fun isModified(): Boolean {
+        Log.d(
+            "Editor",
+            "UiState: Original: content=${initialTask?.content}, category=${initialTask?.category}, priority=${initialTask?.priority}, isCompleted=${initialTask?.isCompleted}, dueDate=${initialTask?.dueDate}"
+        )
+        Log.d(
+            "Editor",
+            "UiState: Current: content=${taskContentState.text}, category=${categoryContentState.text}, priority=${priorityState}, isCompleted=${isCompleted}, dueDate=${dueDateState}"
+        )
         var isModified = false
         if ((initialTask?.content ?: "") != taskContentState.text.toString()) isModified = true
         if ((initialTask?.category ?: "") != categoryContentState.text.toString()) isModified = true

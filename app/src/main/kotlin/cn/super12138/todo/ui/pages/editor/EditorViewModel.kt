@@ -1,6 +1,7 @@
 package cn.super12138.todo.ui.pages.editor
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,16 +17,19 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 class EditorViewModel(
-    private val initialTask: TaskEntity? = null,
     private val context: Context,
     private val dataStoreManager: DataStoreManager,
 ) : ViewModel() {
+    companion object {
+        const val TAG = "Editor"
+    }
+
     private val localUiState = MutableStateFlow(TaskEditorUiState())
     val uiState: StateFlow<TaskEditorUiState> = combine(
         dataStoreManager.textFieldAutoFocusFlow,
         dataStoreManager.categoriesFlow,
         localUiState
-    ) { textFieldAutoFocus, categories, localUiState ->
+    ) { textFieldAutoFocus, categories, localState ->
         val categoryList = categories.mapIndexed { index, category ->
             ChipItem(
                 id = index,
@@ -36,21 +40,13 @@ class EditorViewModel(
             name = context.getString(R.string.label_customization)
         )
 
-        // TODO: 逻辑、可行性验证，会不会出现无法选中分类的现象
-        val initialCategoryId = if (initialTask == null) {
-            if (categoryList.size == 1) -1 else 0
-        } else {
-            categoryList.firstOrNull { it.name == initialTask.category }?.id ?: -1
-        }
-
-        localUiState.copy(
+        localState.copy(
             isTextFieldAutoFocus = textFieldAutoFocus,
-            categoryList = categoryList,
-            selectedCategoryIndex = initialCategoryId
+            categoryList = categoryList
         )
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.Eagerly,
         initialValue = TaskEditorUiState()
     )
 
@@ -65,7 +61,10 @@ class EditorViewModel(
     fun showExitConfirmDialog() = localUiState.update { it.copy(showExitConfirmDialog = true) }
     fun hideExitConfirmDialog() = localUiState.update { it.copy(showExitConfirmDialog = false) }
     fun setSelectedCategory(index: Int) =
-        localUiState.update { it.copy(selectedCategoryIndex = index) }
+        localUiState.update {
+            Log.d(TAG, "Selected category index: $index")
+            it.copy(selectedCategoryIndex = index)
+        }
 
     fun clearError() = localUiState.update {
         it.copy(
@@ -91,19 +90,26 @@ class EditorViewModel(
 
     fun setTaskEntity(task: TaskEntity?) = localUiState.update {
         if (task == null) {
+            // 新建模式，清空一切
             it.copy(
                 initialTask = null,
                 taskContentState = TextFieldState(),
                 categoryContentState = TextFieldState(),
+                selectedCategoryIndex = if (uiState.value.categoryList.size - 1 >= 1) 0 else -1,
                 priorityState = 0f,
                 dueDateState = null,
                 isCompleted = false
             )
         } else {
+            // 编辑模式，填充任务数据
+            val index =
+                uiState.value.categoryList.firstOrNull { item -> item.name == task.category }?.id
+                    ?: -1
             it.copy(
                 initialTask = task,
                 taskContentState = TextFieldState(task.content),
                 categoryContentState = TextFieldState(task.category),
+                selectedCategoryIndex = index,
                 priorityState = task.priority,
                 dueDateState = task.dueDate,
                 isCompleted = task.isCompleted

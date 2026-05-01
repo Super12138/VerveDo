@@ -72,7 +72,7 @@ object VerveDoDI {
         // https://insert-koin.io/docs/reference/koin-compose/compose-viewmodel#classic-dsl-with-parameters
         viewModel<EditorViewModel> {
             EditorViewModel(
-                initialTask = it.getOrNull(),
+                // initialTask = it.getOrNull(),
                 context = androidApplication(),
                 dataStoreManager = get()
             )

@@ -1,5 +1,6 @@
 package cn.super12138.todo.ui.pages.editor
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.SharedTransitionScope
@@ -48,8 +49,9 @@ import cn.super12138.todo.ui.pages.editor.components.TodoContentTextField
 import cn.super12138.todo.ui.pages.editor.components.TodoDueDateChooser
 import cn.super12138.todo.ui.pages.editor.components.TodoMarkAsCompletedCheckbox
 import cn.super12138.todo.ui.pages.editor.components.TodoPrioritySlider
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
 fun SharedTransitionScope.TaskAddPage(
@@ -99,27 +101,42 @@ fun TaskEditorPage(
     onNavigateUp: () -> Unit,
     onSave: (TaskEntity) -> Unit,
     onDelete: () -> Unit,
-    viewModel: EditorViewModel = koinViewModel { parametersOf(task) }
+    viewModel: EditorViewModel = koinViewModel()
 ) {
     // TODO: 本页及其相关组件重组性能检查优化
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val isCustomCategory by remember { derivedStateOf { uiState.selectedCategoryIndex == -1 } }
 
     // 控制只有第一次进入界面才聚焦待办内容文本框
-    var isFirstEntry by rememberSaveable { mutableStateOf(true) }
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
-    LaunchedEffect(isFirstEntry, uiState.isTextFieldAutoFocus) {
-        if (isFirstEntry && uiState.isTextFieldAutoFocus) {
+
+    var isFocusedOnTextField by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(isFocusedOnTextField, uiState.isTextFieldAutoFocus) {
+        Log.d(
+            "Editor",
+            "LaunchedEffect 01: isFocused $isFocusedOnTextField} - isAutoFocused ${uiState.isTextFieldAutoFocus}"
+        )
+        if (!isFocusedOnTextField && uiState.isTextFieldAutoFocus) {
+            Log.d("Editor", "LaunchedEffect 01: Requesting focus for task content text field")
             withFrameNanos { }
             focusRequester.requestFocus()
             keyboardController?.show()
-            isFirstEntry = false
+            isFocusedOnTextField = true
         }
     }
 
-    LaunchedEffect(isFirstEntry) {
-        viewModel.setTaskEntity(task)
+    var isInitializedTask by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(task?.id) {
+        if (!isInitializedTask) {
+            viewModel.uiState
+                .map { it.categoryList.isNotEmpty() }
+                .first { it }
+
+            Log.d("Editor", "LaunchedEffect 02: taskId=${task?.id}")
+            viewModel.setTaskEntity(task)
+            isInitializedTask = true
+        }
     }
 
     fun checkModifiedBeforeBack() {
@@ -163,6 +180,10 @@ fun TaskEditorPage(
                                 priority = uiState.priorityState,
                                 dueDate = uiState.dueDateState,
                                 isCompleted = uiState.isCompleted
+                            )
+                            Log.d(
+                                "Editor",
+                                "newTask category: ${newTask.category}, isCustomCategory: $isCustomCategory"
                             )
                             onSave(newTask)
                         }
