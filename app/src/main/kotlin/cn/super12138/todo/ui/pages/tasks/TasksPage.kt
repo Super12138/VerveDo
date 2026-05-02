@@ -44,9 +44,9 @@ import cn.super12138.todo.ui.components.EmptyTip
 import cn.super12138.todo.ui.components.EmptyTipType
 import cn.super12138.todo.ui.components.TodoFloatingActionButton
 import cn.super12138.todo.ui.components.TopAppBarScaffold
+import cn.super12138.todo.ui.pages.tasks.components.TaskCard
+import cn.super12138.todo.ui.pages.tasks.components.TaskSearchTextField
 import cn.super12138.todo.ui.pages.tasks.components.TasksTopAppBar
-import cn.super12138.todo.ui.pages.tasks.components.TodoCard
-import cn.super12138.todo.ui.pages.tasks.components.TodoSearchTextField
 import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.ui.viewmodels.MainViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -74,7 +74,7 @@ fun SharedTransitionScope.TasksPage(
         topBar = {
             TasksTopAppBar(
                 screenMode = uiState.screenMode,
-                selectedTodoIds = uiState.selectedTaskIds,
+                selectedTasksIds = uiState.selectedTaskIds,
                 onCancelSelect = { viewModel.exitMultiSelectMode() },
                 onSelectAll = { viewModel.selectAllTask() },
                 onDeleteSelectedTodo = { viewModel.showDeleteConfirmDialog() },
@@ -112,7 +112,7 @@ fun SharedTransitionScope.TasksPage(
                     MaterialTheme.motionScheme.fastSpatialSpec()
                 ),
             ) {
-                TodoSearchTextField(
+                TaskSearchTextField(
                     searchMode = uiState.isInSearchMode,
                     onSearchModeChange = { viewModel.exitSearchMode() },
                     textFieldState = uiState.searchTextState
@@ -159,7 +159,7 @@ fun SharedTransitionScope.TasksPage(
                             items = uiState.taskList,
                             key = { task -> task.id }
                         ) { task ->
-                            TodoCard(
+                            TaskCard(
                                 // id = item.id,
                                 content = task.content,
                                 category = task.category,

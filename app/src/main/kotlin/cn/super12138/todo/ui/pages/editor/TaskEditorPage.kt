@@ -43,9 +43,9 @@ import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.ConfirmDialog
 import cn.super12138.todo.ui.components.TodoFloatingActionButton
 import cn.super12138.todo.ui.components.TopAppBarScaffold
+import cn.super12138.todo.ui.pages.editor.components.TaskCategoryTextField
+import cn.super12138.todo.ui.pages.editor.components.TaskContentTextField
 import cn.super12138.todo.ui.pages.editor.components.TodoCategoryChip
-import cn.super12138.todo.ui.pages.editor.components.TodoCategoryTextField
-import cn.super12138.todo.ui.pages.editor.components.TodoContentTextField
 import cn.super12138.todo.ui.pages.editor.components.TodoDueDateChooser
 import cn.super12138.todo.ui.pages.editor.components.TodoMarkAsCompletedCheckbox
 import cn.super12138.todo.ui.pages.editor.components.TodoPrioritySlider
@@ -131,9 +131,8 @@ fun TaskEditorPage(
         if (!isInitializedTask) {
             viewModel.uiState
                 .map { it.categoryList.isNotEmpty() }
-                .first { it }
+                .first { it } // 强制挂起，直到 categoryList 数据填充完成以避免匹配分类时出错
 
-            Log.d("Editor", "LaunchedEffect 02: taskId=${task?.id}")
             viewModel.setTaskEntity(task)
             isInitializedTask = true
         }
@@ -175,7 +174,7 @@ fun TaskEditorPage(
                             viewModel.clearError()
                             val newTask = TaskEntity(
                                 id = task?.id ?: 0,
-                                content = uiState.taskContentState.text.toString(),
+                                content = uiState.contentState.text.toString(),
                                 category = if (isCustomCategory) uiState.categoryContentState.text.toString() else uiState.categoryList[uiState.selectedCategoryIndex].name,
                                 priority = uiState.priorityState,
                                 dueDate = uiState.dueDateState,
@@ -203,8 +202,8 @@ fun TaskEditorPage(
             }
 
             item(key = 1) {
-                TodoContentTextField(
-                    state = uiState.taskContentState,
+                TaskContentTextField(
+                    state = uiState.contentState,
                     isError = uiState.isContentError,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -235,10 +234,9 @@ fun TaskEditorPage(
                         MaterialTheme.motionScheme.defaultEffectsSpec()
                     )
                 ) {
-                    TodoCategoryTextField(
+                    TaskCategoryTextField(
                         state = uiState.categoryContentState,
                         isError = uiState.isCategoryError,
-                        supportingText = stringResource(uiState.categorySupportingText),
                         modifier = Modifier.fillMaxWidth()
                     )
                 }

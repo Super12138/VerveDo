@@ -93,7 +93,7 @@ class EditorViewModel(
             // 新建模式，清空一切
             it.copy(
                 initialTask = null,
-                taskContentState = TextFieldState(),
+                contentState = TextFieldState(),
                 categoryContentState = TextFieldState(),
                 selectedCategoryIndex = if (uiState.value.categoryList.size - 1 >= 1) 0 else -1,
                 priorityState = 0f,
@@ -107,7 +107,7 @@ class EditorViewModel(
                     ?: -1
             it.copy(
                 initialTask = task,
-                taskContentState = TextFieldState(task.content),
+                contentState = TextFieldState(task.content),
                 categoryContentState = TextFieldState(task.category),
                 selectedCategoryIndex = index,
                 priorityState = task.priority,

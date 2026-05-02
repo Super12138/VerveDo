@@ -6,6 +6,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
 import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Row
@@ -38,7 +39,7 @@ import cn.super12138.todo.utils.VibrationUtils
 @Composable
 fun TasksTopAppBar(
     screenMode: ScreenMode,
-    selectedTodoIds: Set<Int>,
+    selectedTasksIds: Set<Int>,
     onSearchModeChange: (Boolean) -> Unit,
     onCancelSelect: () -> Unit,
     onSelectAll: () -> Unit,
@@ -57,6 +58,17 @@ fun TasksTopAppBar(
     ) + shrinkOut(
         animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
         shrinkTowards = Alignment.CenterStart
+    )
+
+    val actionEnterTransition = fadeIn(
+        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
+    ) + scaleIn(
+        initialScale = 0.92f,
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec()
+    )
+
+    val actionExitTransition = fadeOut(
+        animationSpec = MaterialTheme.motionScheme.fastEffectsSpec()
     )
 
     val defaultTransitionSpec = fadeScale()
@@ -107,7 +119,7 @@ fun TasksTopAppBar(
                     Text(
                         text = stringResource(
                             R.string.title_selected_count,
-                            selectedTodoIds.size
+                            selectedTasksIds.size
                         ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -116,35 +128,37 @@ fun TasksTopAppBar(
             }
         },
         actions = {
-            AnimatedContent(
-                targetState = screenMode,
-                transitionSpec = { navIconEnterTransition togetherWith navIconExitTransition }
-            ) {
-                when (it) {
-                    ScreenMode.Default -> {
-                        IconButton(
-                            shapes = IconButtonDefaults.shapes(),
-                            onClick = {
-                                VibrationUtils.performHapticFeedback(view)
-                                onSearchModeChange(screenMode != ScreenMode.Search)
-                            },
-                            modifier = modifier
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_search),
-                                contentDescription = stringResource(R.string.action_search)
+            Row {
+                AnimatedContent(
+                    targetState = screenMode,
+                    transitionSpec = { actionEnterTransition togetherWith actionExitTransition }
+                ) {
+                    when (it) {
+                        ScreenMode.Default -> {
+                            IconButton(
+                                shapes = IconButtonDefaults.shapes(),
+                                onClick = {
+                                    VibrationUtils.performHapticFeedback(view)
+                                    onSearchModeChange(screenMode != ScreenMode.Search)
+                                },
+                                modifier = modifier
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_search),
+                                    contentDescription = stringResource(R.string.action_search)
+                                )
+                            }
+                        }
+
+                        ScreenMode.Selection -> {
+                            ActionMultipleSelection(
+                                onSelectAll = onSelectAll,
+                                onDeleteSelectedTodo = onDeleteSelectedTodo
                             )
                         }
-                    }
 
-                    ScreenMode.Selection -> {
-                        ActionMultipleSelection(
-                            onSelectAll = onSelectAll,
-                            onDeleteSelectedTodo = onDeleteSelectedTodo
-                        )
+                        ScreenMode.Search -> {}
                     }
-
-                    ScreenMode.Search -> {}
                 }
             }
         },

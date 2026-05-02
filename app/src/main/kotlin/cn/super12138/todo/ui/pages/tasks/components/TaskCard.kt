@@ -59,7 +59,7 @@ import cn.super12138.todo.utils.toRelativeTimeString
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun TodoCard(
+fun TaskCard(
     modifier: Modifier = Modifier,
     // id: Int,
     content: String,
@@ -109,9 +109,7 @@ fun TodoCard(
                 // 因为 combinedClickable 在更新的 Compose 里已经处理好了触感反馈
                 onLongClick = onCardLongClick
             )
-            .drawBehind {
-                drawRect(animatedContainerColor)
-            }
+            .drawBehind { drawRect(animatedContainerColor) }
             .padding(start = VerveDoDefaults.screenHorizontalPadding)
     ) {
         AnimatedVisibility(

@@ -8,6 +8,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import cn.super12138.todo.logic.model.PaletteStyle
@@ -48,38 +49,22 @@ fun dynamicColorScheme(
     fun Color.replaceByPureBlack(color: Color): Color =
         if (isDark && pureBlack) color else this
 
-    val hct = Hct.fromInt(keyColor.toArgb())
-    val scheme = when (style) {
-        PaletteStyle.TonalSpot -> SchemeTonalSpot(hct, isDark, contrastLevel, specVersion, platform)
-        PaletteStyle.Neutral -> SchemeNeutral(hct, isDark, contrastLevel, specVersion, platform)
-        PaletteStyle.Vibrant -> SchemeVibrant(hct, isDark, contrastLevel, specVersion, platform)
-        PaletteStyle.Expressive -> SchemeExpressive(
-            hct,
-            isDark,
-            contrastLevel,
-            specVersion,
-            platform
-        )
-
-        PaletteStyle.Rainbow -> SchemeRainbow(hct, isDark, contrastLevel, specVersion, platform)
-        PaletteStyle.FruitSalad -> SchemeFruitSalad(
-            hct,
-            isDark,
-            contrastLevel,
-            specVersion,
-            platform
-        )
-
-        PaletteStyle.Monochrome -> SchemeMonochrome(
-            hct,
-            isDark,
-            contrastLevel,
-            specVersion,
-            platform
-        )
-
-        PaletteStyle.Fidelity -> SchemeFidelity(hct, isDark, contrastLevel, specVersion, platform)
-        PaletteStyle.Content -> SchemeContent(hct, isDark, contrastLevel, specVersion, platform)
+    val scheme = remember(
+        keyColor, isDark, pureBlack, style, contrastLevel, specVersion, platform
+    ) {
+        val hct = Hct.fromInt(keyColor.toArgb())
+        val scheme = when (style) {
+            PaletteStyle.TonalSpot -> SchemeTonalSpot(hct, isDark, contrastLevel, specVersion, platform)
+            PaletteStyle.Neutral -> SchemeNeutral(hct, isDark, contrastLevel, specVersion, platform)
+            PaletteStyle.Vibrant -> SchemeVibrant(hct, isDark, contrastLevel, specVersion, platform)
+            PaletteStyle.Expressive -> SchemeExpressive(hct, isDark, contrastLevel, specVersion, platform)
+            PaletteStyle.Rainbow -> SchemeRainbow(hct, isDark, contrastLevel, specVersion, platform)
+            PaletteStyle.FruitSalad -> SchemeFruitSalad(hct, isDark, contrastLevel, specVersion, platform)
+            PaletteStyle.Monochrome -> SchemeMonochrome(hct, isDark, contrastLevel, specVersion, platform)
+            PaletteStyle.Fidelity -> SchemeFidelity(hct, isDark, contrastLevel, specVersion, platform)
+            PaletteStyle.Content -> SchemeContent(hct, isDark, contrastLevel, specVersion, platform)
+        }
+        scheme
     }
 
     return ColorScheme(

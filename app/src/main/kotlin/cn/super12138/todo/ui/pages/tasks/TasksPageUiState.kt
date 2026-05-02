@@ -1,6 +1,5 @@
 package cn.super12138.todo.ui.pages.tasks
 
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.text.input.TextFieldState
 import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.model.ScreenMode
@@ -16,13 +15,16 @@ data class TasksPageUiState(
     val taskList: List<TaskEntity>
         get() {
             val searchText = searchTextState.text.trim()
-            if (searchText.isEmpty()) return originalTaskList // 搜索文本为空返回完整列表
-            return originalTaskList.filter { task ->
-                listOf(
-                    task.content,
-                    task.category,
-                    task.dueDate?.toLocalDateString() ?: ""
-                ).any { it.contains(searchText, ignoreCase = true) }
+            return if (screenMode == ScreenMode.Search && searchText.isNotEmpty()) {
+                originalTaskList.filter { task ->
+                    listOf(
+                        task.content,
+                        task.category,
+                        task.dueDate?.toLocalDateString() ?: ""
+                    ).any { it.contains(searchText, ignoreCase = true) }
+                }
+            } else {
+                originalTaskList
             }
         }
 

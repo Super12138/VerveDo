@@ -28,7 +28,7 @@ import cn.super12138.todo.utils.VibrationUtils
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun TodoSearchTextField(
+fun TaskSearchTextField(
     searchMode: Boolean,
     onSearchModeChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -65,7 +65,12 @@ fun TodoSearchTextField(
                 enter = fadeIn() + scaleIn(),
                 exit = fadeOut() + scaleOut(),
             ) {
-                IconButton(onClick = { textFieldState.setTextAndPlaceCursorAtEnd("") }) {
+                IconButton(
+                    onClick = {
+                        VibrationUtils.performHapticFeedback(view)
+                        textFieldState.setTextAndPlaceCursorAtEnd("")
+                    }
+                ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_close),
                         contentDescription = stringResource(R.string.action_clear)
