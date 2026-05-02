@@ -44,4 +44,10 @@ object Constants {
 
     const val PREF_CATEGORIES = "categories"
     const val PREF_CATEGORIES_DEFAULT = "[]"
+
+    const val PREF_COLOR_SPEC_VERSION = "color_spec_version"
+    const val PREF_COLOR_SPEC_VERSION_DEFAULT = 1
+
+    const val PREF_DYNAMIC_SCHEME_PLATFORM = "dynamic_scheme_platform"
+    const val PREF_DYNAMIC_SCHEME_PLATFORM_DEFAULT = 1
 }

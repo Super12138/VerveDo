@@ -40,8 +40,8 @@ android {
         applicationId = "cn.super12138.todo"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1101
-        versionName = "3.2.4"
+        versionCode = 1103
+        versionName = "3.3.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -67,10 +67,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
-    aboutLibraries {
-        collect {
-            configPath = file("$projectDir/licences")
-        }
+    androidResources {
+        generateLocaleConfig = true
     }
 
     buildFeatures {
@@ -81,6 +79,12 @@ android {
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
+    }
+
+    aboutLibraries {
+        collect {
+            configPath = file("$projectDir/licences")
+        }
     }
 }
 

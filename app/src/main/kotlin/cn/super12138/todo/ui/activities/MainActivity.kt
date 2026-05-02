@@ -56,6 +56,7 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
 
             val appearanceUiState by settingsViewModel.appearanceUiState.collectAsStateWithLifecycle()
             val interfaceUiState by settingsViewModel.interfaceUiState.collectAsStateWithLifecycle()
+            val devUiState by settingsViewModel.devUiState.collectAsStateWithLifecycle()
             val navigationScaffoldState = rememberNavigationSuiteScaffoldState()
 
             val darkTheme = when (appearanceUiState.darkMode) {
@@ -103,8 +104,10 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
                 darkTheme = darkTheme,
                 pureBlackMode = appearanceUiState.pureBlackMode,
                 style = appearanceUiState.paletteStyle,
-                contrastLevel = appearanceUiState.contrastLevel.value.toDouble(),
-                dynamicColor = appearanceUiState.dynamicColor
+                contrastLevel = appearanceUiState.contrastLevel,
+                dynamicColor = appearanceUiState.dynamicColor,
+                specVersion = devUiState.colorSpecVersion,
+                platform = devUiState.dynamicSchemePlatform
             ) {
                 Surface(
                     color = VerveDoDefaults.Colors.Background,

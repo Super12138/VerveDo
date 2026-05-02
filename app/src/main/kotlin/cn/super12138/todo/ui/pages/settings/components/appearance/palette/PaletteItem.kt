@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import cn.super12138.todo.logic.model.ContrastLevel
@@ -129,7 +130,9 @@ fun PaletteItem(
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (selected) {
                     MaterialTheme.colorScheme.primary
-                } else MaterialTheme.colorScheme.onSurface
+                } else MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

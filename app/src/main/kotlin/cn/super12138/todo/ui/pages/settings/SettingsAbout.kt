@@ -56,7 +56,7 @@ fun SettingsAbout(
         }
 
         SettingsContainer(Modifier.fillMaxSize()) {
-            item {
+            item(key = 1) {
                 SettingsItem(
                     leadingIconRes = R.drawable.ic_numbers,
                     title = stringResource(R.string.pref_app_version),
@@ -74,7 +74,7 @@ fun SettingsAbout(
                     }
                 )
             }
-            item {
+            item(key = 2) {
                 SettingsItem(
                     leadingIconRes = R.drawable.ic_person_4,
                     title = stringResource(R.string.pref_developer),
@@ -82,7 +82,7 @@ fun SettingsAbout(
                     onClick = { uriHandler.openUri(Constants.DEVELOPER_GITHUB) },
                 )
             }
-            item {
+            item(key = 3) {
                 SettingsItem(
                     leadingIcon = GitHubIcon,
                     title = stringResource(R.string.pref_view_on_github),
@@ -90,7 +90,7 @@ fun SettingsAbout(
                     onClick = { uriHandler.openUri(Constants.GITHUB_REPO) }
                 )
             }
-            item {
+            item(key = 4) {
                 SettingsItem(
                     leadingIconRes = R.drawable.ic_balance,
                     title = stringResource(R.string.pref_licence),
@@ -98,7 +98,7 @@ fun SettingsAbout(
                     onClick = toLicencePage
                 )
             }
-            item {
+            item(key = 5) {
                 SettingsItem(
                     leadingIconRes = R.drawable.ic_code_blocks,
                     title = stringResource(R.string.pref_developer_options),

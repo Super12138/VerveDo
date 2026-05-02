@@ -14,8 +14,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.ui.pages.crash.CrashPage
-import cn.super12138.todo.ui.pages.settings.SettingsAppearanceUiState
-import cn.super12138.todo.ui.pages.settings.SettingsInterfaceUiState
 import cn.super12138.todo.ui.pages.settings.SettingsViewModel
 import cn.super12138.todo.ui.theme.VerveDoTheme
 import cn.super12138.todo.utils.VibrationUtils
@@ -39,12 +37,10 @@ class CrashActivity : ComponentActivity() {
 
         setContent {
             val settingsViewModel: SettingsViewModel = koinViewModel()
-            val appearanceUiState by settingsViewModel.appearanceUiState.collectAsStateWithLifecycle(
-                SettingsAppearanceUiState()
-            )
-            val interfaceUiState by settingsViewModel.interfaceUiState.collectAsStateWithLifecycle(
-                SettingsInterfaceUiState()
-            )
+
+            val appearanceUiState by settingsViewModel.appearanceUiState.collectAsStateWithLifecycle()
+            val interfaceUiState by settingsViewModel.interfaceUiState.collectAsStateWithLifecycle()
+            val devUiState by settingsViewModel.devUiState.collectAsStateWithLifecycle()
 
             val darkTheme = when (appearanceUiState.darkMode) {
                 DarkMode.FollowSystem -> isSystemInDarkTheme()
@@ -68,8 +64,10 @@ class CrashActivity : ComponentActivity() {
                 darkTheme = darkTheme,
                 pureBlackMode = appearanceUiState.pureBlackMode,
                 style = appearanceUiState.paletteStyle,
-                contrastLevel = appearanceUiState.contrastLevel.value.toDouble(),
-                dynamicColor = appearanceUiState.dynamicColor
+                contrastLevel = appearanceUiState.contrastLevel,
+                dynamicColor = appearanceUiState.dynamicColor,
+                specVersion = devUiState.colorSpecVersion,
+                platform = devUiState.dynamicSchemePlatform
             ) {
                 CrashPage(
                     crashLog = crashLogs ?: stringResource(R.string.tip_no_crash_logs),

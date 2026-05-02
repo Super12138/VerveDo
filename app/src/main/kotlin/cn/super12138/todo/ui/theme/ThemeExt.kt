@@ -37,7 +37,7 @@ fun dynamicColorScheme(
     contrastLevel: Double = 0.0,
     specVersion: ColorSpec.SpecVersion = ColorSpec.SpecVersion.SPEC_2026,
     platform: DynamicScheme.Platform = DynamicScheme.Platform.PHONE,
-    animationSpec: AnimationSpec<Color> = MaterialTheme.motionScheme.defaultEffectsSpec()
+    animationSpec: AnimationSpec<Color> = spring()
 ): ColorScheme {
     /**
      * 应用纯黑深色模式

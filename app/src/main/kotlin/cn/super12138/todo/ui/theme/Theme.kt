@@ -7,7 +7,13 @@ import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import cn.super12138.todo.logic.model.DynamicSchemePlatform
+import cn.super12138.todo.logic.model.ColorSpecVersion
+import cn.super12138.todo.logic.model.ContrastLevel
 import cn.super12138.todo.logic.model.PaletteStyle
+import cn.super12138.todo.logic.model.toPlatform
+import cn.super12138.todo.logic.model.toSpecVersion
+import com.kyant.m3color.dynamiccolor.DynamicScheme
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -16,9 +22,11 @@ fun VerveDoTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     pureBlackMode: Boolean = false,
     style: PaletteStyle = PaletteStyle.TonalSpot,
-    contrastLevel: Double = 0.0,
+    contrastLevel: ContrastLevel = ContrastLevel.Default,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
+    specVersion: ColorSpecVersion = ColorSpecVersion.Spec2025,
+    platform: DynamicSchemePlatform = DynamicSchemePlatform.Phone,
     content: @Composable () -> Unit
 ) {
     val baseColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && dynamicColor) {
@@ -35,7 +43,9 @@ fun VerveDoTheme(
         isDark = darkTheme,
         pureBlack = pureBlackMode,
         style = style,
-        contrastLevel = contrastLevel
+        contrastLevel = contrastLevel.value.toDouble(),
+        specVersion = specVersion.toSpecVersion(),
+        platform = platform.toPlatform()
     )
 
     MaterialExpressiveTheme(

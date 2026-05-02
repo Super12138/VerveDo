@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.constants.Constants
 import cn.super12138.todo.logic.database.TaskDatabase
 import cn.super12138.todo.logic.datastore.DataStoreManager
+import cn.super12138.todo.logic.model.DynamicSchemePlatform
+import cn.super12138.todo.logic.model.ColorSpecVersion
 import cn.super12138.todo.logic.model.ContrastLevel
 import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.PaletteStyle
@@ -76,6 +78,20 @@ class SettingsViewModel(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = SettingsDataUiState()
+    )
+
+    val devUiState: StateFlow<SettingsDevUiState> = combine(
+        dataStoreManager.colorSpecVersionFlow,
+        dataStoreManager.dynamicSchemePlatformFlow
+    ) { colorSpecVersion, colorSpecPlatform ->
+        SettingsDevUiState(
+            colorSpecVersion = ColorSpecVersion.fromId(colorSpecVersion),
+            dynamicSchemePlatform = DynamicSchemePlatform.fromId(colorSpecPlatform)
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = SettingsDevUiState()
     )
 
     /**
@@ -219,6 +235,18 @@ class SettingsViewModel(
     fun setCategories(categories: List<String>) {
         viewModelScope.launch {
             dataStoreManager.setCategories(categories)
+        }
+    }
+
+    fun setColorSpecVersion(id: Int) {
+        viewModelScope.launch {
+            dataStoreManager.setColorSpecVersion(id)
+        }
+    }
+
+    fun setDynamicSchemePlatform(id: Int) {
+        viewModelScope.launch {
+            dataStoreManager.setDynamicSchemePlatform(id)
         }
     }
 }

@@ -1,5 +1,7 @@
 package cn.super12138.todo.ui.pages.settings
 
+import cn.super12138.todo.logic.model.DynamicSchemePlatform
+import cn.super12138.todo.logic.model.ColorSpecVersion
 import cn.super12138.todo.logic.model.ContrastLevel
 import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.PaletteStyle
@@ -23,4 +25,9 @@ data class SettingsInterfaceUiState(
 
 data class SettingsDataUiState(
     val categories: List<String> = emptyList()
+)
+
+data class SettingsDevUiState(
+    val colorSpecVersion: ColorSpecVersion = ColorSpecVersion.Spec2021,
+    val dynamicSchemePlatform: DynamicSchemePlatform = DynamicSchemePlatform.Phone
 )
