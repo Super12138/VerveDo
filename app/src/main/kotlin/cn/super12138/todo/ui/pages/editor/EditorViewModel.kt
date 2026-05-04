@@ -98,7 +98,11 @@ class EditorViewModel(
                 selectedCategoryIndex = if (uiState.value.categoryList.size - 1 >= 1) 0 else -1,
                 priorityState = 0f,
                 dueDateState = null,
-                isCompleted = false
+                isCompleted = false,
+                isContentError = false,
+                isCategoryError = false,
+                showExitConfirmDialog = false,
+                showDeleteConfirmDialog = false
             )
         } else {
             // 编辑模式，填充任务数据
@@ -112,7 +116,11 @@ class EditorViewModel(
                 selectedCategoryIndex = index,
                 priorityState = task.priority,
                 dueDateState = task.dueDate,
-                isCompleted = task.isCompleted
+                isCompleted = task.isCompleted,
+                isContentError = false,
+                isCategoryError = false,
+                showExitConfirmDialog = false,
+                showDeleteConfirmDialog = false
             )
         }
     }
