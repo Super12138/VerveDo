@@ -7,6 +7,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import cn.super12138.todo.ui.activities.MainActivity
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Calendar
 import java.util.Locale
 import kotlin.system.exitProcess
@@ -20,12 +22,11 @@ object SystemUtils {
     fun getTime(): String {
         val currentTime = Calendar.getInstance().time
 
-        val sdf =
-            if (Build.VERSION.SDK_INT <= 28) {
-                SimpleDateFormat("yyyy-MM-dd-HH_mm_ss", Locale.getDefault())
-            } else {
-                SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.getDefault())
-            }
+        val sdf = if (Build.VERSION.SDK_INT <= 28) {
+            SimpleDateFormat("yyyy-MM-dd-HH_mm_ss", Locale.getDefault())
+        } else {
+            SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.getDefault())
+        }
 
         return sdf.format(currentTime)
     }
@@ -33,14 +34,12 @@ object SystemUtils {
     /**
      * 获取当天的时间戳
      */
-    fun getTodayEightAM(): Long = Calendar.getInstance().apply {
-        // 将时间设置为当天的开始（00:00:00.000）
-        // 兼容API24
-        set(Calendar.HOUR_OF_DAY, 8)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-    }.timeInMillis
+    fun getTodayEightAM(): Long {
+        val today = LocalDate.now()
+        val eightAM = today.atTime(8, 0)
+        val zoneId = ZoneId.systemDefault()
+        return eightAM.atZone(zoneId).toInstant().toEpochMilli()
+    }
 }
 
 fun ComponentActivity.configureEdgeToEdge() {
@@ -61,8 +60,7 @@ fun Context.restartApp() {
         this,
         MainActivity::class.java
     ).apply {
-        flags =
-            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
     this.startActivity(intent)
     exitProcess(0)

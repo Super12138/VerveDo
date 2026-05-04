@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import cn.super12138.todo.R
@@ -29,6 +30,7 @@ fun EmptyTip(
     modifier: Modifier = Modifier,
     type: EmptyTipType,
     size: Dp = VerveDoDefaults.Sizes.EmptyTip.default,
+    shape: Shape = CircleShape,
     containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     contentColor: Color = contentColorFor(containerColor)
 ) {
@@ -37,7 +39,7 @@ fun EmptyTip(
         modifier = modifier
             .padding(VerveDoDefaults.screenHorizontalPadding)
             .size(size)
-            .clip(CircleShape)
+            .clip(shape)
             .background(containerColor)
     ) {
         Icon(

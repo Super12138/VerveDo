@@ -108,7 +108,7 @@ fun TopNavigation(
                             viewModel.addTask(it)
                             // 如果原来的待办状态为未完成并且修改后状态为完成
                             if (!editorArgs.task.isCompleted && it.isCompleted) {
-                                viewModel.playConfetti()
+                                viewModel.setConfettiVisibility(true)
                             }
                             onBack()
                         },

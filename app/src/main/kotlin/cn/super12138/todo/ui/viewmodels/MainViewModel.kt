@@ -1,6 +1,8 @@
 package cn.super12138.todo.ui.viewmodels
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.logic.IRepository
@@ -10,10 +12,11 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModel(private val repository: IRepository) : ViewModel() {
-    val showConfetti = mutableStateOf(false)
+    var showConfetti by mutableStateOf(false)
+        private set
 
-    fun playConfetti() {
-        showConfetti.value = true
+    fun setConfettiVisibility(visible: Boolean) {
+        showConfetti = visible
     }
 
     fun addTask(task: TaskEntity) {

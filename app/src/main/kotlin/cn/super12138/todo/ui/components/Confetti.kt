@@ -2,7 +2,6 @@ package cn.super12138.todo.ui.components
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,28 +24,25 @@ import java.util.concurrent.TimeUnit
  */
 
 @Composable
-fun Konfetti(
+fun Confetti(
     modifier: Modifier = Modifier,
-    state: MutableState<Boolean>,
+    visible: Boolean = false,
+    onVisibilityChange: (Boolean) -> Unit = {},
     primary: Color = MaterialTheme.colorScheme.primary
 ) {
-    var visible by state
-    if (!visible) {
-        return
-    }
-    val listener = remember(state) {
+    if (!visible) return
+    val listener = remember(visible) {
         object : OnParticleSystemUpdateListener {
             override fun onParticleSystemEnded(system: PartySystem, activeSystems: Int) {
                 if (activeSystems == 0)
-                    visible = false
+                    onVisibilityChange(false)
             }
         }
     }
+    val parties = remember { particles(primary.toArgb()) }
     KonfettiView(
-        modifier = modifier
-        /*.fillMaxSize()
-        .then(modifier)*/,
-        parties = remember { particles(primary.toArgb()) },
+        modifier = modifier,
+        parties = parties,
         updateListener = listener
     )
 }

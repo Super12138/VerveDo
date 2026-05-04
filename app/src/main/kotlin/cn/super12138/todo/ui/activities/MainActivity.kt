@@ -25,7 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.ui.VerveDoDefaults
-import cn.super12138.todo.ui.components.Konfetti
+import cn.super12138.todo.ui.components.Confetti
 import cn.super12138.todo.ui.navigation.TopLevelBackStack
 import cn.super12138.todo.ui.navigation.TopNavigation
 import cn.super12138.todo.ui.navigation.VerveDoDestinations
@@ -152,8 +152,9 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
                             modifier = Modifier.fillMaxSize()
                         )
                     }
-                    Konfetti(
-                        state = mainViewModel.showConfetti,
+                    Confetti(
+                        visible = mainViewModel.showConfetti,
+                        onVisibilityChange = { mainViewModel.setConfettiVisibility(it) },
                         modifier = Modifier.fillMaxSize()
                     )
                 }

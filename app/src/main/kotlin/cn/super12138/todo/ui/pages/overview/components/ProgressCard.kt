@@ -15,9 +15,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -80,7 +82,8 @@ fun ProgressCard(
                     ) {
                         EmptyTip(
                             type = EmptyTipType.List,
-                            containerColor = emptyTipContainerColor
+                            containerColor = emptyTipContainerColor,
+                            shape = MaterialShapes.Cookie4Sided.toShape()
                         )
 
                         Text(

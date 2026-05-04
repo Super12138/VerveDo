@@ -17,8 +17,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,7 +81,8 @@ fun ListCard(
                     ) {
                         EmptyTip(
                             type = EmptyTipType.List,
-                            containerColor = emptyTipContainerColor
+                            containerColor = emptyTipContainerColor,
+                            shape = MaterialShapes.Cookie7Sided.toShape()
                         )
 
                         Text(

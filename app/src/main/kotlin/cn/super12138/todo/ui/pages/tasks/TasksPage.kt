@@ -20,9 +20,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.animateFloatingActionButton
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -133,7 +135,8 @@ fun SharedTransitionScope.TasksPage(
                     ) {
                         EmptyTip(
                             type = if (uiState.isInSearchMode) EmptyTipType.Search else EmptyTipType.TaskCompleted,
-                            size = VerveDoDefaults.Sizes.EmptyTip.large
+                            size = VerveDoDefaults.Sizes.EmptyTip.large,
+                            shape = MaterialShapes.Cookie6Sided.toShape()
                         )
 
                         Text(
@@ -183,7 +186,7 @@ fun SharedTransitionScope.TasksPage(
                                 },
                                 onChecked = {
                                     viewModel.updateTask(task.copy(isCompleted = true))
-                                    mainViewModel.playConfetti()
+                                    mainViewModel.setConfettiVisibility(true)
                                 },
                                 modifier = Modifier
                                     .sharedBounds(
