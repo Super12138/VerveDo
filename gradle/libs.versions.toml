@@ -13,7 +13,7 @@ material3 = "1.5.0-alpha18"
 nav3Core = "1.1.1"
 # AboutLibraries
 aboutLibsRelease = "14.1.0"
-aboutLibsReleasePlugin = "14.1.0"
+aboutLibsReleasePlugin = "14.2.0"
 # M3 Color
 m3color = "2026.1"
 # Capsule
