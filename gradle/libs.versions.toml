@@ -23,7 +23,7 @@ konfetti = "2.0.5"
 # Lazy Column Scrollbar
 # lazyColumnScrollbar = "2.2.0"
 # Kotlin
-kotlinCoroutines = "1.10.2"
+kotlinCoroutines = "1.11.0"
 kotlinSerialization = "1.11.0"
 # Koin
 koin-bom = "4.2.1"
