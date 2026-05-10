@@ -17,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,6 +42,7 @@ import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.utils.containerColor
 import cn.super12138.todo.utils.toRelativeTimeString
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ListCard(
     modifier: Modifier = Modifier,
