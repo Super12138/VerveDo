@@ -12,7 +12,7 @@ room = "2.8.4"
 material3 = "1.5.0-alpha20"
 nav3Core = "1.1.2"
 # AboutLibraries
-aboutLibsRelease = "14.2.0"
+aboutLibsRelease = "14.2.1"
 aboutLibsReleasePlugin = "14.2.1"
 # M3 Color
 m3color = "2026.1"
