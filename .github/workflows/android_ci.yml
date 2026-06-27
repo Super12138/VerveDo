@@ -40,7 +40,7 @@ jobs:
 
       - name: Cache NDK
         id: cache-ndk
-        uses: actions/cache@v6.0.0
+        uses: actions/cache@v6.1.0
         with:
           path: ${{ env.ANDROID_HOME }}/ndk/${{ env.NDK_VERSION }}
           key: ${{ runner.os }}-ndk-${{ env.NDK_VERSION }}
