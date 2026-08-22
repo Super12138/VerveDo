@@ -64,8 +64,6 @@
     <string name="contrast_very_high">Very High</string>
     <string name="pref_interface_interaction">Interface &amp; Interaction</string>
     <string name="pref_interface_interaction_desc">To-Do List, Haptic Feedback</string>
-    <!--<string name="pref_show_completed">Show Completed Tasks</string>
-    <string name="pref_show_completed_desc">Show completed tasks in to-do list</string>-->
     <string name="pref_category_todo_list">To-Do List</string>
     <string name="pref_view_on_github">View On GitHub</string>
     <string name="pref_view_on_github_desc">View source code, submit bug reports, and improvement suggestions</string>
@@ -146,4 +144,7 @@
     <string name="pref_pure_black_mode_desc">Set the background to pure black and dim the colors when dark mode turns on (Enable on OLED screens for better experience)</string>
     <string name="pref_color_spec_version">Color Spec Version</string>
     <string name="pref_dynamic_scheme_platform">Dynamic Scheme Platform</string>
+    <string name="label_none">None</string>
+    <string name="time_next_week">Next Week</string>
+    <string name="label_basic_information">Basic Information</string>
 </resources>
