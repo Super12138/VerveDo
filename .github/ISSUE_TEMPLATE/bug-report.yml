@@ -16,7 +16,7 @@ body:
   - type: dropdown
     id: version-variant
     attributes:
-      label: VerveDo 版本类型 / VerveDo Variant
+      label: 版本类型 / Variant
       description: 请选择当前 VerveDo 的版本类型 / Select the version of VerveDo variant you're currently using
       options:
         - 最新 Release（F-Droid）版 / Latest release (F-Droid)
@@ -101,7 +101,7 @@ body:
     attributes:
       label: Android 版本 / Android Version
       description: 在这里输入你的 Android 版本 / Enter your Android version here
-      placeholder: 例如：Android 16 / e.g. Android 16
+      placeholder: 例如：Android 17 / e.g. Android 17
     validations:
       required: true
 
