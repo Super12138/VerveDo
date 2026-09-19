@@ -10,7 +10,7 @@
     "replace": "tsc updateVersionCode.ts && node updateVersionCode.js"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
-    "typescript": "^7.0.0"
+    "@types/node": "^26.6.1",
+    "typescript": "^7.0.2"
   }
 }
