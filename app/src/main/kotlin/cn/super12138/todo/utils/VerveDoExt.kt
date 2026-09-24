@@ -28,15 +28,16 @@ import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.Priority
 import cn.super12138.todo.logic.model.SortingMethod
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.format
+import kotlinx.datetime.format.char
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.milliseconds
-
-val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+import kotlin.time.Instant
 
 fun Int.blend(
     color: Int,
@@ -106,10 +107,17 @@ fun ContentDrawScope.drawFadedEdge(
  * @receiver Long? 时间戳（单位为毫秒）或 null
  * @return String 格式化后的日期字符串。如果为传入参数为null则返回空字符串，反之格式为 “yyyy-MM-dd”
  */
-fun Long?.toLocalDateString(): String {
-    if (this == null) return ""
-    val date = Date(this)
-    return dateFormat.format(date)
+fun Long.toFormattedDate(): String {
+    val date = this.toInstant().toLocalDateTime(TimeZone.currentSystemDefault())
+    return date.format(
+        LocalDateTime.Format {
+            year()
+            char('-')
+            monthNumber()
+            char('-')
+            day()
+        }
+    )
 }
 
 /**
@@ -119,70 +127,61 @@ fun Long?.toLocalDateString(): String {
  * @param context 上下文，用于获取字符串资源
  * @return String 格式化后的相对时间字符串。如果为传入参数为null则返回空字符串，反之根据时间差返回相应的字符串，如“今天”、“明天”、“3天后”、“2周后”、“1个月后”、“1年后”等
  */
-fun Long?.toRelativeTimeString(context: Context): String {
-    if (this == null) return ""
-    val today = SystemUtils.getStartOfDayMillis(0)
+fun Long.toRelativeTimeString(context: Context): String {
+    val date = this.toInstant()
+    val today = Clock.System.now().toLocalDateTime(TimeZone.UTC).date.atStartOfDayIn(TimeZone.UTC)
 
-    return when (this - today) {
-        in 0L..0L -> context.getString(R.string.time_today)
+    return with(context) {
+        when (val duration = date - today) {
+            0.days -> getString(R.string.time_today)
 
-        // 将来的时间
-        in 1.days.inWholeMilliseconds..1.days.inWholeMilliseconds -> context.getString(R.string.time_tomorrow)
-        in 2.days.inWholeMilliseconds..6.days.inWholeMilliseconds -> context.getString(
-            R.string.time_in_days,
-            ((this - today).milliseconds.inWholeDays).toInt()
-        )
+            // 将来的时间
+            1.days -> getString(R.string.time_tomorrow)
+            in 2.days..6.days -> getString(
+                R.string.time_in_days,
+                (duration.inWholeDays).toInt()
+            )
 
-        in 7.days.inWholeMilliseconds..29.days.inWholeMilliseconds -> context.getString(
-            R.string.time_in_weeks,
-            ((this - today).milliseconds.inWholeDays / 7).toInt()
-        )
+            in 7.days..29.days -> getString(
+                R.string.time_in_weeks,
+                (duration.inWholeDays / 7).toInt()
+            )
 
-        in 30.days.inWholeMilliseconds..364.days.inWholeMilliseconds -> context.getString(
-            R.string.time_in_months,
-            ((this - today).milliseconds.inWholeDays / 30).toInt()
-        )
+            in 30.days..364.days -> getString(
+                R.string.time_in_months,
+                (duration.inWholeDays / 30).toInt()
+            )
 
-        in 365.days.inWholeMilliseconds..Long.MAX_VALUE -> context.getString(
-            R.string.time_in_years,
-            ((this - today).milliseconds.inWholeDays / 365).toInt()
-        )
+            in 365.days..Duration.INFINITE -> getString(
+                R.string.time_in_years,
+                (duration.inWholeDays / 365).toInt()
+            )
 
-        // 过去的时间
-        in (-1).days.inWholeMilliseconds..(-1).days.inWholeMilliseconds -> context.getString(R.string.time_yesterday)
-        in (-6).days.inWholeMilliseconds..(-2).days.inWholeMilliseconds -> context.getString(
-            R.string.time_days_ago,
-            (-(this - today).milliseconds.inWholeDays).toInt()
-        )
+            // 过去的时间
+            (-1).days -> getString(R.string.time_yesterday)
+            in (-6).days..(-2).days -> getString(
+                R.string.time_days_ago,
+                (-duration.inWholeDays).toInt()
+            )
 
-        in (-29).days.inWholeMilliseconds..(-7).days.inWholeMilliseconds -> context.getString(
-            R.string.time_weeks_ago,
-            (-(this - today).milliseconds.inWholeDays / 7).toInt()
-        )
+            in (-29).days..(-7).days -> getString(
+                R.string.time_weeks_ago,
+                (-duration.inWholeDays / 7).toInt()
+            )
 
-        in (-364).days.inWholeMilliseconds..(-30).days.inWholeMilliseconds -> context.getString(
-            R.string.time_months_ago,
-            (-(this - today).milliseconds.inWholeDays / 30).toInt()
-        )
+            in (-364).days..(-30).days -> getString(
+                R.string.time_months_ago,
+                (-duration.inWholeDays / 30).toInt()
+            )
 
-        in Long.MIN_VALUE..(-365).days.inWholeMilliseconds -> context.getString(
-            R.string.time_years_ago,
-            (-(this - today).milliseconds.inWholeDays / 365).toInt()
-        )
+            in -Duration.INFINITE..(-365).days -> getString(
+                R.string.time_years_ago,
+                (-duration.inWholeDays / 365).toInt()
+            )
 
-        else -> context.getString(R.string.time_today)
+            else -> getString(R.string.time_today)
+        }
     }
-}
-
-fun Long.toLocalDate(): LocalDate {
-    val date = Date(this)
-    val calendar = Calendar.getInstance()
-    calendar.time = date
-    return LocalDate.of(
-        calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH) + 1,
-        calendar.get(Calendar.DAY_OF_MONTH)
-    )
 }
 
 @Composable
@@ -276,3 +275,5 @@ fun Color.replace(color: Int): Color = color.toColor()
 
 fun Context.showToast(text: String, duration: Int = Toast.LENGTH_SHORT) =
     Toast.makeText(this, text, duration).show()
+
+fun Long.toInstant() = Instant.fromEpochMilliseconds(this)

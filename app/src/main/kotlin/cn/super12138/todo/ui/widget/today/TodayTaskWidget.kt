@@ -35,6 +35,7 @@ import cn.super12138.todo.ui.widget.components.GlanceTitleBar
 import cn.super12138.todo.utils.GlanceTypography
 import cn.super12138.todo.utils.SystemUtils
 import cn.super12138.todo.utils.sort
+import cn.super12138.todo.utils.toInstant
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -48,7 +49,10 @@ class TodayTaskWidget : GlanceAppWidget(), KoinComponent {
             val allTask by taskRepository.getAllTasks().collectAsState(emptyList())
             val todayTask = remember(allTask) {
                 allTask
-                    .filter { it.dueDateMillis == SystemUtils.getStartOfDayMillis(0) }
+                    .filter {
+                        if (it.dueDateMillis == null) return@filter false
+                        it.dueDateMillis.toInstant() == SystemUtils.startOfUTCToday()
+                    }
                     .sort(SortingMethod.Priority)
             }
 

@@ -149,7 +149,7 @@ fun UpcomingTaskItem(
             )
 
             Text(
-                text = dueDateMillis.toRelativeTimeString(context),
+                text = dueDateMillis?.toRelativeTimeString(context) ?: "",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontWeight = FontWeight.Bold,

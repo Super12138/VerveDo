@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,9 +40,9 @@ import cn.super12138.todo.R
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.utils.SystemUtils
 import cn.super12138.todo.utils.VibrationUtils
-import cn.super12138.todo.utils.toLocalDate
-import cn.super12138.todo.utils.toLocalDateString
-import java.time.LocalDate
+import cn.super12138.todo.utils.toFormattedDate
+import cn.super12138.todo.utils.toInstant
+import kotlin.time.Duration.Companion.days
 
 enum class DueDateSelection(@StringRes val labelRes: Int) {
     None(R.string.label_none),
@@ -57,6 +58,7 @@ fun DueDateChooser(
     onDateChange: (Long?) -> Unit
 ) {
     val view = LocalView.current
+    val context = LocalContext.current
 
     var openDialog by remember { mutableStateOf(false) }
     var menuExpanded by remember { mutableStateOf(false) }
@@ -70,15 +72,15 @@ fun DueDateChooser(
 
     SideEffect(dateMillis) {
         // @DeepSeek
-        val today: LocalDate = SystemUtils.getStartOfDayMillis(0).toLocalDate()
+        val today = SystemUtils.startOfUTCToday()
         val newSelection = when (dateMillis) {
             null -> DueDateSelection.None
             else -> {
-                val selectedDate = dateMillis.toLocalDate()
+                val selectedDate = dateMillis.toInstant()
                 when (selectedDate) {
                     today -> DueDateSelection.Today
-                    today.plusDays(1) -> DueDateSelection.Tomorrow
-                    today.plusDays(7) -> DueDateSelection.NextWeek
+                    today + 1.days -> DueDateSelection.Tomorrow
+                    today + 7.days -> DueDateSelection.NextWeek
                     else -> DueDateSelection.Customization
                 }
             }
@@ -97,9 +99,12 @@ fun DueDateChooser(
             selectedItem = it
             when (it) {
                 DueDateSelection.None -> onDateChange(null)
-                DueDateSelection.Today -> onDateChange(SystemUtils.getStartOfDayMillis(0))
-                DueDateSelection.Tomorrow -> onDateChange(SystemUtils.getStartOfDayMillis(1))
-                DueDateSelection.NextWeek -> onDateChange(SystemUtils.getStartOfDayMillis(7))
+                DueDateSelection.Today -> onDateChange(
+                    SystemUtils.startOfUTCToday().toEpochMilliseconds()
+                )
+
+                DueDateSelection.Tomorrow -> onDateChange((SystemUtils.startOfUTCToday() + 1.days).toEpochMilliseconds())
+                DueDateSelection.NextWeek -> onDateChange((SystemUtils.startOfUTCToday() + 7.days).toEpochMilliseconds())
                 DueDateSelection.Customization -> openDialog = true
             }
         },
@@ -180,7 +185,7 @@ private fun ExposedDropdownMenu(
             if (selectedItem == DueDateSelection.Customization) {
                 specificDateMillis?.let {
                     append(" ")
-                    append(it.toLocalDateString())
+                    append(it.toFormattedDate())
                 }
             }
         }

@@ -31,7 +31,7 @@ import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.utils.GlanceTypography
 import cn.super12138.todo.utils.glanceContainerColor
 import cn.super12138.todo.utils.toColorProvider
-import cn.super12138.todo.utils.toLocalDateString
+import cn.super12138.todo.utils.toFormattedDate
 import cn.super12138.todo.utils.toRelativeTimeString
 
 @Composable
@@ -110,8 +110,9 @@ fun DueDatePresenter(
 ) {
     val context = LocalContext.current
 
-    val dueDate = remember(dueDateMillis) { dueDateMillis.toLocalDateString() }
-    val relativeDueDate = remember(dueDateMillis) { dueDateMillis.toRelativeTimeString(context) }
+    val dueDate = remember(dueDateMillis) { dueDateMillis?.toFormattedDate() ?: "" }
+    val relativeDueDate =
+        remember(dueDateMillis) { dueDateMillis?.toRelativeTimeString(context) ?: "" }
     val combinedText = remember(dueDateMillis) {
         context.getString(R.string.label_slot_date_with_relative, dueDate, relativeDueDate)
     }

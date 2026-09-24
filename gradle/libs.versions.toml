@@ -21,6 +21,7 @@ konfetti = "2.0.5"
 # Kotlin
 kotlinCoroutines = "1.11.0"
 kotlinSerialization = "1.11.0"
+kotlinDatetime = "0.8.0"
 # Koin
 koinBom = "4.2.2"
 # Kotlin Csv
@@ -81,6 +82,7 @@ nl-dionsegijn-konfetti-compose = { group = "nl.dionsegijn", name = "konfetti-com
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinCoroutines" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinDatetime" }
 
 # Koin
 koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koinBom" }

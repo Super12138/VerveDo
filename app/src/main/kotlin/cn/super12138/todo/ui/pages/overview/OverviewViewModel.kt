@@ -5,10 +5,12 @@ import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.logic.TaskRepository
 import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.utils.SystemUtils
+import cn.super12138.todo.utils.toInstant
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlin.time.Duration.Companion.days
 
 class OverviewViewModel(private val taskRepository: TaskRepository) : ViewModel() {
     val uiState: StateFlow<OverviewUiState> = taskRepository.getAllTasks()
@@ -17,18 +19,17 @@ class OverviewViewModel(private val taskRepository: TaskRepository) : ViewModel(
             val completed = it.count { task -> task.isCompleted }
             val pending = total - completed
 
-            val todayMillis = SystemUtils.getStartOfDayMillis(0)
-            val dayMillis = 24L * 60 * 60 * 1000
+            val today = SystemUtils.startOfUTCToday()
 
             val todayTasks = it.filter { task ->
-                val due = task.dueDateMillis ?: return@filter false // 如果截止日期为空立即返回null
-                due == todayMillis // 判断截止日期是否为今天
+                if (task.dueDateMillis == null) return@filter false
+                task.dueDateMillis.toInstant() == today // 判断截止日期是否为今天
             }
 
             val nextWeekTasks = it.filter { task -> // 先过滤
-                val due = task.dueDateMillis ?: return@filter false
+                if (task.dueDateMillis == null) return@filter false
                 // 截止日期是否在今天到一周之后并且未完成
-                due in todayMillis..(todayMillis + 7 * dayMillis) && !task.isCompleted
+                task.dueDateMillis.toInstant() in today..(today + 7.days) && !task.isCompleted
             }.sortedWith( // 后排序
                 comparator = compareBy<TaskEntity> { it.dueDateMillis } // 截止日期近的靠前
                     .thenBy { it.category } // TODO：可选删了

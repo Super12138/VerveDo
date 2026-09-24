@@ -58,8 +58,13 @@ import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.containerColor
 import cn.super12138.todo.utils.disabledContainerColor
 import cn.super12138.todo.utils.disabledContentColor
-import cn.super12138.todo.utils.toLocalDateString
+import cn.super12138.todo.utils.toInstant
 import cn.super12138.todo.utils.toRelativeTimeString
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.char
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun TaskCard(
@@ -255,7 +260,21 @@ private fun DueDatePresenter(
         horizontalAlignment = Alignment.End,
         modifier = modifier
     ) {
-        val dueDateText = remember(dueDateMillis) { dueDateMillis.toLocalDateString() }
+        val dueDateText = remember(dueDateMillis) {
+            val instant = dueDateMillis
+                .toInstant()
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+
+            instant.format(
+                LocalDateTime.Format {
+                    year()
+                    char('-')
+                    monthNumber()
+                    char('-')
+                    day()
+                }
+            )
+        }
         Text(
             text = dueDateText,
             style = MaterialTheme.typography.labelLarge,
