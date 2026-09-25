@@ -23,6 +23,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.setDisplayedMonth
+import androidx.compose.material3.setSelectedDate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
@@ -42,7 +44,10 @@ import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.toFormattedDate
 import cn.super12138.todo.utils.toInstant
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaMonth
 import kotlinx.datetime.toLocalDateTime
+import java.time.LocalDate
+import java.time.YearMonth
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Instant
 
@@ -61,16 +66,16 @@ fun DueDateChooser(
 ) {
     val view = LocalView.current
 
+    val datePickerState = rememberDatePickerState()
+    val dueDateItems = DueDateSelection.entries.map { it }
+
     var openDialog by remember { mutableStateOf(false) }
     var menuExpanded by remember { mutableStateOf(false) }
 
-    val datePickerState =
-        rememberDatePickerState(initialSelectedDateMillis = instant?.toEpochMilliseconds())
+    var setSelectedDate by rememberSaveable { mutableStateOf(false) }
     var selectedItem by rememberSaveable { mutableStateOf(DueDateSelection.None) }
 
     val confirmEnabled by remember { derivedStateOf { datePickerState.selectedDateMillis != null } }
-
-    val dueDateItems = DueDateSelection.entries.map { it }
 
     SideEffect(instant) {
         // @DeepSeek
@@ -89,6 +94,14 @@ fun DueDateChooser(
         if (selectedItem != newSelection) {
             selectedItem = newSelection
         }
+    }
+
+    SideEffect(instant) {
+        if (setSelectedDate || instant == null) return@SideEffect
+        val date = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+        datePickerState.setDisplayedMonth(YearMonth.of(date.year, date.month.toJavaMonth()))
+        datePickerState.setSelectedDate(LocalDate.of(date.year, date.month.toJavaMonth(), date.day))
+        setSelectedDate = true
     }
 
     ExposedDropdownMenu(
