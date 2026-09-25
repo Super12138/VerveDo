@@ -23,6 +23,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.setDisplayedMonth
+import androidx.compose.material3.setSelectedDate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
@@ -39,9 +41,15 @@ import cn.super12138.todo.R
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.utils.SystemUtils
 import cn.super12138.todo.utils.VibrationUtils
-import cn.super12138.todo.utils.toLocalDate
-import cn.super12138.todo.utils.toLocalDateString
+import cn.super12138.todo.utils.toFormattedDate
+import cn.super12138.todo.utils.toInstant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaMonth
+import kotlinx.datetime.toLocalDateTime
 import java.time.LocalDate
+import java.time.YearMonth
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Instant
 
 enum class DueDateSelection(@StringRes val labelRes: Int) {
     None(R.string.label_none),
@@ -53,32 +61,32 @@ enum class DueDateSelection(@StringRes val labelRes: Int) {
 
 @Composable
 fun DueDateChooser(
-    dateMillis: Long?,
-    onDateChange: (Long?) -> Unit
+    instant: Instant?,
+    onChange: (Instant?) -> Unit
 ) {
     val view = LocalView.current
+
+    val datePickerState = rememberDatePickerState()
+    val dueDateItems = DueDateSelection.entries.map { it }
 
     var openDialog by remember { mutableStateOf(false) }
     var menuExpanded by remember { mutableStateOf(false) }
 
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateMillis)
+    var setSelectedDate by rememberSaveable { mutableStateOf(false) }
     var selectedItem by rememberSaveable { mutableStateOf(DueDateSelection.None) }
 
     val confirmEnabled by remember { derivedStateOf { datePickerState.selectedDateMillis != null } }
 
-    val dueDateItems = DueDateSelection.entries.map { it }
-
-    SideEffect(dateMillis) {
+    SideEffect(instant) {
         // @DeepSeek
-        val today: LocalDate = SystemUtils.getStartOfDayMillis(0).toLocalDate()
-        val newSelection = when (dateMillis) {
+        val today = SystemUtils.startOfUTCToday()
+        val newSelection = when (instant) {
             null -> DueDateSelection.None
             else -> {
-                val selectedDate = dateMillis.toLocalDate()
-                when (selectedDate) {
+                when (instant) {
                     today -> DueDateSelection.Today
-                    today.plusDays(1) -> DueDateSelection.Tomorrow
-                    today.plusDays(7) -> DueDateSelection.NextWeek
+                    today + 1.days -> DueDateSelection.Tomorrow
+                    today + 7.days -> DueDateSelection.NextWeek
                     else -> DueDateSelection.Customization
                 }
             }
@@ -88,6 +96,14 @@ fun DueDateChooser(
         }
     }
 
+    SideEffect(instant) {
+        if (setSelectedDate || instant == null) return@SideEffect
+        val date = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+        datePickerState.setDisplayedMonth(YearMonth.of(date.year, date.month.toJavaMonth()))
+        datePickerState.setSelectedDate(LocalDate.of(date.year, date.month.toJavaMonth(), date.day))
+        setSelectedDate = true
+    }
+
     ExposedDropdownMenu(
         expanded = menuExpanded,
         onExpandedChange = { menuExpanded = it },
@@ -95,15 +111,16 @@ fun DueDateChooser(
         selectedItem = selectedItem,
         onSelectedItemChange = {
             selectedItem = it
+            val today = SystemUtils.startOfUTCToday()
             when (it) {
-                DueDateSelection.None -> onDateChange(null)
-                DueDateSelection.Today -> onDateChange(SystemUtils.getStartOfDayMillis(0))
-                DueDateSelection.Tomorrow -> onDateChange(SystemUtils.getStartOfDayMillis(1))
-                DueDateSelection.NextWeek -> onDateChange(SystemUtils.getStartOfDayMillis(7))
+                DueDateSelection.None -> onChange(null)
+                DueDateSelection.Today -> onChange(today)
+                DueDateSelection.Tomorrow -> onChange((today + 1.days))
+                DueDateSelection.NextWeek -> onChange((today + 7.days))
                 DueDateSelection.Customization -> openDialog = true
             }
         },
-        specificDateMillis = dateMillis
+        specificInstant = instant
     )
 
     if (openDialog) {
@@ -119,7 +136,7 @@ fun DueDateChooser(
                     enabled = confirmEnabled,
                     onClick = {
                         VibrationUtils.performHapticFeedback(view)
-                        onDateChange(datePickerState.selectedDateMillis)
+                        onChange(datePickerState.selectedDateMillis?.toInstant())
                         openDialog = false
                     },
                     shapes = ButtonDefaults.shapes(),
@@ -162,7 +179,7 @@ private fun ExposedDropdownMenu(
     selectedItem: DueDateSelection,
     onSelectedItemChange: (DueDateSelection) -> Unit,
     modifier: Modifier = Modifier,
-    specificDateMillis: Long? = null,
+    specificInstant: Instant? = null,
 ) {
     val view = LocalView.current
 
@@ -178,9 +195,9 @@ private fun ExposedDropdownMenu(
             append(stringResource(selectedItem.labelRes))
 
             if (selectedItem == DueDateSelection.Customization) {
-                specificDateMillis?.let {
+                specificInstant?.let {
                     append(" ")
-                    append(it.toLocalDateString())
+                    append(it.toLocalDateTime(TimeZone.UTC).toFormattedDate())
                 }
             }
         }

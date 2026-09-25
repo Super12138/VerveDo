@@ -7,45 +7,44 @@ import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.core.content.pm.PackageInfoCompat
 import cn.super12138.todo.ui.activities.MainActivity
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.ZoneId
-import java.util.Calendar
-import java.util.Locale
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.format
+import kotlinx.datetime.format.char
+import kotlinx.datetime.toLocalDateTime
 import kotlin.system.exitProcess
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 object SystemUtils {
-    val today: LocalDate = LocalDate.now()
+    /**
+     * 获取格式化后的当前时间（yyyy-MM-dd-HH:mm:ss）
+     */
+    fun getFormattedCurrentTime(): String =
+        Clock.System.now()
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+            .format(
+                LocalDateTime.Format {
+                    year()
+                    char('-')
+                    monthNumber()
+                    char('-')
+                    day()
+                    char('-')
+                    hour()
+                    char('-')
+                    minute()
+                    char('-')
+                    second()
+                }
+            )
 
     /**
-     * 获取格式化后的当前时间
-     * 参考 https://github.com/rafi0101/Android-Room-Database-Backup/blob/master/core/src/main/java/de/raphaelebner/roomdatabasebackup/core/RoomBackup.kt#L770
-     * @return 当前时间
+     * 获取用户当天开始的UTC时间，返回Kotlin Instant
      */
-    fun getTime(): String {
-        val currentTime = Calendar.getInstance().time
-
-        val sdf = if (Build.VERSION.SDK_INT <= 28) {
-            SimpleDateFormat("yyyy-MM-dd-HH_mm_ss", Locale.getDefault())
-        } else {
-            SimpleDateFormat("yyyy-MM-dd-HH:mm:ss", Locale.getDefault())
-        }
-
-        return sdf.format(currentTime)
-    }
-
-    /**
-     * 获取当天起偏移天数的早上8点的时间戳
-     *
-     * @param offsetDays 偏移天数（例如：0 - 今天，1 - 明天）
-     */
-    fun getStartOfDayMillis(offsetDays: Int): Long {
-        val target = today.plusDays(offsetDays.toLong())
-        return target.atTime(8, 0, 0)
-            .atZone(ZoneId.systemDefault())
-            .toInstant()
-            .toEpochMilli()
-    }
+    fun startOfUTCToday(): Instant = Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).date.atStartOfDayIn(TimeZone.UTC)
 }
 
 fun ComponentActivity.configureEdgeToEdge() {

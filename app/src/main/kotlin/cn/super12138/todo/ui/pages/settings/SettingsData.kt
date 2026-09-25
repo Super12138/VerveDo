@@ -116,7 +116,7 @@ fun SettingsData(
                     title = stringResource(R.string.pref_backup),
                     description = stringResource(R.string.pref_backup_desc),
                     onClick = {
-                        backupLauncher.launch("VerveDo-backup-${SystemUtils.getTime()}.zip")
+                        backupLauncher.launch("VerveDo-backup-${SystemUtils.getFormattedCurrentTime()}.zip")
                     }
                 )
             }
@@ -136,7 +136,7 @@ fun SettingsData(
                     title = stringResource(R.string.pref_export_task),
                     description = stringResource(R.string.pref_export_task_desc),
                     onClick = {
-                        exportCsvLauncher.launch("VerveDo-backup-${SystemUtils.getTime()}.csv")
+                        exportCsvLauncher.launch("VerveDo-backup-${SystemUtils.getFormattedCurrentTime()}.csv")
                     }
                 )
             }

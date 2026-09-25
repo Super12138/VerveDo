@@ -48,7 +48,10 @@ class TodayTaskWidget : GlanceAppWidget(), KoinComponent {
             val allTask by taskRepository.getAllTasks().collectAsState(emptyList())
             val todayTask = remember(allTask) {
                 allTask
-                    .filter { it.dueDateMillis == SystemUtils.getStartOfDayMillis(0) }
+                    .filter {
+                        if (it.dueDateInstant == null) return@filter false
+                        it.dueDateInstant == SystemUtils.startOfUTCToday()
+                    }
                     .sort(SortingMethod.Priority)
             }
 
@@ -113,7 +116,7 @@ private fun TodayTaskApp(
                         GlanceTaskCard(
                             content = it.content,
                             category = it.category,
-                            dueDateMillis = it.dueDateMillis,
+                            dueDateInstant = it.dueDateInstant,
                             isCompleted = it.isCompleted,
                             showDueDate = false,
                             priority = Priority.fromFloat(it.priority),
@@ -131,7 +134,7 @@ private fun TodayTaskApp(
                         GlanceTaskCard(
                             content = it.content,
                             category = it.category,
-                            dueDateMillis = it.dueDateMillis,
+                            dueDateInstant = it.dueDateInstant,
                             isCompleted = it.isCompleted,
                             priority = Priority.fromFloat(it.priority),
                             showDueDate = false,
