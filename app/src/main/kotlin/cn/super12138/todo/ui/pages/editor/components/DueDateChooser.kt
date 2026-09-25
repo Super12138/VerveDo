@@ -32,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -42,7 +41,10 @@ import cn.super12138.todo.utils.SystemUtils
 import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.toFormattedDate
 import cn.super12138.todo.utils.toInstant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration.Companion.days
+import kotlin.time.Instant
 
 enum class DueDateSelection(@StringRes val labelRes: Int) {
     None(R.string.label_none),
@@ -54,30 +56,29 @@ enum class DueDateSelection(@StringRes val labelRes: Int) {
 
 @Composable
 fun DueDateChooser(
-    dateMillis: Long?,
-    onDateChange: (Long?) -> Unit
+    instant: Instant?,
+    onChange: (Instant?) -> Unit
 ) {
     val view = LocalView.current
-    val context = LocalContext.current
 
     var openDialog by remember { mutableStateOf(false) }
     var menuExpanded by remember { mutableStateOf(false) }
 
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateMillis)
+    val datePickerState =
+        rememberDatePickerState(initialSelectedDateMillis = instant?.toEpochMilliseconds())
     var selectedItem by rememberSaveable { mutableStateOf(DueDateSelection.None) }
 
     val confirmEnabled by remember { derivedStateOf { datePickerState.selectedDateMillis != null } }
 
     val dueDateItems = DueDateSelection.entries.map { it }
 
-    SideEffect(dateMillis) {
+    SideEffect(instant) {
         // @DeepSeek
         val today = SystemUtils.startOfUTCToday()
-        val newSelection = when (dateMillis) {
+        val newSelection = when (instant) {
             null -> DueDateSelection.None
             else -> {
-                val selectedDate = dateMillis.toInstant()
-                when (selectedDate) {
+                when (instant) {
                     today -> DueDateSelection.Today
                     today + 1.days -> DueDateSelection.Tomorrow
                     today + 7.days -> DueDateSelection.NextWeek
@@ -99,14 +100,14 @@ fun DueDateChooser(
             selectedItem = it
             val today = SystemUtils.startOfUTCToday()
             when (it) {
-                DueDateSelection.None -> onDateChange(null)
-                DueDateSelection.Today -> onDateChange(today.toEpochMilliseconds())
-                DueDateSelection.Tomorrow -> onDateChange((today + 1.days).toEpochMilliseconds())
-                DueDateSelection.NextWeek -> onDateChange((today + 7.days).toEpochMilliseconds())
+                DueDateSelection.None -> onChange(null)
+                DueDateSelection.Today -> onChange(today)
+                DueDateSelection.Tomorrow -> onChange((today + 1.days))
+                DueDateSelection.NextWeek -> onChange((today + 7.days))
                 DueDateSelection.Customization -> openDialog = true
             }
         },
-        specificDateMillis = dateMillis
+        specificInstant = instant
     )
 
     if (openDialog) {
@@ -122,7 +123,7 @@ fun DueDateChooser(
                     enabled = confirmEnabled,
                     onClick = {
                         VibrationUtils.performHapticFeedback(view)
-                        onDateChange(datePickerState.selectedDateMillis)
+                        onChange(datePickerState.selectedDateMillis?.toInstant())
                         openDialog = false
                     },
                     shapes = ButtonDefaults.shapes(),
@@ -165,7 +166,7 @@ private fun ExposedDropdownMenu(
     selectedItem: DueDateSelection,
     onSelectedItemChange: (DueDateSelection) -> Unit,
     modifier: Modifier = Modifier,
-    specificDateMillis: Long? = null,
+    specificInstant: Instant? = null,
 ) {
     val view = LocalView.current
 
@@ -181,9 +182,9 @@ private fun ExposedDropdownMenu(
             append(stringResource(selectedItem.labelRes))
 
             if (selectedItem == DueDateSelection.Customization) {
-                specificDateMillis?.let {
+                specificInstant?.let {
                     append(" ")
-                    append(it.toFormattedDate())
+                    append(it.toLocalDateTime(TimeZone.UTC).toFormattedDate())
                 }
             }
         }

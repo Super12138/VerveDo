@@ -106,18 +106,18 @@ fun ContentDrawScope.drawFadedEdge(
  * @receiver Long? 时间戳（单位为毫秒）或 null
  * @return String 格式化后的日期字符串。如果为传入参数为null则返回空字符串，反之格式为 “yyyy-MM-dd”
  */
-fun Long.toFormattedDate(): String {
-    val date = this.toInstant().toLocalDateTime(TimeZone.UTC)
-    return date.format(
-        LocalDateTime.Format {
-            year()
-            char('-')
-            monthNumber()
-            char('-')
-            day()
-        }
-    )
-}
+fun Long.toFormattedDate(): String =
+    this.toInstant().toLocalDateTime(TimeZone.UTC).toFormattedDate()
+
+fun LocalDateTime.toFormattedDate(): String = this.format(
+    LocalDateTime.Format {
+        year()
+        char('-')
+        monthNumber()
+        char('-')
+        day()
+    }
+)
 
 /**
  * 将时间戳转换为相对时间字符串
@@ -126,8 +126,8 @@ fun Long.toFormattedDate(): String {
  * @param context 上下文，用于获取字符串资源
  * @return String 格式化后的相对时间字符串。如果为传入参数为null则返回空字符串，反之根据时间差返回相应的字符串，如“今天”、“明天”、“3天后”、“2周后”、“1个月后”、“1年后”等
  */
-fun Long.toRelativeTimeString(context: Context): String {
-    val date = this.toInstant().toLocalDateTime(TimeZone.UTC).date.atStartOfDayIn(TimeZone.UTC)
+fun Instant.toRelativeTimeString(context: Context): String {
+    val date = this.toLocalDateTime(TimeZone.UTC).date.atStartOfDayIn(TimeZone.UTC)
     val today = SystemUtils.startOfUTCToday()
 
     return with(context) {
@@ -205,7 +205,7 @@ fun List<TaskEntity>.sort(sortingMethod: SortingMethod): List<TaskEntity> = when
     SortingMethod.Priority -> this.sortedWith(
         comparator = compareBy<TaskEntity> { it.isCompleted }
             .thenByDescending { it.priority }
-            .thenBy(nullsLast()) { it.dueDateMillis }
+            .thenBy(nullsLast()) { it.dueDateInstant }
     ) // 优先级高的在前
 
     SortingMethod.Completion -> this.sortedWith(
@@ -228,7 +228,7 @@ fun List<TaskEntity>.sort(sortingMethod: SortingMethod): List<TaskEntity> = when
     SortingMethod.DueDate -> this.sortedWith(
         comparator = compareBy<TaskEntity> { it.isCompleted }
             // 确保未设置截止日期的任务在最下头
-            .thenBy(nullsLast()) { it.dueDateMillis }
+            .thenBy(nullsLast()) { it.dueDateInstant }
     )
 }
 

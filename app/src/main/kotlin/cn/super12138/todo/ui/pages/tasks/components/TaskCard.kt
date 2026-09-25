@@ -49,7 +49,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.model.Priority
 import cn.super12138.todo.ui.VerveDoDefaults
@@ -58,20 +57,20 @@ import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.containerColor
 import cn.super12138.todo.utils.disabledContainerColor
 import cn.super12138.todo.utils.disabledContentColor
-import cn.super12138.todo.utils.toInstant
 import cn.super12138.todo.utils.toRelativeTimeString
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Instant
 
 @Composable
 fun TaskCard(
     content: String,
     category: String,
     completed: Boolean,
-    dueDateMillis: Long?,
+    dueDateInstant: Instant?,
     priority: Priority,
     selected: Boolean,
     modifier: Modifier = Modifier,
@@ -185,9 +184,9 @@ fun TaskCard(
                             .weight(1f)
                     )
 
-                    dueDateMillis?.let {
+                    dueDateInstant?.let {
                         DueDatePresenter(
-                            dueDateMillis = it,
+                            dueDateInstant = it,
                             dateColor = dateColor,
                             relativeDateColor = relativeDateColor,
                             modifier = Modifier.padding(start = VerveDoDefaults.contentPadding)
@@ -250,7 +249,7 @@ private fun SelectedIcon(modifier: Modifier = Modifier) {
 
 @Composable
 private fun DueDatePresenter(
-    dueDateMillis: Long,
+    dueDateInstant: Instant,
     modifier: Modifier = Modifier,
     dateColor: Color = MaterialTheme.colorScheme.onSurface,
     relativeDateColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -260,10 +259,8 @@ private fun DueDatePresenter(
         horizontalAlignment = Alignment.End,
         modifier = modifier
     ) {
-        val dueDateText = remember(dueDateMillis) {
-            val instant = dueDateMillis
-                .toInstant()
-                .toLocalDateTime(TimeZone.UTC)
+        val dueDateText = remember(dueDateInstant) {
+            val instant = dueDateInstant.toLocalDateTime(TimeZone.UTC)
 
             instant.format(
                 LocalDateTime.Format {
@@ -283,7 +280,7 @@ private fun DueDatePresenter(
         )
 
         val relativeTimeString =
-            remember(dueDateMillis) { dueDateMillis.toRelativeTimeString(context) }
+            remember(dueDateInstant) { dueDateInstant.toRelativeTimeString(context) }
         Text(
             text = relativeTimeString,
             style = MaterialTheme.typography.labelSmall,
@@ -336,6 +333,7 @@ private fun CheckButton(
     }
 }
 
+/*
 @Preview
 @Composable
 private fun LongTaskCardPreview() {
@@ -343,7 +341,7 @@ private fun LongTaskCardPreview() {
         content = "这里有一条很长长长长长长长长长长长长长长长长长长长长长长的任务",
         category = "这里有一条很长长长长长长长长长长长长长长长长长长长长长长的分类",
         completed = false,
-        dueDateMillis = 1787616000000,
+        dueDateInstant = 1787616000000,
         priority = Priority.NotImportant,
         selected = false
     )
@@ -356,9 +354,9 @@ private fun TaskCardPreview() {
         content = "这是一个任务",
         category = "它的分类",
         completed = true,
-        dueDateMillis = 1787616000000,
+        dueDateInstant = 1787616000000,
         priority = Priority.NotImportant,
         selected = false
     )
 }
-
+*/

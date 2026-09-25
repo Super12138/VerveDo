@@ -54,6 +54,8 @@ import cn.super12138.todo.ui.pages.tasks.components.TaskSearchTextField
 import cn.super12138.todo.ui.pages.tasks.components.TasksTopAppBar
 import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.utils.toFormattedDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -83,7 +85,7 @@ fun SharedTransitionScope.TasksPage(
                 listOf(
                     task.content,
                     task.category,
-                    task.dueDateMillis?.toFormattedDate() ?: ""
+                    task.dueDateInstant?.toLocalDateTime(TimeZone.UTC)?.toFormattedDate() ?: ""
                 ).any {
                     it.contains(uiState.searchQuery, ignoreCase = true)
                 }
@@ -202,7 +204,7 @@ fun SharedTransitionScope.TasksPage(
                                 content = task.content,
                                 category = task.category,
                                 completed = task.isCompleted,
-                                dueDateMillis = task.dueDateMillis,
+                                dueDateInstant = task.dueDateInstant,
                                 priority = priority,
                                 selected = selected,
                                 onClick = {

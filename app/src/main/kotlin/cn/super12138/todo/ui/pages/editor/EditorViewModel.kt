@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Instant
 
 class EditorViewModel(
     val initialTask: TaskEntity?,
@@ -48,7 +49,7 @@ class EditorViewModel(
                         content = content,
                         category = category,
                         priority = Priority.fromFloat(priority),
-                        dueDateMillis = dueDateMillis,
+                        dueDateInstant = dueDateInstant,
                         isCompleted = isCompleted
                     )
                 }
@@ -59,7 +60,7 @@ class EditorViewModel(
     fun setContentText(content: String) = localUiState.update { it.copy(content = content) }
     fun setCategoryText(category: String) = localUiState.update { it.copy(category = category) }
     fun setPriority(priority: Priority) = localUiState.update { it.copy(priority = priority) }
-    fun setDueDate(dueDate: Long?) = localUiState.update { it.copy(dueDateMillis = dueDate) }
+    fun setDueDate(dueDate: Instant?) = localUiState.update { it.copy(dueDateInstant = dueDate) }
     fun setCompleted(completed: Boolean) = localUiState.update { it.copy(isCompleted = completed) }
     fun isModified(): Boolean {
         var isModified = false
@@ -69,7 +70,7 @@ class EditorViewModel(
             if ((initialTask?.category ?: initialCategory) != category.trim()) isModified = true
             if ((initialTask?.priority ?: 0f) != priority.value) isModified = true
             if ((initialTask?.isCompleted == true) != isCompleted) isModified = true
-            if (initialTask?.dueDateMillis != dueDateMillis) isModified = true
+            if (initialTask?.dueDateInstant != dueDateInstant) isModified = true
         }
 
         return isModified
@@ -103,7 +104,7 @@ class EditorViewModel(
                 category = category,
                 isCompleted = isCompleted,
                 priority = priority.value,
-                dueDateMillis = dueDateMillis,
+                dueDateInstant = dueDateInstant,
                 id = initialTask?.id ?: 0
             )
         }

@@ -1,5 +1,6 @@
 package cn.super12138.todo.logic.database
 
+import androidx.room3.ColumnTypeConverters
 import androidx.room3.Database
 import androidx.room3.RoomDatabase
 import androidx.room3.migration.Migration
@@ -8,6 +9,7 @@ import androidx.sqlite.execSQL
 import cn.super12138.todo.constants.Constants
 
 @Database(entities = [TaskEntity::class], version = 5)
+@ColumnTypeConverters(Converters::class)
 abstract class TaskDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
 

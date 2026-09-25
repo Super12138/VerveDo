@@ -33,6 +33,9 @@ import cn.super12138.todo.utils.glanceContainerColor
 import cn.super12138.todo.utils.toColorProvider
 import cn.super12138.todo.utils.toFormattedDate
 import cn.super12138.todo.utils.toRelativeTimeString
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Instant
 
 @Composable
 fun GlanceTaskCard(
@@ -40,7 +43,7 @@ fun GlanceTaskCard(
     category: String,
     isCompleted: Boolean,
     priority: Priority,
-    dueDateMillis: Long?,
+    dueDateInstant: Instant?,
     modifier: GlanceModifier = GlanceModifier,
     showDueDate: Boolean = true,
     onChecked: () -> Unit = {}
@@ -87,9 +90,9 @@ fun GlanceTaskCard(
                     )
                 }
                 if (showDueDate) {
-                    dueDateMillis?.let {
+                    dueDateInstant?.let {
                         DueDatePresenter(
-                            dueDateMillis = it,
+                            dueDateInstant = it,
                             modifier = GlanceModifier.fillMaxWidth()
                         )
                     }
@@ -105,15 +108,17 @@ fun GlanceTaskCard(
 
 @Composable
 fun DueDatePresenter(
-    dueDateMillis: Long?,
+    dueDateInstant: Instant?,
     modifier: GlanceModifier = GlanceModifier
 ) {
     val context = LocalContext.current
 
-    val dueDate = remember(dueDateMillis) { dueDateMillis?.toFormattedDate() ?: "" }
+    val dueDate = remember(dueDateInstant) {
+        dueDateInstant?.toLocalDateTime(TimeZone.UTC)?.toFormattedDate() ?: ""
+    }
     val relativeDueDate =
-        remember(dueDateMillis) { dueDateMillis?.toRelativeTimeString(context) ?: "" }
-    val combinedText = remember(dueDateMillis) {
+        remember(dueDateInstant) { dueDateInstant?.toRelativeTimeString(context) ?: "" }
+    val combinedText = remember(dueDateInstant) {
         context.getString(R.string.label_slot_date_with_relative, dueDate, relativeDueDate)
     }
 

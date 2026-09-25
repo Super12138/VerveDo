@@ -357,8 +357,8 @@ fun TaskEditorPage(
                     style = MaterialTheme.typography.titleMedium
                 )
                 DueDateChooser(
-                    dateMillis = uiState.dueDateMillis,
-                    onDateChange = { viewModel.setDueDate(it) }
+                    instant = uiState.dueDateInstant,
+                    onChange = { viewModel.setDueDate(it) }
                 )
                 if (task != null) {
                     CheckboxWithLabel(

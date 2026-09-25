@@ -97,7 +97,7 @@ private fun TaskWidgetApp(
                     GlanceTaskCard(
                         content = it.content,
                         category = it.category,
-                        dueDateMillis = it.dueDateMillis,
+                        dueDateInstant = it.dueDateInstant,
                         isCompleted = it.isCompleted,
                         priority = Priority.fromFloat(it.priority),
                         onChecked = { onChecked(it.copy(isCompleted = true)) }
