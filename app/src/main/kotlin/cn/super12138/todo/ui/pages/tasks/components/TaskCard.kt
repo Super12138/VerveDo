@@ -263,7 +263,7 @@ private fun DueDatePresenter(
         val dueDateText = remember(dueDateMillis) {
             val instant = dueDateMillis
                 .toInstant()
-                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .toLocalDateTime(TimeZone.UTC)
 
             instant.format(
                 LocalDateTime.Format {

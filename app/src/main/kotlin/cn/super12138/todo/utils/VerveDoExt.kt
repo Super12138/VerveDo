@@ -34,7 +34,6 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.format
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Instant
@@ -108,7 +107,7 @@ fun ContentDrawScope.drawFadedEdge(
  * @return String 格式化后的日期字符串。如果为传入参数为null则返回空字符串，反之格式为 “yyyy-MM-dd”
  */
 fun Long.toFormattedDate(): String {
-    val date = this.toInstant().toLocalDateTime(TimeZone.currentSystemDefault())
+    val date = this.toInstant().toLocalDateTime(TimeZone.UTC)
     return date.format(
         LocalDateTime.Format {
             year()
@@ -128,15 +127,15 @@ fun Long.toFormattedDate(): String {
  * @return String 格式化后的相对时间字符串。如果为传入参数为null则返回空字符串，反之根据时间差返回相应的字符串，如“今天”、“明天”、“3天后”、“2周后”、“1个月后”、“1年后”等
  */
 fun Long.toRelativeTimeString(context: Context): String {
-    val date = this.toInstant()
-    val today = Clock.System.now().toLocalDateTime(TimeZone.UTC).date.atStartOfDayIn(TimeZone.UTC)
+    val date = this.toInstant().toLocalDateTime(TimeZone.UTC).date.atStartOfDayIn(TimeZone.UTC)
+    val today = SystemUtils.startOfUTCToday()
 
     return with(context) {
         when (val duration = date - today) {
-            0.days -> getString(R.string.time_today)
+            in 0.days..0.days -> getString(R.string.time_today)
 
             // 将来的时间
-            1.days -> getString(R.string.time_tomorrow)
+            in 1.days..1.days -> getString(R.string.time_tomorrow)
             in 2.days..6.days -> getString(
                 R.string.time_in_days,
                 (duration.inWholeDays).toInt()
@@ -158,7 +157,7 @@ fun Long.toRelativeTimeString(context: Context): String {
             )
 
             // 过去的时间
-            (-1).days -> getString(R.string.time_yesterday)
+            in (-1).days..(-1).days -> getString(R.string.time_yesterday)
             in (-6).days..(-2).days -> getString(
                 R.string.time_days_ago,
                 (-duration.inWholeDays).toInt()

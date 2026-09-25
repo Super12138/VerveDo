@@ -22,13 +22,13 @@ abstract class TaskDatabase : RoomDatabase() {
         val MIGRATION_3_4 = object : Migration(3, 4) {
             override suspend fun migrate(connection: SQLiteConnection) {
                 // 创建一个新表，其中不含有subject，并且有一个新的category字段（由custom_subject迁移而来）
-                connection.execSQL("CREATE TABLE IF NOT EXISTS todo_new (content TEXT NOT NULL, category TEXT NOT NULL DEFAULT '', completed INTEGER NOT NULL, priority REAL NOT NULL, id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)")
+                connection.execSQL("CREATE TABLE IF NOT EXISTS ${Constants.DB_TABLE_NAME}_new (content TEXT NOT NULL, category TEXT NOT NULL DEFAULT '', completed INTEGER NOT NULL, priority REAL NOT NULL, id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)")
                 // 将旧表中的数据迁移到新表中
-                connection.execSQL("INSERT INTO todo_new (content, category, completed, priority, id) SELECT content, COALESCE(NULLIF(custom_subject, ''), '') AS category, completed, priority, id FROM todo")
+                connection.execSQL("INSERT INTO ${Constants.DB_TABLE_NAME}_new (content, category, completed, priority, id) SELECT content, COALESCE(NULLIF(custom_subject, ''), '') AS category, completed, priority, id FROM ${Constants.DB_TABLE_NAME}")
                 // 删除旧表
-                connection.execSQL("DROP TABLE todo")
+                connection.execSQL("DROP TABLE ${Constants.DB_TABLE_NAME}")
                 // 重命名新表
-                connection.execSQL("ALTER TABLE todo_new RENAME TO todo")
+                connection.execSQL("ALTER TABLE ${Constants.DB_TABLE_NAME}_new RENAME TO ${Constants.DB_TABLE_NAME}")
             }
         }
 

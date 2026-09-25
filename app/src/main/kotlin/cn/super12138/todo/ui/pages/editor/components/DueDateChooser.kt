@@ -97,14 +97,12 @@ fun DueDateChooser(
         selectedItem = selectedItem,
         onSelectedItemChange = {
             selectedItem = it
+            val today = SystemUtils.startOfUTCToday()
             when (it) {
                 DueDateSelection.None -> onDateChange(null)
-                DueDateSelection.Today -> onDateChange(
-                    SystemUtils.startOfUTCToday().toEpochMilliseconds()
-                )
-
-                DueDateSelection.Tomorrow -> onDateChange((SystemUtils.startOfUTCToday() + 1.days).toEpochMilliseconds())
-                DueDateSelection.NextWeek -> onDateChange((SystemUtils.startOfUTCToday() + 7.days).toEpochMilliseconds())
+                DueDateSelection.Today -> onDateChange(today.toEpochMilliseconds())
+                DueDateSelection.Tomorrow -> onDateChange((today + 1.days).toEpochMilliseconds())
+                DueDateSelection.NextWeek -> onDateChange((today + 7.days).toEpochMilliseconds())
                 DueDateSelection.Customization -> openDialog = true
             }
         },

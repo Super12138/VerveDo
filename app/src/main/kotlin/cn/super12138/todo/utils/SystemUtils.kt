@@ -41,10 +41,10 @@ object SystemUtils {
             )
 
     /**
-     * 获取当天的UTC时间，返回Kotlin Instant
+     * 获取用户当天开始的UTC时间，返回Kotlin Instant
      */
-    fun startOfUTCToday(): Instant =
-        Clock.System.now().toLocalDateTime(TimeZone.UTC).date.atStartOfDayIn(TimeZone.UTC)
+    fun startOfUTCToday(): Instant = Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).date.atStartOfDayIn(TimeZone.UTC)
 }
 
 fun ComponentActivity.configureEdgeToEdge() {
