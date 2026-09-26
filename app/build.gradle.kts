@@ -39,7 +39,7 @@ android {
         applicationId = "cn.super12138.todo"
         minSdk = 26
         targetSdk = 37
-        versionCode = 1284
+        versionCode = 1285
         versionName = "3.5.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -52,18 +52,20 @@ android {
             signingConfig = releaseSigning
         }
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            optimization {
+                enable = true
+            }
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
     }
 
     androidResources {
@@ -79,17 +81,17 @@ android {
         includeInApk = false
         includeInBundle = false
     }
-
-    aboutLibraries {
-        collect {
-            configPath = file("$projectDir/licences")
-        }
-    }
 }
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_21)
+        jvmTarget.set(JvmTarget.JVM_25)
+    }
+}
+
+aboutLibraries {
+    collect {
+        configPath = file("$projectDir/licences")
     }
 }
 

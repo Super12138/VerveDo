@@ -15,5 +15,5 @@ data class TaskEntity(
     @ColumnInfo(name = "completed") val isCompleted: Boolean = false,
     @ColumnInfo(name = "priority") val priority: Float,
     @ColumnInfo(name = "due_date") val dueDateInstant: Instant? = null,
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Int = 0
 )
