@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.format.char
 
 object VerveDoDefaults {
     val contentPadding = 8.dp
@@ -86,4 +88,26 @@ object VerveDoDefaults {
 
     val toggleButtonColors: ToggleButtonColors
         @Composable get() = ToggleButtonDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest)
+
+    val defaultDateFormatter = LocalDateTime.Format {
+        year()
+        char('-')
+        monthNumber()
+        char('-')
+        day()
+    }
+
+    val fullDateFormatter = LocalDateTime.Format {
+        year()
+        char('-')
+        monthNumber()
+        char('-')
+        day()
+        char('-')
+        hour()
+        char('-')
+        minute()
+        char('-')
+        second()
+    }
 }

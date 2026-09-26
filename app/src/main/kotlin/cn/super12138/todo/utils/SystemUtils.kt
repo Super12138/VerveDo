@@ -6,12 +6,11 @@ import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.core.content.pm.PackageInfoCompat
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.activities.MainActivity
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.format
-import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import kotlin.system.exitProcess
 import kotlin.time.Clock
@@ -24,21 +23,7 @@ object SystemUtils {
     fun getFormattedCurrentTime(): String =
         Clock.System.now()
             .toLocalDateTime(TimeZone.currentSystemDefault())
-            .format(
-                LocalDateTime.Format {
-                    year()
-                    char('-')
-                    monthNumber()
-                    char('-')
-                    day()
-                    char('-')
-                    hour()
-                    char('-')
-                    minute()
-                    char('-')
-                    second()
-                }
-            )
+            .format(VerveDoDefaults.fullDateFormatter)
 
     /**
      * 获取用户当天开始的UTC时间，返回Kotlin Instant

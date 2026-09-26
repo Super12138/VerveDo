@@ -28,11 +28,11 @@ import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.Priority
 import cn.super12138.todo.logic.model.SortingMethod
+import cn.super12138.todo.ui.VerveDoDefaults
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.format
-import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -109,15 +109,7 @@ fun ContentDrawScope.drawFadedEdge(
 fun Long.toFormattedDate(): String =
     this.toInstant().toLocalDateTime(TimeZone.UTC).toFormattedDate()
 
-fun LocalDateTime.toFormattedDate(): String = this.format(
-    LocalDateTime.Format {
-        year()
-        char('-')
-        monthNumber()
-        char('-')
-        day()
-    }
-)
+fun LocalDateTime.toFormattedDate(): String = this.format(VerveDoDefaults.defaultDateFormatter)
 
 /**
  * 将时间戳转换为相对时间字符串

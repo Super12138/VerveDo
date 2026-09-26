@@ -58,10 +58,8 @@ import cn.super12138.todo.utils.containerColor
 import cn.super12138.todo.utils.disabledContainerColor
 import cn.super12138.todo.utils.disabledContentColor
 import cn.super12138.todo.utils.toRelativeTimeString
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
-import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Instant
 
@@ -260,17 +258,8 @@ private fun DueDatePresenter(
         modifier = modifier
     ) {
         val dueDateText = remember(dueDateInstant) {
-            val instant = dueDateInstant.toLocalDateTime(TimeZone.UTC)
-
-            instant.format(
-                LocalDateTime.Format {
-                    year()
-                    char('-')
-                    monthNumber()
-                    char('-')
-                    day()
-                }
-            )
+            dueDateInstant.toLocalDateTime(TimeZone.UTC)
+                .format(VerveDoDefaults.defaultDateFormatter)
         }
         Text(
             text = dueDateText,
