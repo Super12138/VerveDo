@@ -200,10 +200,11 @@ fun SharedTransitionScope.TasksPage(
                             TaskCard(
                                 content = task.content,
                                 category = task.category,
-                                completed = task.isCompleted,
+                                isCompleted = task.isCompleted,
                                 dueDate = task.dueDate,
                                 priority = task.priority,
-                                selected = selected,
+                                isPinned = task.isPinned,
+                                isSelected = selected,
                                 onClick = {
                                     if (uiState.inSelectionMode) {
                                         viewModel.toggleTaskSelection(task)

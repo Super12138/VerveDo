@@ -1,5 +1,6 @@
 package cn.super12138.todo.ui.pages.tasks.components
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -67,10 +68,11 @@ import kotlin.time.Instant
 fun TaskCard(
     content: String,
     category: String,
-    completed: Boolean,
+    isCompleted: Boolean,
+    isPinned: Boolean,
     dueDate: Instant?,
     priority: Priority,
-    selected: Boolean,
+    isSelected: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
@@ -91,41 +93,41 @@ fun TaskCard(
     val pressed by interactionSource.collectIsPressedAsState()
     val animatedShape = shapeByInteraction(
         shapes = shapes,
-        pressed = if (selected) true else pressed,
+        pressed = if (isSelected) true else pressed,
         animationSpec = VerveDoDefaults.shapesDefaultAnimationSpec
     )
 
     val containerColor by animateColorAsState( // @ChatGPT
         targetValue = when {
-            selected -> MaterialTheme.colorScheme.secondaryContainer
-            completed -> colors.disabledContainerColor
+            isSelected -> MaterialTheme.colorScheme.secondaryContainer
+            isCompleted -> colors.disabledContainerColor
             else -> colors.containerColor
         },
         label = "containerColor"
     )
 
     val contentColor by animateColorAsState(
-        targetValue = if (completed) colors.disabledContentColor else colors.contentColor,
+        targetValue = if (isCompleted) colors.disabledContentColor else colors.contentColor,
         label = "contentColor"
     )
 
     val badgeColor by animateColorAsState(
-        targetValue = if (completed) disabledContainerColor() else MaterialTheme.colorScheme.primary,
+        targetValue = if (isCompleted) disabledContainerColor() else MaterialTheme.colorScheme.primary,
         label = "badgeColor"
     )
 
     val dateColor by animateColorAsState(
-        targetValue = if (completed) colors.disabledContentColor else MaterialTheme.colorScheme.onSurface,
+        targetValue = if (isCompleted) colors.disabledContentColor else MaterialTheme.colorScheme.onSurface,
         label = "contentColor"
     )
 
     val relativeDateColor by animateColorAsState(
-        targetValue = if (completed) colors.disabledContentColor else MaterialTheme.colorScheme.onSurfaceVariant,
+        targetValue = if (isCompleted) colors.disabledContentColor else MaterialTheme.colorScheme.onSurfaceVariant,
         label = "contentColor"
     )
 
     val priorityColor by animateColorAsState(
-        targetValue = if (completed) disabledContentColor() else priority.containerColor(),
+        targetValue = if (isCompleted) disabledContentColor() else priority.containerColor(),
         label = "priorityColor"
     )
 
@@ -151,10 +153,16 @@ fun TaskCard(
             .drawBehind { drawRect(containerColor) }
     ) {
         AnimatedVisibility(
-            visible = selected,
+            visible = isSelected || isPinned,
             enter = enterTransition,
             exit = exitTransition
-        ) { SelectedIcon(Modifier.padding(start = VerveDoDefaults.contentPadding * 2)) }
+        ) {
+            SelectedIcon(
+                isSelected = isSelected,
+                isPinned = isPinned,
+                modifier = Modifier.padding(start = VerveDoDefaults.contentPadding * 2)
+            )
+        }
 
         CompositionLocalProvider(LocalContentColor provides contentColor) {
             Column(
@@ -216,7 +224,7 @@ fun TaskCard(
         }
 
         AnimatedVisibility(
-            visible = !selected && !completed,
+            visible = !isSelected && !isCompleted,
             enter = enterTransition,
             exit = exitTransition
         ) {
@@ -230,18 +238,45 @@ fun TaskCard(
 }
 
 @Composable
-private fun SelectedIcon(modifier: Modifier = Modifier) {
+private fun SelectedIcon(
+    isSelected: Boolean,
+    isPinned: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val pinnedContainer = MaterialTheme.colorScheme.error
+    val pinnedContent = contentColorFor(pinnedContainer)
+
+    val selectedContainer = MaterialTheme.colorScheme.secondary
+    val selectedContent = contentColorFor(selectedContainer)
+
+    val containerColor by animateColorAsState(
+        targetValue = when {
+            isSelected -> selectedContainer
+            isPinned -> pinnedContainer
+            else -> selectedContainer
+        }
+    )
+
+    val contentColor by animateColorAsState(
+        targetValue = when {
+            isSelected -> selectedContent
+            isPinned -> pinnedContent
+            else -> selectedContent
+        }
+    )
     Box(
         modifier
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.secondary)
+            .background(containerColor)
             .padding(VerveDoDefaults.contentPadding / 2)
     ) {
-        Icon(
-            painter = painterResource(R.drawable.ic_check),
-            tint = contentColorFor(MaterialTheme.colorScheme.secondary),
-            contentDescription = stringResource(R.string.tip_selected)
-        )
+        AnimatedContent(isSelected) {
+            Icon(
+                painter = if (it) painterResource(R.drawable.ic_check) else painterResource(R.drawable.ic_keep),
+                tint = contentColor,
+                contentDescription = if (it) stringResource(R.string.tip_selected) else "This is a pinned task"
+            )
+        }
     }
 }
 

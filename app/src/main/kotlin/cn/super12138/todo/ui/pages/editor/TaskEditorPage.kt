@@ -360,6 +360,12 @@ fun TaskEditorPage(
                     instant = uiState.dueDate,
                     onChange = { viewModel.setDueDate(it) }
                 )
+                CheckboxWithLabel(
+                    label = "Pinned",
+                    checked = uiState.isPinned,
+                    onCheckedChange = { viewModel.setPinned(it) },
+                    modifier = Modifier.fillMaxWidth()
+                )
                 if (task != null) {
                     CheckboxWithLabel(
                         label = stringResource(R.string.tip_mark_completed),
@@ -369,6 +375,7 @@ fun TaskEditorPage(
                     )
                 }
             }
+            // 这个Spacer用于在横屏下空出FAB的位置以确保内容显示完全
             item {
                 Spacer(Modifier.size(56.dp))
             }

@@ -185,7 +185,8 @@ fun disabledContainerColor(alpha: Float = 0.12f): Color =
 
 fun List<TaskEntity>.sort(sortingMethod: SortingMethod): List<TaskEntity> = when (sortingMethod) {
     SortingMethod.Sequential -> this.sortedWith(
-        comparator = compareBy<TaskEntity> { it.isCompleted } // 必须先要按照是否完成排序
+        comparator = compareBy<TaskEntity> { !it.isPinned } // 必须先要按照是否完成排序
+            .thenBy { it.isCompleted }
             .thenBy { it.id }
     )
 

@@ -1,5 +1,6 @@
 package cn.super12138.todo.ui.pages.editor
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.logic.SettingsRepository
@@ -50,7 +51,8 @@ class EditorViewModel(
                         category = category,
                         priority = priority,
                         dueDate = dueDate,
-                        isCompleted = isCompleted
+                        isCompleted = isCompleted,
+                        isPinned = isPinned
                     )
                 }
             }
@@ -62,14 +64,20 @@ class EditorViewModel(
     fun setPriority(priority: Priority) = localUiState.update { it.copy(priority = priority) }
     fun setDueDate(dueDate: Instant?) = localUiState.update { it.copy(dueDate = dueDate) }
     fun setCompleted(completed: Boolean) = localUiState.update { it.copy(isCompleted = completed) }
+    fun setPinned(pinned: Boolean) = localUiState.update {
+        Log.d("VVD", "setPinned: $pinned")
+        it.copy(isPinned = pinned)
+    }
+
     fun isModified(): Boolean {
         var isModified = false
 
         with(uiState.value) {
             if ((initialTask?.content ?: "") != content.trim()) isModified = true
             if ((initialTask?.category ?: initialCategory) != category.trim()) isModified = true
-            if ((initialTask?.priority) != priority) isModified = true
+            if ((initialTask?.priority ?: Priority.Default) != priority) isModified = true
             if ((initialTask?.isCompleted == true) != isCompleted) isModified = true
+            if ((initialTask?.isPinned == true) != isPinned) isModified = true
             if (initialTask?.dueDate != dueDate) isModified = true
         }
 
@@ -105,6 +113,7 @@ class EditorViewModel(
                 isCompleted = isCompleted,
                 priority = priority,
                 dueDate = dueDate,
+                isPinned = isPinned,
                 id = initialTask?.id ?: 0
             )
         }
