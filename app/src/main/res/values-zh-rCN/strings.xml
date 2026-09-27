@@ -7,10 +7,8 @@
     <string name="action_cancel">取消</string>
     <string name="action_save">保存</string>
     <string name="error_no_content_entered">没有输入内容</string>
-    <string name="tip_select_this">选择该项</string>
     <string name="tip_mark_completed">标记为已完成</string>
     <string name="title_edit_task">修改任务</string>
-    <string name="tip_remain_tasks">剩余 %s 项任务</string>
     <string name="page_crash">应用程序出现错误</string>
     <string name="tip_no_crash_logs">没有日志传入</string>
     <string name="action_exit_app">退出应用</string>
@@ -94,8 +92,6 @@
     <string name="pref_secure_mode_desc">阻止截屏并保护后台预览图</string>
     <string name="label_more">更多</string>
     <string name="label_enter_category_name">输入分类名称</string>
-    <string name="accessibility_progress_tasks">当前共有 %1$d 项任务，其中 %2$d 项已完成，%3$d 项未完成</string>
-    <string name="accessibility_progress_no_tasks">当前没有任务</string>
     <string name="pref_category_category_management">分类管理</string>
     <string name="pref_category_data_management">数据管理</string>
     <string name="pref_category_management_desc">管理任务的分类标签</string>
@@ -130,7 +126,6 @@
     <string name="title_completed_task">已完成</string>
     <string name="title_pending_task">未完成</string>
     <string name="action_search">搜索</string>
-    <string name="action_close">关闭</string>
     <string name="sorting_due_date">截止日期</string>
     <string name="tip_search_task_not_found">暂未搜索到内容</string>
     <string name="tip_no_task_brief">暂无任务</string>
@@ -140,8 +135,6 @@
     <string name="pref_dark_mode_desc1">控制应用的深色模式</string>
     <string name="pref_pure_black_mode">纯黑深色模式</string>
     <string name="pref_pure_black_mode_desc">深色模式下压暗应用颜色并使应用背景变成纯黑色（在 OLED 屏幕上开启可获得更佳体验）</string>
-    <string name="pref_color_spec_version">色彩标准版本</string>
-    <string name="pref_dynamic_scheme_platform">动态色彩平台</string>
     <string name="label_none">无</string>
     <string name="time_next_week">下周</string>
     <string name="label_basic_information">基本信息</string>
