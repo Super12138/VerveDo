@@ -361,7 +361,7 @@ fun TaskEditorPage(
                     onChange = { viewModel.setDueDate(it) }
                 )
                 CheckboxWithLabel(
-                    label = "Pinned",
+                    label = stringResource(R.string.label_pinned_task),
                     checked = uiState.isPinned,
                     onCheckedChange = { viewModel.setPinned(it) },
                     modifier = Modifier.fillMaxWidth()

@@ -151,4 +151,6 @@
     <string name="label_widget_today_task">今日任务</string>
     <string name="label_slot_item_task">%d 项</string>
     <string name="label_slot_date_with_relative">%1$s（%2$s）</string>
+    <string name="label_pinned_task">置顶该任务</string>
+    <string name="tip_pinned_task">这是一个置顶任务</string>
 </resources>

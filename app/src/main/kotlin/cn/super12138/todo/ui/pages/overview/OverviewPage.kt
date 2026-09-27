@@ -56,7 +56,7 @@ fun OverviewPage(
                     iconRes = R.drawable.ic_pending,
                     title = stringResource(R.string.title_pending_task),
                     count = uiState.totalTasks - uiState.completedTasks,
-                    containerColor = MaterialTheme.colorScheme.errorContainer
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer
                 )
             }
             item {

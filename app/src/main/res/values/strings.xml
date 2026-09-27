@@ -152,4 +152,6 @@
     <string name="label_widget_today_task">Today\'s Task</string>
     <string name="label_slot_item_task">%d items</string>
     <string name="label_slot_date_with_relative">%1$s (%2$s)</string>
+    <string name="label_pinned_task">Pinned this task</string>
+    <string name="tip_pinned_task">This task is pinned</string>
 </resources>
