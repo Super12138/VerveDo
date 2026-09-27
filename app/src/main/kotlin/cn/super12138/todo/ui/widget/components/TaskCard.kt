@@ -43,7 +43,7 @@ fun GlanceTaskCard(
     category: String,
     isCompleted: Boolean,
     priority: Priority,
-    dueDateInstant: Instant?,
+    dueDate: Instant?,
     modifier: GlanceModifier = GlanceModifier,
     showDueDate: Boolean = true,
     onChecked: () -> Unit = {}
@@ -90,9 +90,9 @@ fun GlanceTaskCard(
                     )
                 }
                 if (showDueDate) {
-                    dueDateInstant?.let {
+                    dueDate?.let {
                         DueDatePresenter(
-                            dueDateInstant = it,
+                            dueDate = it,
                             modifier = GlanceModifier.fillMaxWidth()
                         )
                     }
@@ -108,18 +108,17 @@ fun GlanceTaskCard(
 
 @Composable
 fun DueDatePresenter(
-    dueDateInstant: Instant?,
+    dueDate: Instant?,
     modifier: GlanceModifier = GlanceModifier
 ) {
     val context = LocalContext.current
 
-    val dueDate = remember(dueDateInstant) {
-        dueDateInstant?.toLocalDateTime(TimeZone.UTC)?.toFormattedDate() ?: ""
+    val dueDateText = remember(dueDate) {
+        dueDate?.toLocalDateTime(TimeZone.UTC)?.toFormattedDate() ?: ""
     }
-    val relativeDueDate =
-        remember(dueDateInstant) { dueDateInstant?.toRelativeTimeString(context) ?: "" }
-    val combinedText = remember(dueDateInstant) {
-        context.getString(R.string.label_slot_date_with_relative, dueDate, relativeDueDate)
+    val relativeDueDate = remember(dueDate) { dueDate?.toRelativeTimeString(context) ?: "" }
+    val combinedText = remember(dueDate) {
+        context.getString(R.string.label_slot_date_with_relative, dueDateText, relativeDueDate)
     }
 
     Text(

@@ -48,8 +48,8 @@ class EditorViewModel(
                     it.copy(
                         content = content,
                         category = category,
-                        priority = Priority.fromFloat(priority),
-                        dueDateInstant = dueDateInstant,
+                        priority = priority,
+                        dueDate = dueDate,
                         isCompleted = isCompleted
                     )
                 }
@@ -60,7 +60,7 @@ class EditorViewModel(
     fun setContentText(content: String) = localUiState.update { it.copy(content = content) }
     fun setCategoryText(category: String) = localUiState.update { it.copy(category = category) }
     fun setPriority(priority: Priority) = localUiState.update { it.copy(priority = priority) }
-    fun setDueDate(dueDate: Instant?) = localUiState.update { it.copy(dueDateInstant = dueDate) }
+    fun setDueDate(dueDate: Instant?) = localUiState.update { it.copy(dueDate = dueDate) }
     fun setCompleted(completed: Boolean) = localUiState.update { it.copy(isCompleted = completed) }
     fun isModified(): Boolean {
         var isModified = false
@@ -68,9 +68,9 @@ class EditorViewModel(
         with(uiState.value) {
             if ((initialTask?.content ?: "") != content.trim()) isModified = true
             if ((initialTask?.category ?: initialCategory) != category.trim()) isModified = true
-            if ((initialTask?.priority ?: 0f) != priority.value) isModified = true
+            if ((initialTask?.priority) != priority) isModified = true
             if ((initialTask?.isCompleted == true) != isCompleted) isModified = true
-            if (initialTask?.dueDateInstant != dueDateInstant) isModified = true
+            if (initialTask?.dueDate != dueDate) isModified = true
         }
 
         return isModified
@@ -103,8 +103,8 @@ class EditorViewModel(
                 content = content,
                 category = category,
                 isCompleted = isCompleted,
-                priority = priority.value,
-                dueDateInstant = dueDateInstant,
+                priority = priority,
+                dueDate = dueDate,
                 id = initialTask?.id ?: 0
             )
         }

@@ -68,7 +68,7 @@ fun TaskCard(
     content: String,
     category: String,
     completed: Boolean,
-    dueDateInstant: Instant?,
+    dueDate: Instant?,
     priority: Priority,
     selected: Boolean,
     modifier: Modifier = Modifier,
@@ -182,9 +182,9 @@ fun TaskCard(
                             .weight(1f)
                     )
 
-                    dueDateInstant?.let {
+                    dueDate?.let {
                         DueDatePresenter(
-                            dueDateInstant = it,
+                            dueDate = it,
                             dateColor = dateColor,
                             relativeDateColor = relativeDateColor,
                             modifier = Modifier.padding(start = VerveDoDefaults.contentPadding)
@@ -247,7 +247,7 @@ private fun SelectedIcon(modifier: Modifier = Modifier) {
 
 @Composable
 private fun DueDatePresenter(
-    dueDateInstant: Instant,
+    dueDate: Instant,
     modifier: Modifier = Modifier,
     dateColor: Color = MaterialTheme.colorScheme.onSurface,
     relativeDateColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -257,9 +257,8 @@ private fun DueDatePresenter(
         horizontalAlignment = Alignment.End,
         modifier = modifier
     ) {
-        val dueDateText = remember(dueDateInstant) {
-            dueDateInstant.toLocalDateTime(TimeZone.UTC)
-                .format(VerveDoDefaults.defaultDateFormatter)
+        val dueDateText = remember(dueDate) {
+            dueDate.toLocalDateTime(TimeZone.UTC).format(VerveDoDefaults.defaultDateFormatter)
         }
         Text(
             text = dueDateText,
@@ -269,7 +268,7 @@ private fun DueDatePresenter(
         )
 
         val relativeTimeString =
-            remember(dueDateInstant) { dueDateInstant.toRelativeTimeString(context) }
+            remember(dueDate) { dueDate.toRelativeTimeString(context) }
         Text(
             text = relativeTimeString,
             style = MaterialTheme.typography.labelSmall,

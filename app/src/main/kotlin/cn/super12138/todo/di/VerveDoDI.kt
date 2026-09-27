@@ -62,7 +62,8 @@ object VerveDoDI {
                 .addMigrations(
                     TaskDatabase.MIGRATION_2_3,
                     TaskDatabase.MIGRATION_3_4,
-                    TaskDatabase.MIGRATION_4_5
+                    TaskDatabase.MIGRATION_4_5,
+                    TaskDatabase.MIGRATION_5_6
                 )
                 .fallbackToDestructiveMigration(false)
                 .build()

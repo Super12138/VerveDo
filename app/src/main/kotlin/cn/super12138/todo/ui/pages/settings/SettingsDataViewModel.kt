@@ -128,7 +128,7 @@ class SettingsDataViewModel(
                         category,
                         isCompleted.toString(),
                         priority.toString(),
-                        dueDateInstant?.toString() ?: "",
+                        dueDate?.toString() ?: "",
                         id.toString()
                     )
                 }

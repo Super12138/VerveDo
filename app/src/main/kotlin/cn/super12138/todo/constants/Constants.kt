@@ -11,6 +11,7 @@ object Constants {
 
     const val DB_NAME = "todo"
     const val DB_TABLE_NAME = "todo"
+    const val DB_TABLE_NEW_NAME = "todo_new"
 
     const val SP_NAME = "cn.super12138.todo_preferences"
 

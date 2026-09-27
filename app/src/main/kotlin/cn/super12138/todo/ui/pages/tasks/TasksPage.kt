@@ -42,7 +42,6 @@ import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import cn.super12138.todo.R
 import cn.super12138.todo.constants.Constants
 import cn.super12138.todo.logic.database.TaskEntity
-import cn.super12138.todo.logic.model.Priority
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.ConfirmDialog
 import cn.super12138.todo.ui.components.EmptyTip
@@ -85,7 +84,7 @@ fun SharedTransitionScope.TasksPage(
                 listOf(
                     task.content,
                     task.category,
-                    task.dueDateInstant?.toLocalDateTime(TimeZone.UTC)?.toFormattedDate() ?: ""
+                    task.dueDate?.toLocalDateTime(TimeZone.UTC)?.toFormattedDate() ?: ""
                 ).any {
                     it.contains(uiState.searchQuery, ignoreCase = true)
                 }
@@ -193,8 +192,6 @@ fun SharedTransitionScope.TasksPage(
                             items = taskList,
                             key = { task -> task.id }
                         ) { task ->
-                            val priority =
-                                remember(task.priority) { Priority.fromFloat(task.priority) }
                             val selected by remember(task.id, uiState.selectedTaskIds) {
                                 derivedStateOf {
                                     task.id in uiState.selectedTaskIds
@@ -204,8 +201,8 @@ fun SharedTransitionScope.TasksPage(
                                 content = task.content,
                                 category = task.category,
                                 completed = task.isCompleted,
-                                dueDateInstant = task.dueDateInstant,
-                                priority = priority,
+                                dueDate = task.dueDate,
+                                priority = task.priority,
                                 selected = selected,
                                 onClick = {
                                     if (uiState.inSelectionMode) {

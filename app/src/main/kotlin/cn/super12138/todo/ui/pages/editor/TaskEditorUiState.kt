@@ -7,7 +7,7 @@ data class TaskEditorUiState(
     val content: String = "",
     val category: String = "",
     val priority: Priority = Priority.Default,
-    val dueDateInstant: Instant? = null,
+    val dueDate: Instant? = null,
     val isCompleted: Boolean = false,
     val selectedCategoryId: Int = -1,
     val categoryList: List<String> = emptyList(),

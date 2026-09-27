@@ -26,7 +26,6 @@ import androidx.glance.text.Text
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.TaskRepository
 import cn.super12138.todo.logic.database.TaskEntity
-import cn.super12138.todo.logic.model.Priority
 import cn.super12138.todo.logic.model.SortingMethod
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.widget.components.GlanceTaskCard
@@ -49,8 +48,8 @@ class TodayTaskWidget : GlanceAppWidget(), KoinComponent {
             val todayTask = remember(allTask) {
                 allTask
                     .filter {
-                        if (it.dueDateInstant == null) return@filter false
-                        it.dueDateInstant == SystemUtils.startOfUTCToday()
+                        if (it.dueDate == null) return@filter false
+                        it.dueDate == SystemUtils.startOfUTCToday()
                     }
                     .sort(SortingMethod.Priority)
             }
@@ -116,10 +115,10 @@ private fun TodayTaskApp(
                         GlanceTaskCard(
                             content = it.content,
                             category = it.category,
-                            dueDateInstant = it.dueDateInstant,
+                            dueDate = it.dueDate,
                             isCompleted = it.isCompleted,
                             showDueDate = false,
-                            priority = Priority.fromFloat(it.priority),
+                            priority = it.priority,
                             onChecked = { onChecked(it.copy(isCompleted = true)) }
                         )
                     }
@@ -134,9 +133,9 @@ private fun TodayTaskApp(
                         GlanceTaskCard(
                             content = it.content,
                             category = it.category,
-                            dueDateInstant = it.dueDateInstant,
+                            dueDate = it.dueDate,
                             isCompleted = it.isCompleted,
-                            priority = Priority.fromFloat(it.priority),
+                            priority = it.priority,
                             showDueDate = false,
                             onChecked = { onChecked(it.copy(isCompleted = true)) }
                         )

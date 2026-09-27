@@ -357,7 +357,7 @@ fun TaskEditorPage(
                     style = MaterialTheme.typography.titleMedium
                 )
                 DueDateChooser(
-                    instant = uiState.dueDateInstant,
+                    instant = uiState.dueDate,
                     onChange = { viewModel.setDueDate(it) }
                 )
                 if (task != null) {

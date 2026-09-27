@@ -23,7 +23,6 @@ import androidx.glance.layout.size
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.TaskRepository
 import cn.super12138.todo.logic.database.TaskEntity
-import cn.super12138.todo.logic.model.Priority
 import cn.super12138.todo.logic.model.SortingMethod
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.widget.components.GlanceTaskCard
@@ -97,9 +96,9 @@ private fun TaskWidgetApp(
                     GlanceTaskCard(
                         content = it.content,
                         category = it.category,
-                        dueDateInstant = it.dueDateInstant,
+                        dueDate = it.dueDate,
                         isCompleted = it.isCompleted,
-                        priority = Priority.fromFloat(it.priority),
+                        priority = it.priority,
                         onChecked = { onChecked(it.copy(isCompleted = true)) }
                     )
                 }

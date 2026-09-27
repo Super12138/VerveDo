@@ -107,8 +107,8 @@ fun ListCard(
                             UpcomingTaskItem(
                                 content = task.content,
                                 category = task.category,
-                                priority = Priority.fromFloat(task.priority),
-                                dueDateInstant = task.dueDateInstant
+                                priority = task.priority,
+                                dueDate = task.dueDate
                             )
                         }
                     }
@@ -123,7 +123,7 @@ fun UpcomingTaskItem(
     content: String,
     category: String,
     priority: Priority,
-    dueDateInstant: Instant?,
+    dueDate: Instant?,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -149,7 +149,7 @@ fun UpcomingTaskItem(
             )
 
             Text(
-                text = dueDateInstant?.toRelativeTimeString(context) ?: "",
+                text = dueDate?.toRelativeTimeString(context) ?: "",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontWeight = FontWeight.Bold,
