@@ -43,7 +43,7 @@ class AllIncompleteWidget : GlanceAppWidget(), KoinComponent {
             val allTask by taskRepository.getAllTasks().collectAsState(emptyList())
             val allIncompleteTask = remember(allTask) {
                 allTask.filter { !it.isCompleted }
-                    .sortTaskBy(SortingOption.Priority, SortingOrder.Ascending)
+                    .sortTaskBy(SortingOption.Priority to SortingOrder.Ascending)
             }
 
             GlanceTheme {

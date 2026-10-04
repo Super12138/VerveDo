@@ -52,7 +52,7 @@ class TodayTaskWidget : GlanceAppWidget(), KoinComponent {
                         if (it.dueDate == null) return@filter false
                         it.dueDate == SystemUtils.startOfUTCToday()
                     }
-                    .sortTaskBy(SortingOption.Priority, SortingOrder.Ascending)
+                    .sortTaskBy(SortingOption.Priority to SortingOrder.Ascending)
             }
 
             GlanceTheme {

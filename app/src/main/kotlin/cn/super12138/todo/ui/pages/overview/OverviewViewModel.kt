@@ -3,8 +3,10 @@ package cn.super12138.todo.ui.pages.overview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.logic.TaskRepository
-import cn.super12138.todo.logic.database.TaskEntity
+import cn.super12138.todo.logic.model.SortingOption
+import cn.super12138.todo.logic.model.SortingOrder
 import cn.super12138.todo.utils.SystemUtils
+import cn.super12138.todo.utils.sortTaskBy
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -29,10 +31,9 @@ class OverviewViewModel(private val taskRepository: TaskRepository) : ViewModel(
                 if (task.dueDate == null) return@filter false
                 // 截止日期是否在今天到一周之后并且未完成
                 task.dueDate in today..(today + 7.days) && !task.isCompleted
-            }.sortedWith( // 后排序
-                comparator = compareBy<TaskEntity> { it.dueDate } // 截止日期近的靠前
-                    .thenBy { it.category } // TODO：可选删了
-                    .thenByDescending { it.priority } // 优先级高的靠前
+            }.sortTaskBy(
+                SortingOption.DueDate to SortingOrder.Ascending,
+                SortingOption.Priority to SortingOrder.Descending
             )
 
             val pinnedTasks = it.filter { it.isPinned }

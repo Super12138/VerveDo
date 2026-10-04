@@ -230,48 +230,46 @@ fun Context.showToast(text: String, duration: Int = Toast.LENGTH_SHORT) =
 fun Long.toInstant() = Instant.fromEpochMilliseconds(this)
 
 fun List<TaskEntity>.sortTaskBy(
-    sortingOption: SortingOption,
-    sortingOrder: SortingOrder
+    vararg sortingMethods: Pair<SortingOption, SortingOrder>
 ): List<TaskEntity> =
-    this.sortedWith(
-        getSortComparator(
-            sortingOption = sortingOption,
-            sortingOrder = sortingOrder
-        )
-    )
+    this.sortedWith(getSortComparator(*sortingMethods))
 
 private fun getSortComparator(
-    sortingOption: SortingOption,
-    sortingOrder: SortingOrder
+    vararg sortingMethods: Pair<SortingOption, SortingOrder>
 ): Comparator<TaskEntity> {
-    val pinnedComparator: Comparator<TaskEntity> = compareByDescending { it.isPinned }
+    val initialComparator =
+        compareByDescending<TaskEntity> { it.isPinned }
+            .thenBy { it.isCompleted }
 
-    val mainComparator: Comparator<TaskEntity> = when (sortingOption) {
-        SortingOption.Sequential -> when (sortingOrder) {
+    return sortingMethods.fold(initialComparator) { allComparator, (option, order) ->
+        allComparator.then(option comparatorFor order)
+    }
+}
+
+private infix fun SortingOption.comparatorFor(order: SortingOrder): Comparator<TaskEntity> =
+    when (this) {
+        SortingOption.Sequential -> when (order) {
             SortingOrder.Ascending -> compareBy { it.id }
             SortingOrder.Descending -> compareByDescending { it.id }
         }
 
-        SortingOption.Category -> when (sortingOrder) {
+        SortingOption.Category -> when (order) {
             SortingOrder.Ascending -> compareBy { it.category }
             SortingOrder.Descending -> compareByDescending { it.category }
         }
 
-        SortingOption.Priority -> when (sortingOrder) {
+        SortingOption.Priority -> when (order) {
             SortingOrder.Ascending -> compareBy { it.priority }
             SortingOrder.Descending -> compareByDescending { it.priority }
         }
 
-        SortingOption.Alphabetical -> when (sortingOrder) {
+        SortingOption.Alphabetical -> when (order) {
             SortingOrder.Ascending -> compareBy { it.content }
             SortingOrder.Descending -> compareByDescending { it.content }
         }
 
-        SortingOption.DueDate -> when (sortingOrder) {
+        SortingOption.DueDate -> when (order) {
             SortingOrder.Ascending -> compareBy(nullsLast()) { it.dueDate }
             SortingOrder.Descending -> compareByDescending(nullsFirst()) { it.dueDate }
         }
     }
-
-    return pinnedComparator.thenBy { it.isCompleted }.then(mainComparator)
-}

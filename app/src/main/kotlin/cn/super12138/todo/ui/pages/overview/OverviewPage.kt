@@ -73,6 +73,13 @@ fun OverviewPage(
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer
                 )
             }
+
+            item {
+                ListCard(
+                    title = stringResource(R.string.title_pinned_task),
+                    list = uiState.pinnedTasks
+                )
+            }
             item {
                 ProgressCard(
                     title = stringResource(R.string.title_today_task),
@@ -80,7 +87,6 @@ fun OverviewPage(
                     completed = uiState.todayTasks.count { it.isCompleted }
                 )
             }
-
             item {
                 ListCard(
                     title = stringResource(R.string.title_upcoming_task),

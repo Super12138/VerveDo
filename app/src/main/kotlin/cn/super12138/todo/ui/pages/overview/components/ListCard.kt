@@ -1,6 +1,8 @@
 package cn.super12138.todo.ui.pages.overview.components
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.model.Priority
@@ -132,7 +135,11 @@ fun UpcomingTaskItem(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(vertical = VerveDoDefaults.settingsItemVerticalPadding / 4),
+            .padding(vertical = VerveDoDefaults.settingsItemVerticalPadding / 4)
+            .border(
+                BorderStroke(2.dp, MaterialTheme.colorScheme.error),
+                VerveDoDefaults.defaultShape
+            ),
         horizontalAlignment = Alignment.Start
     ) {
         Row(

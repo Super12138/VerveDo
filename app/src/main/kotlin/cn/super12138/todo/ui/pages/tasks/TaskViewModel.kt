@@ -29,7 +29,7 @@ class TaskViewModel(
         settingsRepository.sortingOrderFlow,
         localUiState
     ) { taskList, sortingOption, sortingOrder, localUiState ->
-        val sortedList = taskList.sortTaskBy(sortingOption, sortingOrder)
+        val sortedList = taskList.sortTaskBy(sortingOption to sortingOrder)
         localUiState.copy(
             originalTaskList = sortedList,
             sortingOption = sortingOption,
