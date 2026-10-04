@@ -95,7 +95,7 @@ fun SharedTransitionScope.TasksPage(
 
     val expandedFab by remember { derivedStateOf { taskListState.firstVisibleItemIndex == 0 } }
 
-    BackHandler {
+    BackHandler(enabled = uiState.inSelectionMode || uiState.inSearchMode) {
         if (uiState.inSelectionMode) {
             viewModel.exitMultiSelectMode()
         } else if (uiState.inSearchMode) {
