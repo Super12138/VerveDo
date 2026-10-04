@@ -273,5 +273,5 @@ private fun getSortComparator(
         }
     }
 
-    return pinnedComparator.then(mainComparator).thenBy { it.isCompleted }
+    return pinnedComparator.thenBy { it.isCompleted }.then(mainComparator)
 }
