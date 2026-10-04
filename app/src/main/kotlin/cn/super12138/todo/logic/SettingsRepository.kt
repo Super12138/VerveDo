@@ -4,7 +4,8 @@ import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.logic.model.ContrastLevel
 import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.PaletteStyle
-import cn.super12138.todo.logic.model.SortingMethod
+import cn.super12138.todo.logic.model.SortingOption
+import cn.super12138.todo.logic.model.SortingOrder
 import kotlinx.coroutines.flow.map
 
 class SettingsRepository(private val dataStoreManager: DataStoreManager) {
@@ -14,21 +15,25 @@ class SettingsRepository(private val dataStoreManager: DataStoreManager) {
     val pureBlackFlow = dataStoreManager.pureBlackFlow
     val contrastLevelFlow = dataStoreManager.contrastLevelFlow.map { ContrastLevel.fromFloat(it) }
     val previewColorSystemFlow = dataStoreManager.previewColorSystemFlow
-    val sortingMethodFlow = dataStoreManager.sortingMethodFlow.map { SortingMethod.fromId(it) }
+    val sortingOptionFlow = dataStoreManager.sortingOptionFlow.map { SortingOption.fromId(it) }
+    val sortingOrderFlow = dataStoreManager.sortingOrderFlow.map { SortingOrder.fromId(it) }
     val textFieldAutoFocusFlow = dataStoreManager.textFieldAutoFocusFlow
     val secureModeFlow = dataStoreManager.secureModeFlow
     val hapticFeedbackFlow = dataStoreManager.hapticFeedbackFlow
     val categoriesFlow = dataStoreManager.categoriesFlow
 
     suspend fun setDynamicColor(value: Boolean) = dataStoreManager.setDynamicColor(value)
-    suspend fun setPaletteStyle(value: Int) = dataStoreManager.setPaletteStyle(value)
-    suspend fun setDarkMode(value: Int) = dataStoreManager.setDarkMode(value)
+    suspend fun setPaletteStyle(value: PaletteStyle) = dataStoreManager.setPaletteStyle(value.id)
+    suspend fun setDarkMode(value: DarkMode) = dataStoreManager.setDarkMode(value.id)
     suspend fun setPureBlackMode(value: Boolean) = dataStoreManager.setPureBlackMode(value)
-    suspend fun setContrastLevel(value: Float) = dataStoreManager.setContrastLevel(value)
+    suspend fun setContrastLevel(value: ContrastLevel) =
+        dataStoreManager.setContrastLevel(value.value)
+
     suspend fun setPreviewColorSystem(value: Boolean) =
         dataStoreManager.setPreviewColorSystem(value)
 
-    suspend fun setSortingMethod(value: Int) = dataStoreManager.setSortingMethod(value)
+    suspend fun setSortingOption(value: SortingOption) = dataStoreManager.setSortingMethod(value.id)
+    suspend fun setSortingOrder(value: SortingOrder) = dataStoreManager.setSortingOrder(value.id)
     suspend fun setTextFieldAutoFocus(value: Boolean) =
         dataStoreManager.setTextFieldAutoFocus(value)
 

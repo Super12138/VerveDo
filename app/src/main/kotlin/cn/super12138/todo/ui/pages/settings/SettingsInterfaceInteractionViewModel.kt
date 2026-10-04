@@ -16,14 +16,12 @@ class SettingsInterfaceInteractionViewModel(
 ) : ViewModel() {
     val localUiState = MutableStateFlow(SettingsInterfaceUiState())
     val interfaceUiState: StateFlow<SettingsInterfaceUiState> = combine(
-        settingsRepository.sortingMethodFlow,
         settingsRepository.textFieldAutoFocusFlow,
         settingsRepository.secureModeFlow,
         settingsRepository.hapticFeedbackFlow,
         localUiState
-    ) { sortingMethod, textFieldAutoFocus, secureMode, hapticFeedback, localUiState ->
+    ) { textFieldAutoFocus, secureMode, hapticFeedback, localUiState ->
         localUiState.copy(
-            sortingMethod = sortingMethod,
             textFieldAutoFocus = textFieldAutoFocus,
             secureMode = secureMode,
             hapticFeedback = hapticFeedback
@@ -33,12 +31,6 @@ class SettingsInterfaceInteractionViewModel(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = SettingsInterfaceUiState()
     )
-
-    fun setSortingMethod(id: Int) {
-        viewModelScope.launch {
-            settingsRepository.setSortingMethod(id)
-        }
-    }
 
     fun setTextFieldAutoFocus(value: Boolean) {
         viewModelScope.launch {

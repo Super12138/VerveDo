@@ -27,7 +27,8 @@ import cn.super12138.todo.R
 import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.Priority
-import cn.super12138.todo.logic.model.SortingMethod
+import cn.super12138.todo.logic.model.SortingOption
+import cn.super12138.todo.logic.model.SortingOrder
 import cn.super12138.todo.ui.VerveDoDefaults
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -183,48 +184,6 @@ fun disabledContentColor(alpha: Float = 0.38f): Color =
 fun disabledContainerColor(alpha: Float = 0.12f): Color =
     MaterialTheme.colorScheme.onSurface.copy(alpha = alpha)
 
-fun List<TaskEntity>.sort(sortingMethod: SortingMethod): List<TaskEntity> = when (sortingMethod) {
-    SortingMethod.Sequential -> this.sortedWith(
-        comparator = compareBy<TaskEntity> { !it.isPinned } // 必须先要按照是否完成排序
-            .thenBy { it.isCompleted }
-            .thenBy { it.id }
-    )
-
-    SortingMethod.Category -> this.sortedWith(
-        comparator = compareBy<TaskEntity> { it.isCompleted }
-            .thenBy { it.category }
-    )
-
-    SortingMethod.Priority -> this.sortedWith(
-        comparator = compareBy<TaskEntity> { it.isCompleted }
-            .thenByDescending { it.priority }
-            .thenBy(nullsLast()) { it.dueDate }
-    ) // 优先级高的在前
-
-    SortingMethod.Completion -> this.sortedWith(
-        comparator = compareBy<TaskEntity> { it.isCompleted }
-            .thenBy { it.category }
-            .thenByDescending { it.priority }
-    ) // 未完成的在前
-    SortingMethod.AlphabeticalAscending -> this.sortedWith(
-        comparator = compareBy<TaskEntity> { it.isCompleted }
-            .thenBy { it.content }
-            .thenByDescending { it.priority }
-    )
-
-    SortingMethod.AlphabeticalDescending -> this.sortedWith(
-        comparator = compareBy<TaskEntity> { it.isCompleted }
-            .thenByDescending { it.content }
-            .thenByDescending { it.priority }
-    )
-
-    SortingMethod.DueDate -> this.sortedWith(
-        comparator = compareBy<TaskEntity> { it.isCompleted }
-            // 确保未设置截止日期的任务在最下头
-            .thenBy(nullsLast()) { it.dueDate }
-    )
-}
-
 @Composable
 fun Boolean.keyColorBasedOnDynamicColor() =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && this) {
@@ -269,3 +228,50 @@ fun Context.showToast(text: String, duration: Int = Toast.LENGTH_SHORT) =
     Toast.makeText(this, text, duration).show()
 
 fun Long.toInstant() = Instant.fromEpochMilliseconds(this)
+
+fun List<TaskEntity>.sortTaskBy(
+    sortingOption: SortingOption,
+    sortingOrder: SortingOrder
+): List<TaskEntity> =
+    this.sortedWith(
+        getSortComparator(
+            sortingOption = sortingOption,
+            sortingOrder = sortingOrder
+        )
+    )
+
+private fun getSortComparator(
+    sortingOption: SortingOption,
+    sortingOrder: SortingOrder
+): Comparator<TaskEntity> {
+    val pinnedComparator: Comparator<TaskEntity> = compareByDescending { it.isPinned }
+
+    val mainComparator: Comparator<TaskEntity> = when (sortingOption) {
+        SortingOption.Sequential -> when (sortingOrder) {
+            SortingOrder.Ascending -> compareBy { it.id }
+            SortingOrder.Descending -> compareByDescending { it.id }
+        }
+
+        SortingOption.Category -> when (sortingOrder) {
+            SortingOrder.Ascending -> compareBy { it.category }
+            SortingOrder.Descending -> compareByDescending { it.category }
+        }
+
+        SortingOption.Priority -> when (sortingOrder) {
+            SortingOrder.Ascending -> compareBy { it.priority }
+            SortingOrder.Descending -> compareByDescending { it.priority }
+        }
+
+        SortingOption.Alphabetical -> when (sortingOrder) {
+            SortingOrder.Ascending -> compareBy { it.content }
+            SortingOrder.Descending -> compareByDescending { it.content }
+        }
+
+        SortingOption.DueDate -> when (sortingOrder) {
+            SortingOrder.Ascending -> compareBy(nullsLast()) { it.dueDate }
+            SortingOrder.Descending -> compareByDescending(nullsFirst()) { it.dueDate }
+        }
+    }
+
+    return pinnedComparator.then(mainComparator).thenBy { it.isCompleted }
+}

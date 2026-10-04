@@ -30,7 +30,7 @@ fun SettingsAppearanceDarkMode(
             item(key = 1) {
                 DarkModePicker(
                     currentDarkMode = uiState.darkMode,
-                    onDarkModeChange = { viewModel.setDarkMode(it.id) }
+                    onDarkModeChange = { viewModel.setDarkMode(it) }
                 )
             }
 

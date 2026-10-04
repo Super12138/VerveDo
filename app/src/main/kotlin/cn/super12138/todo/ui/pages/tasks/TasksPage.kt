@@ -108,10 +108,14 @@ fun SharedTransitionScope.TasksPage(
                 inSearchMode = uiState.inSearchMode,
                 inSelectionMode = uiState.inSelectionMode,
                 selectedTasksIds = uiState.selectedTaskIds,
+                sortingOption = uiState.sortingOption,
+                sortingOrder = uiState.sortingOrder,
                 onExitSelectMode = viewModel::exitMultiSelectMode,
                 onSelectAll = { viewModel.selectVisibleAllTask(taskList) },
                 onDeleteSelectedTask = viewModel::showDeleteConfirmDialog,
-                onEnterSearchMode = viewModel::enterSearchMode
+                onEnterSearchMode = viewModel::enterSearchMode,
+                onOptionChange = viewModel::setSortingOption,
+                onOrderChange = viewModel::setSortingOrder
             )
         },
         floatingActionButton = {

@@ -36,6 +36,20 @@ fun OverviewPage(
             horizontalArrangement = Arrangement.spacedBy(VerveDoDefaults.contentPadding),
             verticalItemSpacing = VerveDoDefaults.contentPadding
         ) {
+            /*item(span = StaggeredGridItemSpan.FullLine) {
+                AnimatedVisibility(
+                    visible = uiState.pinnedTasks.isNotEmpty(),
+                    modifier = Modifier.fillMaxWidth(),
+                    enter = expandVertically(),
+                    exit = shrinkVertically()
+                ) {
+                    ListCard(
+                        title = stringResource(R.string.title_pinned_task),
+                        list = uiState.pinnedTasks,
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                    )
+                }
+            }*/
             item {
                 RoundedCornerCardLarge(
                     iconRes = R.drawable.ic_apps,

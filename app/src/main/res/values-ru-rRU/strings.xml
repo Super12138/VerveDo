@@ -69,10 +69,7 @@
     <string name="sorting_sequential">Sequential</string>
     <string name="sorting_category">Category</string>
     <string name="sorting_priority">Priority</string>
-    <string name="sorting_completion">Completion</string>
-    <string name="sorting_alphabetical_ascending">Alphabetical (Ascending)</string>
-    <string name="sorting_alphabetical_descending">Alphabetical (Descending)</string>
-    <string name="pref_sorting_method">Sorting Method</string>
+    <string name="sorting_alphabetical">Alphabetical</string>
     <string name="pref_category_global">Global Settings</string>
     <string name="pref_haptic_feedback">Haptic Feedback</string>
     <string name="pref_haptic_feedback_desc">Provide slight vibration feedback for some operations</string>

@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.logic.SettingsRepository
 import cn.super12138.todo.logic.TaskRepository
 import cn.super12138.todo.logic.database.TaskEntity
+import cn.super12138.todo.logic.model.SortingOption
+import cn.super12138.todo.logic.model.SortingOrder
 import cn.super12138.todo.utils.ConfettiController
-import cn.super12138.todo.utils.sort
+import cn.super12138.todo.utils.sortTaskBy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,11 +25,16 @@ class TaskViewModel(
     private val localUiState = MutableStateFlow(TasksPageUiState())
     val uiState: StateFlow<TasksPageUiState> = combine(
         taskRepository.getAllTasks(),
-        settingsRepository.sortingMethodFlow,
+        settingsRepository.sortingOptionFlow,
+        settingsRepository.sortingOrderFlow,
         localUiState
-    ) { taskList, sortingMethod, localUiState ->
-        val sortedList = taskList.sort(sortingMethod)
-        localUiState.copy(originalTaskList = sortedList)
+    ) { taskList, sortingOption, sortingOrder, localUiState ->
+        val sortedList = taskList.sortTaskBy(sortingOption, sortingOrder)
+        localUiState.copy(
+            originalTaskList = sortedList,
+            sortingOption = sortingOption,
+            sortingOrder = sortingOrder
+        )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -95,6 +102,12 @@ class TaskViewModel(
 
     fun enterSearchMode() = localUiState.update { it.copy(inSearchMode = true) }
     fun exitSearchMode() = localUiState.update { it.copy(searchQuery = "", inSearchMode = false) }
+    fun setSortingOption(option: SortingOption) =
+        viewModelScope.launch { settingsRepository.setSortingOption(option) }
+
+    fun setSortingOrder(order: SortingOrder) =
+        viewModelScope.launch { settingsRepository.setSortingOrder(order) }
+
     fun showDeleteConfirmDialog() = localUiState.update { it.copy(showDeleteConfirmDialog = true) }
     fun hideDeleteConfirmDialog() = localUiState.update { it.copy(showDeleteConfirmDialog = false) }
 

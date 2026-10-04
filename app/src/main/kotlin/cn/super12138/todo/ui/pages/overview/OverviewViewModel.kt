@@ -35,12 +35,15 @@ class OverviewViewModel(private val taskRepository: TaskRepository) : ViewModel(
                     .thenByDescending { it.priority } // 优先级高的靠前
             )
 
+            val pinnedTasks = it.filter { it.isPinned }
+
             OverviewUiState(
                 totalTasks = total,
                 completedTasks = completed,
                 pendingTasks = pending,
                 todayTasks = todayTasks,
-                nextWeekTasks = nextWeekTasks
+                nextWeekTasks = nextWeekTasks,
+                pinnedTasks = pinnedTasks
             )
         }
         .stateIn(

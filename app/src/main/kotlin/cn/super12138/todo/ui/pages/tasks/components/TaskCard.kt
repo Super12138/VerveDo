@@ -93,7 +93,7 @@ fun TaskCard(
     val pressed by interactionSource.collectIsPressedAsState()
     val animatedShape = shapeByInteraction(
         shapes = shapes,
-        pressed = if (isSelected) true else pressed,
+        pressed = isSelected || pressed,
         animationSpec = VerveDoDefaults.shapesDefaultAnimationSpec
     )
 
@@ -275,7 +275,7 @@ private fun SelectedIcon(
                 painter = if (it) painterResource(R.drawable.ic_check) else painterResource(R.drawable.ic_keep),
                 tint = contentColor,
                 contentDescription = if (it) stringResource(R.string.tip_selected) else
-                    stringResource(R.string.label_pinned_task)
+                    stringResource(R.string.tip_pinned_task)
             )
         }
     }

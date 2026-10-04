@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.logic.SettingsRepository
 import cn.super12138.todo.logic.model.ContrastLevel
+import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.PaletteStyle
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -45,13 +46,13 @@ class SettingsAppearanceViewModel(private val settingsRepository: SettingsReposi
 
     fun setPaletteStyle(paletteStyle: PaletteStyle) {
         viewModelScope.launch {
-            settingsRepository.setPaletteStyle(paletteStyle.id)
+            settingsRepository.setPaletteStyle(paletteStyle)
         }
     }
 
-    fun setDarkMode(id: Int) {
+    fun setDarkMode(darkMode: DarkMode) {
         viewModelScope.launch {
-            settingsRepository.setDarkMode(id)
+            settingsRepository.setDarkMode(darkMode)
         }
     }
 
@@ -63,7 +64,7 @@ class SettingsAppearanceViewModel(private val settingsRepository: SettingsReposi
 
     fun setContrastLevel(contrastLevel: ContrastLevel) {
         viewModelScope.launch {
-            settingsRepository.setContrastLevel(contrastLevel.value)
+            settingsRepository.setContrastLevel(contrastLevel)
         }
     }
 

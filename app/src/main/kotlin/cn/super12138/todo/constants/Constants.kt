@@ -36,8 +36,11 @@ object Constants {
     /*const val PREF_SHOW_COMPLETED = "show_completed"
     const val PREF_SHOW_COMPLETED_DEFAULT = true*/
 
-    const val PREF_SORTING_METHOD = "sorting_method"
-    const val PREF_SORTING_METHOD_DEFAULT = 1
+    const val PREF_SORTING_OPTION = "sorting_option"
+    const val PREF_SORTING_OPTION_DEFAULT = 1
+
+    const val PREF_SORTING_ORDER = "sorting_order"
+    const val PREF_SORTING_ORDER_DEFAULT = 1
 
     const val PREF_TEXT_FIELD_AUTO_FOCUS = "textfield_auto_focus"
     const val PREF_TEXT_FIELD_AUTO_FOCUS_DEFAULT = false
