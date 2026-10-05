@@ -27,6 +27,7 @@ import cn.super12138.todo.utils.ConfettiController
 import com.jsoizo.kotlincsv.csvWriter
 import com.jsoizo.kotlincsv.writer.CsvWriter
 import com.jsoizo.kotlincsv.writer.WriteQuoteMode
+import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.scope.dsl.activityRetainedScope
 import org.koin.core.module.dsl.singleOf
@@ -50,6 +51,7 @@ object VerveDoDI {
     val singleInstanceModule = module {
         singleOf(::ConfettiController)
         single<CsvWriter> { csvWriter { quoteMode = WriteQuoteMode.ALL } }
+        single<Json> { Json { ignoreUnknownKeys = true } }
     }
 
     val databaseModule = module {

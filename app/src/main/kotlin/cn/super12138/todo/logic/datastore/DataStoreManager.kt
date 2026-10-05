@@ -10,7 +10,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import cn.super12138.todo.constants.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.serialization.json.Json
 
 class DataStoreManager(val dataStore: DataStore<Preferences>) {
     // Keys
@@ -81,8 +80,8 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
         preferences[HAPTIC_FEEDBACK] ?: Constants.PREF_HAPTIC_FEEDBACK_DEFAULT
     }
 
-    val categoriesFlow: Flow<List<String>> = dataStore.data.map { preferences ->
-        Json.decodeFromString(preferences[CATEGORIES] ?: Constants.PREF_CATEGORIES_DEFAULT)
+    val categoriesFlow: Flow<String> = dataStore.data.map { preferences ->
+        preferences[CATEGORIES] ?: Constants.PREF_CATEGORIES_DEFAULT
     }
 
     // Setters
@@ -158,9 +157,9 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
         }
     }
 
-    suspend fun setCategories(value: List<String>) {
+    suspend fun setCategories(value: String) {
         dataStore.edit { preferences ->
-            preferences[CATEGORIES] = Json.encodeToString(value)
+            preferences[CATEGORIES] = value
         }
     }
 }
