@@ -1,5 +1,6 @@
 package cn.super12138.todo.ui.pages.editor
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.logic.SettingsRepository
@@ -48,9 +49,10 @@ class EditorViewModel(
                     it.copy(
                         content = content,
                         category = category,
-                        priority = Priority.fromFloat(priority),
-                        dueDateInstant = dueDateInstant,
-                        isCompleted = isCompleted
+                        priority = priority,
+                        dueDate = dueDate,
+                        isCompleted = isCompleted,
+                        isPinned = isPinned
                     )
                 }
             }
@@ -60,17 +62,23 @@ class EditorViewModel(
     fun setContentText(content: String) = localUiState.update { it.copy(content = content) }
     fun setCategoryText(category: String) = localUiState.update { it.copy(category = category) }
     fun setPriority(priority: Priority) = localUiState.update { it.copy(priority = priority) }
-    fun setDueDate(dueDate: Instant?) = localUiState.update { it.copy(dueDateInstant = dueDate) }
+    fun setDueDate(dueDate: Instant?) = localUiState.update { it.copy(dueDate = dueDate) }
     fun setCompleted(completed: Boolean) = localUiState.update { it.copy(isCompleted = completed) }
+    fun setPinned(pinned: Boolean) = localUiState.update {
+        Log.d("VVD", "setPinned: $pinned")
+        it.copy(isPinned = pinned)
+    }
+
     fun isModified(): Boolean {
         var isModified = false
 
         with(uiState.value) {
             if ((initialTask?.content ?: "") != content.trim()) isModified = true
             if ((initialTask?.category ?: initialCategory) != category.trim()) isModified = true
-            if ((initialTask?.priority ?: 0f) != priority.value) isModified = true
+            if ((initialTask?.priority ?: Priority.Default) != priority) isModified = true
             if ((initialTask?.isCompleted == true) != isCompleted) isModified = true
-            if (initialTask?.dueDateInstant != dueDateInstant) isModified = true
+            if ((initialTask?.isPinned == true) != isPinned) isModified = true
+            if (initialTask?.dueDate != dueDate) isModified = true
         }
 
         return isModified
@@ -103,8 +111,9 @@ class EditorViewModel(
                 content = content,
                 category = category,
                 isCompleted = isCompleted,
-                priority = priority.value,
-                dueDateInstant = dueDateInstant,
+                priority = priority,
+                dueDate = dueDate,
+                isPinned = isPinned,
                 id = initialTask?.id ?: 0
             )
         }

@@ -14,18 +14,16 @@ import kotlinx.coroutines.launch
 class SettingsDataCategoryViewModel(private val settingsRepository: SettingsRepository) :
     ViewModel() {
     val localUiState = MutableStateFlow(SettingsDataCategoryUiState())
-    val uiState: StateFlow<SettingsDataCategoryUiState> = combine(
+    val uiState: StateFlow<SettingsDataCategoryUiState> =
+        combine(
         settingsRepository.categoriesFlow,
         localUiState
-    ) { categories, localUiState ->
-        localUiState.copy(
-            categories = categories
-        )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = SettingsDataCategoryUiState()
-    )
+        ) { categories, localUiState -> localUiState.copy(categories = categories) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = SettingsDataCategoryUiState()
+            )
 
     fun setEditingCategory(value: String) = localUiState.update { it.copy(editingCategory = value) }
     fun addCategory(new: String) {

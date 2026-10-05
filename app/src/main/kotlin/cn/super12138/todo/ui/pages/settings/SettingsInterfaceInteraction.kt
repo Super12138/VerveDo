@@ -7,14 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cn.super12138.todo.R
-import cn.super12138.todo.logic.model.SortingMethod
 import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.pages.settings.components.SettingsCategory
 import cn.super12138.todo.ui.pages.settings.components.SettingsContainer
-import cn.super12138.todo.ui.pages.settings.components.SettingsItem
 import cn.super12138.todo.ui.pages.settings.components.SettingsPlainBox
-import cn.super12138.todo.ui.pages.settings.components.SettingsRadioDialog
-import cn.super12138.todo.ui.pages.settings.components.SettingsRadioOptions
 import cn.super12138.todo.ui.pages.settings.components.SwitchSettingsItem
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -24,14 +20,7 @@ fun SettingsInterface(
     modifier: Modifier = Modifier,
     viewModel: SettingsInterfaceInteractionViewModel = koinViewModel()
 ) {
-    val uiState by viewModel.interfaceUiState.collectAsStateWithLifecycle()
-
-    val sortingList = SortingMethod.entries.map {
-        SettingsRadioOptions(
-            id = it.id,
-            text = stringResource(it.nameRes)
-        )
-    }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     TopAppBarScaffold(
         title = stringResource(R.string.pref_interface_interaction),
@@ -41,7 +30,7 @@ fun SettingsInterface(
         SettingsContainer(Modifier.fillMaxSize()) {
             item {
                 SettingsCategory(
-                    title = stringResource(R.string.pref_category_todo_list),
+                    title = stringResource(R.string.pref_category_editor),
                     first = true
                 )
                 /*SwitchSettingsItem(
@@ -51,12 +40,6 @@ fun SettingsInterface(
                     checked = showCompleted,
                     onCheckedChange = { scope.launch { DataStoreManager.setShowCompleted(it) } }
                 )*/
-                SettingsItem(
-                    leadingIconRes = R.drawable.ic_sort,
-                    title = stringResource(R.string.pref_sorting_method),
-                    description = stringResource(uiState.sortingMethod.nameRes),
-                    onClick = { viewModel.showSortingMethodDialog() }
-                )
             }
 
             item {
@@ -91,17 +74,5 @@ fun SettingsInterface(
                 SettingsPlainBox(stringResource(R.string.pref_haptic_feedback_more_info))
             }
         }
-
-        SettingsRadioDialog(
-            visible = uiState.showSortingMethodDialog,
-            title = stringResource(R.string.pref_sorting_method),
-            currentOptions = SettingsRadioOptions(
-                id = uiState.sortingMethod.id,
-                text = stringResource(uiState.sortingMethod.nameRes)
-            ),
-            options = sortingList,
-            onSelect = { viewModel.setSortingMethod(it) },
-            onDismiss = { viewModel.hideSortingMethodDialog() }
-        )
     }
 }

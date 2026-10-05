@@ -23,13 +23,13 @@ import androidx.glance.layout.size
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.TaskRepository
 import cn.super12138.todo.logic.database.TaskEntity
-import cn.super12138.todo.logic.model.Priority
-import cn.super12138.todo.logic.model.SortingMethod
+import cn.super12138.todo.logic.model.SortingDirection
+import cn.super12138.todo.logic.model.SortingOption
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.widget.components.GlanceTaskCard
 import cn.super12138.todo.ui.widget.components.GlanceTaskEmptyTip
 import cn.super12138.todo.ui.widget.components.GlanceTitleBar
-import cn.super12138.todo.utils.sort
+import cn.super12138.todo.utils.sortTaskBy
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -42,7 +42,8 @@ class AllIncompleteWidget : GlanceAppWidget(), KoinComponent {
             val scope = rememberCoroutineScope()
             val allTask by taskRepository.getAllTasks().collectAsState(emptyList())
             val allIncompleteTask = remember(allTask) {
-                allTask.filter { !it.isCompleted }.sort(SortingMethod.Priority)
+                allTask.filter { !it.isCompleted }
+                    .sortTaskBy(SortingOption.Priority to SortingDirection.Ascending)
             }
 
             GlanceTheme {
@@ -97,9 +98,9 @@ private fun TaskWidgetApp(
                     GlanceTaskCard(
                         content = it.content,
                         category = it.category,
-                        dueDateInstant = it.dueDateInstant,
+                        dueDate = it.dueDate,
                         isCompleted = it.isCompleted,
-                        priority = Priority.fromFloat(it.priority),
+                        priority = it.priority,
                         onChecked = { onChecked(it.copy(isCompleted = true)) }
                     )
                 }

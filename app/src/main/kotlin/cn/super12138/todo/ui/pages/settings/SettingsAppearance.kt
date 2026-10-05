@@ -25,7 +25,7 @@ fun SettingsAppearance(
     onNavigateUp: () -> Unit,
     viewModel: SettingsAppearanceViewModel = koinViewModel()
 ) {
-    val uiState by viewModel.appearanceUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val previewColorSystem by viewModel.previewColorSystemFlow.collectAsStateWithLifecycle(
         initialValue = Constants.PREF_PREVIEW_COLOR_SYSTEM_DEFAULT
     )

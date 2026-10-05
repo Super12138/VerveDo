@@ -50,7 +50,8 @@ object VerveDoDefaults {
     }
 
     object Sizes {
-        val taskCardHeight = 86.dp
+        val borderWidth = 4.dp
+        val pinnedCardHeight = 180.dp
         val overviewCardHeight = 120.dp
         val fadedEdgeWidth = 8.dp
 

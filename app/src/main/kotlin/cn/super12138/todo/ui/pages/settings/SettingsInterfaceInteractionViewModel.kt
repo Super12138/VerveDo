@@ -8,22 +8,19 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SettingsInterfaceInteractionViewModel(
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
     val localUiState = MutableStateFlow(SettingsInterfaceUiState())
-    val interfaceUiState: StateFlow<SettingsInterfaceUiState> = combine(
-        settingsRepository.sortingMethodFlow,
+    val uiState: StateFlow<SettingsInterfaceUiState> = combine(
         settingsRepository.textFieldAutoFocusFlow,
         settingsRepository.secureModeFlow,
         settingsRepository.hapticFeedbackFlow,
         localUiState
-    ) { sortingMethod, textFieldAutoFocus, secureMode, hapticFeedback, localUiState ->
+    ) { textFieldAutoFocus, secureMode, hapticFeedback, localUiState ->
         localUiState.copy(
-            sortingMethod = sortingMethod,
             textFieldAutoFocus = textFieldAutoFocus,
             secureMode = secureMode,
             hapticFeedback = hapticFeedback
@@ -33,12 +30,6 @@ class SettingsInterfaceInteractionViewModel(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = SettingsInterfaceUiState()
     )
-
-    fun setSortingMethod(id: Int) {
-        viewModelScope.launch {
-            settingsRepository.setSortingMethod(id)
-        }
-    }
 
     fun setTextFieldAutoFocus(value: Boolean) {
         viewModelScope.launch {
@@ -57,7 +48,4 @@ class SettingsInterfaceInteractionViewModel(
             settingsRepository.setHapticFeedback(value)
         }
     }
-
-    fun showSortingMethodDialog() = localUiState.update { it.copy(showSortingMethodDialog = true) }
-    fun hideSortingMethodDialog() = localUiState.update { it.copy(showSortingMethodDialog = false) }
 }

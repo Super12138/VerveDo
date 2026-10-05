@@ -10,7 +10,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import cn.super12138.todo.constants.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.serialization.json.Json
 
 class DataStoreManager(val dataStore: DataStore<Preferences>) {
     // Keys
@@ -24,7 +23,8 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
 
     // 界面与交互
     // private val SHOW_COMPLETED = booleanPreferencesKey(Constants.PREF_SHOW_COMPLETED)
-    private val SORTING_METHOD = intPreferencesKey(Constants.PREF_SORTING_METHOD)
+    private val SORTING_OPTION = intPreferencesKey(Constants.PREF_SORTING_OPTION)
+    private val SORTING_DIRECTION = intPreferencesKey(Constants.PREF_SORTING_DIRECTION)
     private val TEXT_FIELD_AUTO_FOCUS = booleanPreferencesKey(Constants.PREF_TEXT_FIELD_AUTO_FOCUS)
     private val SECURE_MODE = booleanPreferencesKey(Constants.PREF_SECURE_MODE)
     private val HAPTIC_FEEDBACK = booleanPreferencesKey(Constants.PREF_HAPTIC_FEEDBACK)
@@ -61,8 +61,11 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
         preferences[SHOW_COMPLETED] ?: Constants.PREF_SHOW_COMPLETED_DEFAULT
     }*/
 
-    val sortingMethodFlow: Flow<Int> = dataStore.data.map { preferences ->
-        preferences[SORTING_METHOD] ?: Constants.PREF_SORTING_METHOD_DEFAULT
+    val sortingOptionFlow: Flow<Int> = dataStore.data.map { preferences ->
+        preferences[SORTING_OPTION] ?: Constants.PREF_SORTING_OPTION_DEFAULT
+    }
+    val sortingDirectionFlow: Flow<Int> = dataStore.data.map { preferences ->
+        preferences[SORTING_DIRECTION] ?: Constants.PREF_SORTING_DIRECTION_DEFAULT
     }
 
     val textFieldAutoFocusFlow: Flow<Boolean> = dataStore.data.map { preferences ->
@@ -77,8 +80,8 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
         preferences[HAPTIC_FEEDBACK] ?: Constants.PREF_HAPTIC_FEEDBACK_DEFAULT
     }
 
-    val categoriesFlow: Flow<List<String>> = dataStore.data.map { preferences ->
-        Json.decodeFromString(preferences[CATEGORIES] ?: Constants.PREF_CATEGORIES_DEFAULT)
+    val categoriesFlow: Flow<String> = dataStore.data.map { preferences ->
+        preferences[CATEGORIES] ?: Constants.PREF_CATEGORIES_DEFAULT
     }
 
     // Setters
@@ -126,7 +129,13 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
 
     suspend fun setSortingMethod(value: Int) {
         dataStore.edit { preferences ->
-            preferences[SORTING_METHOD] = value
+            preferences[SORTING_OPTION] = value
+        }
+    }
+
+    suspend fun setSortingDirection(value: Int) {
+        dataStore.edit { preferences ->
+            preferences[SORTING_DIRECTION] = value
         }
     }
 
@@ -148,9 +157,9 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
         }
     }
 
-    suspend fun setCategories(value: List<String>) {
+    suspend fun setCategories(value: String) {
         dataStore.edit { preferences ->
-            preferences[CATEGORIES] = Json.encodeToString(value)
+            preferences[CATEGORIES] = value
         }
     }
 }

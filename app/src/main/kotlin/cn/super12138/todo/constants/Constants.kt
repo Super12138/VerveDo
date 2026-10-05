@@ -11,6 +11,7 @@ object Constants {
 
     const val DB_NAME = "todo"
     const val DB_TABLE_NAME = "todo"
+    const val DB_TABLE_NEW_NAME = "todo_new"
 
     const val SP_NAME = "cn.super12138.todo_preferences"
 
@@ -35,8 +36,11 @@ object Constants {
     /*const val PREF_SHOW_COMPLETED = "show_completed"
     const val PREF_SHOW_COMPLETED_DEFAULT = true*/
 
-    const val PREF_SORTING_METHOD = "sorting_method"
-    const val PREF_SORTING_METHOD_DEFAULT = 1
+    const val PREF_SORTING_OPTION = "sorting_option"
+    const val PREF_SORTING_OPTION_DEFAULT = 1
+
+    const val PREF_SORTING_DIRECTION = "sorting_direction"
+    const val PREF_SORTING_DIRECTION_DEFAULT = 1
 
     const val PREF_TEXT_FIELD_AUTO_FOCUS = "textfield_auto_focus"
     const val PREF_TEXT_FIELD_AUTO_FOCUS_DEFAULT = false

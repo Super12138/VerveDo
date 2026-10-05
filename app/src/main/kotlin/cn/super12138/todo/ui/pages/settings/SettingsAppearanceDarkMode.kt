@@ -19,7 +19,7 @@ fun SettingsAppearanceDarkMode(
     modifier: Modifier = Modifier,
     viewModel: SettingsAppearanceViewModel = koinViewModel()
 ) {
-    val uiState by viewModel.appearanceUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     TopAppBarScaffold(
         title = stringResource(R.string.pref_dark_mode),
@@ -30,7 +30,7 @@ fun SettingsAppearanceDarkMode(
             item(key = 1) {
                 DarkModePicker(
                     currentDarkMode = uiState.darkMode,
-                    onDarkModeChange = { viewModel.setDarkMode(it.id) }
+                    onDarkModeChange = { viewModel.setDarkMode(it) }
                 )
             }
 

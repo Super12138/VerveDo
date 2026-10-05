@@ -1,6 +1,7 @@
 package cn.super12138.todo.ui.pages.overview.components
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.model.Priority
@@ -49,17 +51,20 @@ fun ListCard(
     title: String,
     list: List<TaskEntity>,
     modifier: Modifier = Modifier,
+    height: Dp = VerveDoDefaults.Sizes.overviewCardHeight * 2,
     containerColor: Color = VerveDoDefaults.Colors.Container,
     shape: CornerBasedShape = VerveDoDefaults.defaultShape,
     colors: CardColors = CardDefaults.cardColors(containerColor = containerColor),
-    emptyTipContainerColor: Color = MaterialTheme.colorScheme.secondaryContainer
+    emptyTipContainerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+    borderStroke: BorderStroke? = null
 ) {
     val transitionSpec = fadeScale()
 
     Card(
-        modifier = modifier.height(VerveDoDefaults.Sizes.overviewCardHeight * 2),
+        modifier = modifier.height(height),
         colors = colors,
-        shape = shape
+        shape = shape,
+        border = borderStroke
     ) {
         Column(
             modifier = Modifier
@@ -107,8 +112,8 @@ fun ListCard(
                             UpcomingTaskItem(
                                 content = task.content,
                                 category = task.category,
-                                priority = Priority.fromFloat(task.priority),
-                                dueDateInstant = task.dueDateInstant
+                                priority = task.priority,
+                                dueDate = task.dueDate
                             )
                         }
                     }
@@ -118,12 +123,13 @@ fun ListCard(
     }
 }
 
+// TODO: 考虑要不要显示置顶状态
 @Composable
 fun UpcomingTaskItem(
     content: String,
     category: String,
     priority: Priority,
-    dueDateInstant: Instant?,
+    dueDate: Instant?,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -149,7 +155,7 @@ fun UpcomingTaskItem(
             )
 
             Text(
-                text = dueDateInstant?.toRelativeTimeString(context) ?: "",
+                text = dueDate?.toRelativeTimeString(context) ?: "",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontWeight = FontWeight.Bold,

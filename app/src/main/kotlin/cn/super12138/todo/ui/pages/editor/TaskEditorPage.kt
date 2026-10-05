@@ -357,8 +357,14 @@ fun TaskEditorPage(
                     style = MaterialTheme.typography.titleMedium
                 )
                 DueDateChooser(
-                    instant = uiState.dueDateInstant,
+                    instant = uiState.dueDate,
                     onChange = { viewModel.setDueDate(it) }
+                )
+                CheckboxWithLabel(
+                    label = stringResource(R.string.label_pinned_task),
+                    checked = uiState.isPinned,
+                    onCheckedChange = { viewModel.setPinned(it) },
+                    modifier = Modifier.fillMaxWidth()
                 )
                 if (task != null) {
                     CheckboxWithLabel(
@@ -369,6 +375,7 @@ fun TaskEditorPage(
                     )
                 }
             }
+            // 这个Spacer用于在横屏下空出FAB的位置以确保内容显示完全
             item {
                 Spacer(Modifier.size(56.dp))
             }
