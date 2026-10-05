@@ -61,8 +61,8 @@
     <string name="contrast_high">高</string>
     <string name="contrast_very_high">极高</string>
     <string name="pref_interface_interaction">界面与交互</string>
-    <string name="pref_interface_interaction_desc">任务列表、触感反馈</string>
-    <string name="pref_category_todo_list">任务列表</string>
+    <string name="pref_interface_interaction_desc">编辑器、触感反馈</string>
+    <string name="pref_category_editor">编辑器</string>
     <string name="pref_view_on_github">在 GitHub 上查看</string>
     <string name="pref_view_on_github_desc">查看源代码、提交错误报告和改进建议</string>
     <string name="tip_discard_changes">退出编辑后将无法找回你修改过的任务数据。确定退出编辑吗？</string>
@@ -153,5 +153,6 @@
     <string name="title_pinned_task">置顶任务</string>
     <string name="sorting_ascending">升序</string>
     <string name="sorting_descending">降序</string>
-    <string name="label_sorting_method">排序方法</string>
+    <string name="label_sort_by">依据</string>
+    <string name="label_sorting_direction">方向</string>
 </resources>

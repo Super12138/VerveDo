@@ -39,8 +39,8 @@ object Constants {
     const val PREF_SORTING_OPTION = "sorting_option"
     const val PREF_SORTING_OPTION_DEFAULT = 1
 
-    const val PREF_SORTING_ORDER = "sorting_order"
-    const val PREF_SORTING_ORDER_DEFAULT = 1
+    const val PREF_SORTING_DIRECTION = "sorting_direction"
+    const val PREF_SORTING_DIRECTION_DEFAULT = 1
 
     const val PREF_TEXT_FIELD_AUTO_FOCUS = "textfield_auto_focus"
     const val PREF_TEXT_FIELD_AUTO_FOCUS_DEFAULT = false

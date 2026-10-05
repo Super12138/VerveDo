@@ -23,8 +23,8 @@ import androidx.glance.layout.size
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.TaskRepository
 import cn.super12138.todo.logic.database.TaskEntity
+import cn.super12138.todo.logic.model.SortingDirection
 import cn.super12138.todo.logic.model.SortingOption
-import cn.super12138.todo.logic.model.SortingOrder
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.widget.components.GlanceTaskCard
 import cn.super12138.todo.ui.widget.components.GlanceTaskEmptyTip
@@ -43,7 +43,7 @@ class AllIncompleteWidget : GlanceAppWidget(), KoinComponent {
             val allTask by taskRepository.getAllTasks().collectAsState(emptyList())
             val allIncompleteTask = remember(allTask) {
                 allTask.filter { !it.isCompleted }
-                    .sortTaskBy(SortingOption.Priority to SortingOrder.Ascending)
+                    .sortTaskBy(SortingOption.Priority to SortingDirection.Ascending)
             }
 
             GlanceTheme {

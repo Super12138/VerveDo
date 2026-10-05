@@ -26,8 +26,8 @@ import androidx.glance.text.Text
 import cn.super12138.todo.R
 import cn.super12138.todo.logic.TaskRepository
 import cn.super12138.todo.logic.database.TaskEntity
+import cn.super12138.todo.logic.model.SortingDirection
 import cn.super12138.todo.logic.model.SortingOption
-import cn.super12138.todo.logic.model.SortingOrder
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.widget.components.GlanceTaskCard
 import cn.super12138.todo.ui.widget.components.GlanceTaskEmptyTip
@@ -52,7 +52,7 @@ class TodayTaskWidget : GlanceAppWidget(), KoinComponent {
                         if (it.dueDate == null) return@filter false
                         it.dueDate == SystemUtils.startOfUTCToday()
                     }
-                    .sortTaskBy(SortingOption.Priority to SortingOrder.Ascending)
+                    .sortTaskBy(SortingOption.Priority to SortingDirection.Ascending)
             }
 
             GlanceTheme {

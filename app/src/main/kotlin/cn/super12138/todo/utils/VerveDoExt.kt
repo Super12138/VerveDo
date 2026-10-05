@@ -27,8 +27,8 @@ import cn.super12138.todo.R
 import cn.super12138.todo.logic.database.TaskEntity
 import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.Priority
+import cn.super12138.todo.logic.model.SortingDirection
 import cn.super12138.todo.logic.model.SortingOption
-import cn.super12138.todo.logic.model.SortingOrder
 import cn.super12138.todo.ui.VerveDoDefaults
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -230,12 +230,12 @@ fun Context.showToast(text: String, duration: Int = Toast.LENGTH_SHORT) =
 fun Long.toInstant() = Instant.fromEpochMilliseconds(this)
 
 fun List<TaskEntity>.sortTaskBy(
-    vararg sortingMethods: Pair<SortingOption, SortingOrder>
+    vararg sortingMethods: Pair<SortingOption, SortingDirection>
 ): List<TaskEntity> =
     this.sortedWith(getSortComparator(*sortingMethods))
 
 private fun getSortComparator(
-    vararg sortingMethods: Pair<SortingOption, SortingOrder>
+    vararg sortingMethods: Pair<SortingOption, SortingDirection>
 ): Comparator<TaskEntity> {
     val initialComparator =
         compareByDescending<TaskEntity> { it.isPinned }
@@ -246,30 +246,30 @@ private fun getSortComparator(
     }
 }
 
-private infix fun SortingOption.comparatorFor(order: SortingOrder): Comparator<TaskEntity> =
+private infix fun SortingOption.comparatorFor(order: SortingDirection): Comparator<TaskEntity> =
     when (this) {
         SortingOption.Sequential -> when (order) {
-            SortingOrder.Ascending -> compareBy { it.id }
-            SortingOrder.Descending -> compareByDescending { it.id }
+            SortingDirection.Ascending -> compareBy { it.id }
+            SortingDirection.Descending -> compareByDescending { it.id }
         }
 
         SortingOption.Category -> when (order) {
-            SortingOrder.Ascending -> compareBy { it.category }
-            SortingOrder.Descending -> compareByDescending { it.category }
+            SortingDirection.Ascending -> compareBy { it.category }
+            SortingDirection.Descending -> compareByDescending { it.category }
         }
 
         SortingOption.Priority -> when (order) {
-            SortingOrder.Ascending -> compareBy { it.priority }
-            SortingOrder.Descending -> compareByDescending { it.priority }
+            SortingDirection.Ascending -> compareBy { it.priority }
+            SortingDirection.Descending -> compareByDescending { it.priority }
         }
 
         SortingOption.Alphabetical -> when (order) {
-            SortingOrder.Ascending -> compareBy { it.content }
-            SortingOrder.Descending -> compareByDescending { it.content }
+            SortingDirection.Ascending -> compareBy { it.content }
+            SortingDirection.Descending -> compareByDescending { it.content }
         }
 
         SortingOption.DueDate -> when (order) {
-            SortingOrder.Ascending -> compareBy(nullsLast()) { it.dueDate }
-            SortingOrder.Descending -> compareByDescending(nullsFirst()) { it.dueDate }
+            SortingDirection.Ascending -> compareBy(nullsLast()) { it.dueDate }
+            SortingDirection.Descending -> compareByDescending(nullsFirst()) { it.dueDate }
         }
     }

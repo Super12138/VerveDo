@@ -3,7 +3,7 @@ package cn.super12138.todo.logic.model
 import androidx.annotation.StringRes
 import cn.super12138.todo.R
 
-enum class SortingOrder(
+enum class SortingDirection(
     val id: Int,
     @param:StringRes val labelRes: Int
 ) {

@@ -1,8 +1,8 @@
 package cn.super12138.todo.ui.pages.tasks
 
 import cn.super12138.todo.logic.database.TaskEntity
+import cn.super12138.todo.logic.model.SortingDirection
 import cn.super12138.todo.logic.model.SortingOption
-import cn.super12138.todo.logic.model.SortingOrder
 
 data class TasksPageUiState(
     val originalTaskList: List<TaskEntity> = emptyList(),
@@ -10,7 +10,7 @@ data class TasksPageUiState(
     val inSearchMode: Boolean = false,
     val inSelectionMode: Boolean = false,
     val sortingOption: SortingOption = SortingOption.Sequential,
-    val sortingOrder: SortingOrder = SortingOrder.Ascending,
+    val sortingDirection: SortingDirection = SortingDirection.Ascending,
     val searchQuery: String = "",
     val showDeleteConfirmDialog: Boolean = false
 )

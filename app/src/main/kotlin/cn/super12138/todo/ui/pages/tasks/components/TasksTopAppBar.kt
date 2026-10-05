@@ -10,14 +10,18 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DropdownMenuGroup
+import androidx.compose.material3.DropdownMenuPopup
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -39,10 +43,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import cn.super12138.todo.R
+import cn.super12138.todo.logic.model.SortingDirection
 import cn.super12138.todo.logic.model.SortingOption
-import cn.super12138.todo.logic.model.SortingOrder
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.utils.VibrationUtils
@@ -53,13 +58,13 @@ fun TasksTopAppBar(
     inSelectionMode: Boolean,
     selectedTasksIds: Set<Int>,
     sortingOption: SortingOption,
-    sortingOrder: SortingOrder,
+    sortingDirection: SortingDirection,
     onEnterSearchMode: () -> Unit,
     onSelectAll: () -> Unit,
     onExitSelectMode: () -> Unit,
     onDeleteSelectedTask: () -> Unit,
     onOptionChange: (SortingOption) -> Unit,
-    onOrderChange: (SortingOrder) -> Unit,
+    onOrderChange: (SortingDirection) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val navIconEnterTransition = fadeIn(
@@ -168,7 +173,7 @@ fun TasksTopAppBar(
                         searchMode -> {}
                         elseMode -> DefaultAction(
                             sortingOption = sortingOption,
-                            sortingOrder = sortingOrder,
+                            sortingDirection = sortingDirection,
                             onOptionChange = onOptionChange,
                             onOrderChange = onOrderChange,
                             onSearchClick = onEnterSearchMode
@@ -223,16 +228,16 @@ private fun RowScope.MultipleSelectionAction(
 @Composable
 private fun RowScope.DefaultAction(
     sortingOption: SortingOption,
-    sortingOrder: SortingOrder,
+    sortingDirection: SortingDirection,
     onOptionChange: (SortingOption) -> Unit,
-    onOrderChange: (SortingOrder) -> Unit,
+    onOrderChange: (SortingDirection) -> Unit,
     onSearchClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val view = LocalView.current
     SortingButtonWithMenu(
         sortingOption = sortingOption,
-        sortingOrder = sortingOrder,
+        sortingDirection = sortingDirection,
         onOptionChange = onOptionChange,
         onOrderChange = onOrderChange
     )
@@ -253,15 +258,18 @@ private fun RowScope.DefaultAction(
 }
 
 @Composable
-fun SortingButtonWithMenu(
+private fun SortingButtonWithMenu(
     sortingOption: SortingOption,
-    sortingOrder: SortingOrder,
+    sortingDirection: SortingDirection,
     modifier: Modifier = Modifier,
     onOptionChange: (SortingOption) -> Unit = {},
-    onOrderChange: (SortingOrder) -> Unit = {},
+    onOrderChange: (SortingDirection) -> Unit = {},
+    groupInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     scrollState: ScrollState = rememberScrollState()
 ) {
     val view = LocalView.current
+    val allOption = SortingOption.entries
+    val allDirection = SortingDirection.entries
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -275,74 +283,107 @@ fun SortingButtonWithMenu(
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_sort),
-                contentDescription = stringResource(R.string.label_sorting_method)
+                contentDescription = stringResource(R.string.label_sort_by)
             )
         }
 
-        DropdownMenu(
+        DropdownMenuPopup(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            scrollState = scrollState,
-            containerColor = MenuDefaults.groupStandardContainerColor,
-            shape = MenuDefaults.standaloneGroupShape
+            modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
-            SortingOption.entries.forEachIndexed { index, option ->
-                SelectableDropdownMenuItem(
-                    selected = option == sortingOption,
-                    onClick = {
-                        onOptionChange(option)
-                        VibrationUtils.performHapticFeedback(view)
-                        expanded = false
-                    },
-                    text = {
-                        Text(
-                            text = stringResource(option.labelRes),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    },
-                    selectedLeadingIcon = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_check),
-                            modifier = Modifier.size(MenuDefaults.LeadingIconSize),
-                            contentDescription = null,
-                        )
-                    },
-                    shapes = MenuDefaults.itemShape(
+            DropdownMenuGroup(
+                shapes = MenuDefaults.groupShape(0, 2),
+                interactionSource = groupInteractionSource,
+            ) {
+                MenuDefaults.DropdownMenuGroupLabel {
+                    GroupLabelText(stringResource(R.string.label_sort_by))
+                }
+                allOption.forEachIndexed { index, option ->
+                    DropdownMenuItem(
+                        selected = option == sortingOption,
+                        text = stringResource(option.labelRes),
+                        onClick = {
+                            onOptionChange(option)
+                            expanded = false
+                        },
                         index = index,
-                        count = SortingOption.entries.size
+                        count = allOption.size
                     )
-                )
+                }
             }
-
-            HorizontalDivider(Modifier.padding(vertical = VerveDoDefaults.contentPadding / 2))
-
-            SortingOrder.entries.forEachIndexed { index, order ->
-                SelectableDropdownMenuItem(
-                    selected = order == sortingOrder,
-                    onClick = {
-                        onOrderChange(order)
-                        VibrationUtils.performHapticFeedback(view)
-                        expanded = false
-                    },
-                    text = {
-                        Text(
-                            text = stringResource(order.labelRes),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    },
-                    selectedLeadingIcon = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_check),
-                            modifier = Modifier.size(MenuDefaults.LeadingIconSize),
-                            contentDescription = null,
-                        )
-                    },
-                    shapes = MenuDefaults.itemShape(
+            Spacer(Modifier.height(MenuDefaults.GroupSpacing))
+            DropdownMenuGroup(
+                shapes = MenuDefaults.groupShape(1, 2),
+                interactionSource = groupInteractionSource,
+            ) {
+                MenuDefaults.DropdownMenuGroupLabel {
+                    GroupLabelText(stringResource(R.string.label_sorting_direction))
+                }
+                allDirection.forEachIndexed { index, direction ->
+                    DropdownMenuItem(
+                        selected = direction == sortingDirection,
+                        text = stringResource(direction.labelRes),
+                        onClick = {
+                            onOrderChange(direction)
+                            expanded = false
+                        },
                         index = index,
-                        count = SortingOrder.entries.size
+                        count = allDirection.size
                     )
-                )
+                }
             }
         }
     }
+}
+
+@Composable
+private fun ColumnScope.GroupLabelText(
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = label,
+        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun DropdownMenuItem(
+    selected: Boolean,
+    text: String,
+    onClick: () -> Unit,
+    index: Int,
+    count: Int,
+    modifier: Modifier = Modifier
+) {
+    val view = LocalView.current
+
+    SelectableDropdownMenuItem(
+        selected = selected,
+        onClick = {
+            VibrationUtils.performHapticFeedback(view)
+            onClick()
+        },
+        text = {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        },
+        selectedLeadingIcon = {
+            Icon(
+                painter = painterResource(R.drawable.ic_check),
+                modifier = Modifier.size(MenuDefaults.LeadingIconSize),
+                contentDescription = null,
+            )
+        },
+        shapes = MenuDefaults.itemShape(
+            index = index,
+            count = count
+        ),
+        modifier = modifier
+    )
 }

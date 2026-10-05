@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.logic.SettingsRepository
 import cn.super12138.todo.logic.TaskRepository
 import cn.super12138.todo.logic.database.TaskEntity
+import cn.super12138.todo.logic.model.SortingDirection
 import cn.super12138.todo.logic.model.SortingOption
-import cn.super12138.todo.logic.model.SortingOrder
 import cn.super12138.todo.utils.ConfettiController
 import cn.super12138.todo.utils.sortTaskBy
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,14 +26,14 @@ class TaskViewModel(
     val uiState: StateFlow<TasksPageUiState> = combine(
         taskRepository.getAllTasks(),
         settingsRepository.sortingOptionFlow,
-        settingsRepository.sortingOrderFlow,
+        settingsRepository.sortingDirectionFlow,
         localUiState
-    ) { taskList, sortingOption, sortingOrder, localUiState ->
-        val sortedList = taskList.sortTaskBy(sortingOption to sortingOrder)
+    ) { taskList, sortingOption, sortingDirection, localUiState ->
+        val sortedList = taskList.sortTaskBy(sortingOption to sortingDirection)
         localUiState.copy(
             originalTaskList = sortedList,
             sortingOption = sortingOption,
-            sortingOrder = sortingOrder
+            sortingDirection = sortingDirection
         )
     }.stateIn(
         scope = viewModelScope,
@@ -105,8 +105,8 @@ class TaskViewModel(
     fun setSortingOption(option: SortingOption) =
         viewModelScope.launch { settingsRepository.setSortingOption(option) }
 
-    fun setSortingOrder(order: SortingOrder) =
-        viewModelScope.launch { settingsRepository.setSortingOrder(order) }
+    fun setSortingDirection(order: SortingDirection) =
+        viewModelScope.launch { settingsRepository.setSortingDirection(order) }
 
     fun showDeleteConfirmDialog() = localUiState.update { it.copy(showDeleteConfirmDialog = true) }
     fun hideDeleteConfirmDialog() = localUiState.update { it.copy(showDeleteConfirmDialog = false) }

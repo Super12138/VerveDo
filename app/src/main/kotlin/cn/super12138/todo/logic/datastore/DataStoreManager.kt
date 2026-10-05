@@ -25,7 +25,7 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
     // 界面与交互
     // private val SHOW_COMPLETED = booleanPreferencesKey(Constants.PREF_SHOW_COMPLETED)
     private val SORTING_OPTION = intPreferencesKey(Constants.PREF_SORTING_OPTION)
-    private val SORTING_ORDER = intPreferencesKey(Constants.PREF_SORTING_ORDER)
+    private val SORTING_DIRECTION = intPreferencesKey(Constants.PREF_SORTING_DIRECTION)
     private val TEXT_FIELD_AUTO_FOCUS = booleanPreferencesKey(Constants.PREF_TEXT_FIELD_AUTO_FOCUS)
     private val SECURE_MODE = booleanPreferencesKey(Constants.PREF_SECURE_MODE)
     private val HAPTIC_FEEDBACK = booleanPreferencesKey(Constants.PREF_HAPTIC_FEEDBACK)
@@ -65,8 +65,8 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
     val sortingOptionFlow: Flow<Int> = dataStore.data.map { preferences ->
         preferences[SORTING_OPTION] ?: Constants.PREF_SORTING_OPTION_DEFAULT
     }
-    val sortingOrderFlow: Flow<Int> = dataStore.data.map { preferences ->
-        preferences[SORTING_ORDER] ?: Constants.PREF_SORTING_ORDER_DEFAULT
+    val sortingDirectionFlow: Flow<Int> = dataStore.data.map { preferences ->
+        preferences[SORTING_DIRECTION] ?: Constants.PREF_SORTING_DIRECTION_DEFAULT
     }
 
     val textFieldAutoFocusFlow: Flow<Boolean> = dataStore.data.map { preferences ->
@@ -134,9 +134,9 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
         }
     }
 
-    suspend fun setSortingOrder(value: Int) {
+    suspend fun setSortingDirection(value: Int) {
         dataStore.edit { preferences ->
-            preferences[SORTING_ORDER] = value
+            preferences[SORTING_DIRECTION] = value
         }
     }
 

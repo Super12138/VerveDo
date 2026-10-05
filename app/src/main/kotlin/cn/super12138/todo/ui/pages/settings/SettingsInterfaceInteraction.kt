@@ -7,12 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cn.super12138.todo.R
-import cn.super12138.todo.logic.model.SortingOption
 import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.pages.settings.components.SettingsCategory
 import cn.super12138.todo.ui.pages.settings.components.SettingsContainer
 import cn.super12138.todo.ui.pages.settings.components.SettingsPlainBox
-import cn.super12138.todo.ui.pages.settings.components.SettingsRadioOptions
 import cn.super12138.todo.ui.pages.settings.components.SwitchSettingsItem
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -22,14 +20,7 @@ fun SettingsInterface(
     modifier: Modifier = Modifier,
     viewModel: SettingsInterfaceInteractionViewModel = koinViewModel()
 ) {
-    val uiState by viewModel.interfaceUiState.collectAsStateWithLifecycle()
-
-    val sortingList = SortingOption.entries.map {
-        SettingsRadioOptions(
-            id = it.id,
-            text = stringResource(it.labelRes)
-        )
-    }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     TopAppBarScaffold(
         title = stringResource(R.string.pref_interface_interaction),
@@ -39,7 +30,7 @@ fun SettingsInterface(
         SettingsContainer(Modifier.fillMaxSize()) {
             item {
                 SettingsCategory(
-                    title = stringResource(R.string.pref_category_todo_list),
+                    title = stringResource(R.string.pref_category_editor),
                     first = true
                 )
                 /*SwitchSettingsItem(

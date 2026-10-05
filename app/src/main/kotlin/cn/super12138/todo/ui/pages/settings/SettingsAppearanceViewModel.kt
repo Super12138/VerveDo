@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 class SettingsAppearanceViewModel(private val settingsRepository: SettingsRepository) :
     ViewModel() {
     // 把整体Ui状态流拆成3个小流以保证类型安全
-    val appearanceUiState: StateFlow<SettingsAppearanceUiState> = combine(
+    val uiState: StateFlow<SettingsAppearanceUiState> = combine(
         settingsRepository.dynamicColorFlow,
         settingsRepository.paletteStyleFlow,
         settingsRepository.darkModeFlow,

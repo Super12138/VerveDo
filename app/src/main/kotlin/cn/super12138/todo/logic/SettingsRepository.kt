@@ -4,8 +4,8 @@ import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.logic.model.ContrastLevel
 import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.PaletteStyle
+import cn.super12138.todo.logic.model.SortingDirection
 import cn.super12138.todo.logic.model.SortingOption
-import cn.super12138.todo.logic.model.SortingOrder
 import kotlinx.coroutines.flow.map
 
 class SettingsRepository(private val dataStoreManager: DataStoreManager) {
@@ -16,7 +16,8 @@ class SettingsRepository(private val dataStoreManager: DataStoreManager) {
     val contrastLevelFlow = dataStoreManager.contrastLevelFlow.map { ContrastLevel.fromFloat(it) }
     val previewColorSystemFlow = dataStoreManager.previewColorSystemFlow
     val sortingOptionFlow = dataStoreManager.sortingOptionFlow.map { SortingOption.fromId(it) }
-    val sortingOrderFlow = dataStoreManager.sortingOrderFlow.map { SortingOrder.fromId(it) }
+    val sortingDirectionFlow =
+        dataStoreManager.sortingDirectionFlow.map { SortingDirection.fromId(it) }
     val textFieldAutoFocusFlow = dataStoreManager.textFieldAutoFocusFlow
     val secureModeFlow = dataStoreManager.secureModeFlow
     val hapticFeedbackFlow = dataStoreManager.hapticFeedbackFlow
@@ -33,7 +34,8 @@ class SettingsRepository(private val dataStoreManager: DataStoreManager) {
         dataStoreManager.setPreviewColorSystem(value)
 
     suspend fun setSortingOption(value: SortingOption) = dataStoreManager.setSortingMethod(value.id)
-    suspend fun setSortingOrder(value: SortingOrder) = dataStoreManager.setSortingOrder(value.id)
+    suspend fun setSortingDirection(value: SortingDirection) =
+        dataStoreManager.setSortingDirection(value.id)
     suspend fun setTextFieldAutoFocus(value: Boolean) =
         dataStoreManager.setTextFieldAutoFocus(value)
 

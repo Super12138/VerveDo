@@ -3,8 +3,8 @@ package cn.super12138.todo.ui.pages.overview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.logic.TaskRepository
+import cn.super12138.todo.logic.model.SortingDirection
 import cn.super12138.todo.logic.model.SortingOption
-import cn.super12138.todo.logic.model.SortingOrder
 import cn.super12138.todo.utils.SystemUtils
 import cn.super12138.todo.utils.sortTaskBy
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,8 +32,8 @@ class OverviewViewModel(private val taskRepository: TaskRepository) : ViewModel(
                 // 截止日期是否在今天到一周之后并且未完成
                 task.dueDate in today..(today + 7.days) && !task.isCompleted
             }.sortTaskBy(
-                SortingOption.DueDate to SortingOrder.Ascending,
-                SortingOption.Priority to SortingOrder.Descending
+                SortingOption.DueDate to SortingDirection.Ascending,
+                SortingOption.Priority to SortingDirection.Descending
             )
 
             val pinnedTasks = it.filter { it.isPinned }
