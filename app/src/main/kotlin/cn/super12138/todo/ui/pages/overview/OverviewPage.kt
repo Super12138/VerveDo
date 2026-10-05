@@ -1,7 +1,12 @@
 package cn.super12138.todo.ui.pages.overview
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.material3.MaterialTheme
@@ -36,7 +41,7 @@ fun OverviewPage(
             horizontalArrangement = Arrangement.spacedBy(VerveDoDefaults.contentPadding),
             verticalItemSpacing = VerveDoDefaults.contentPadding
         ) {
-            /*item(span = StaggeredGridItemSpan.FullLine) {
+            item {
                 AnimatedVisibility(
                     visible = uiState.pinnedTasks.isNotEmpty(),
                     modifier = Modifier.fillMaxWidth(),
@@ -46,10 +51,14 @@ fun OverviewPage(
                     ListCard(
                         title = stringResource(R.string.title_pinned_task),
                         list = uiState.pinnedTasks,
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                        height = VerveDoDefaults.Sizes.pinnedCardHeight,
+                        borderStroke = BorderStroke(
+                            width = VerveDoDefaults.Sizes.borderWidth,
+                            color = MaterialTheme.colorScheme.error
+                        )
                     )
                 }
-            }*/
+            }
             item {
                 RoundedCornerCardLarge(
                     iconRes = R.drawable.ic_apps,
@@ -71,13 +80,6 @@ fun OverviewPage(
                     title = stringResource(R.string.title_pending_task),
                     count = uiState.totalTasks - uiState.completedTasks,
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer
-                )
-            }
-
-            item {
-                ListCard(
-                    title = stringResource(R.string.title_pinned_task),
-                    list = uiState.pinnedTasks
                 )
             }
             item {
