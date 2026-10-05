@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,7 +42,7 @@ fun OverviewPage(
             horizontalArrangement = Arrangement.spacedBy(VerveDoDefaults.contentPadding),
             verticalItemSpacing = VerveDoDefaults.contentPadding
         ) {
-            item {
+            item(key = 1, span = StaggeredGridItemSpan.SingleLane) {
                 AnimatedVisibility(
                     visible = uiState.pinnedTasks.isNotEmpty(),
                     modifier = Modifier.fillMaxWidth(),
@@ -51,7 +52,6 @@ fun OverviewPage(
                     ListCard(
                         title = stringResource(R.string.title_pinned_task),
                         list = uiState.pinnedTasks,
-                        height = VerveDoDefaults.Sizes.pinnedCardHeight,
                         borderStroke = BorderStroke(
                             width = VerveDoDefaults.Sizes.borderWidth,
                             color = MaterialTheme.colorScheme.error
@@ -59,14 +59,14 @@ fun OverviewPage(
                     )
                 }
             }
-            item {
+            item(key = 2) {
                 RoundedCornerCardLarge(
                     iconRes = R.drawable.ic_apps,
                     title = stringResource(R.string.title_all_task),
                     count = uiState.totalTasks
                 )
             }
-            item {
+            item(key = 3) {
                 RoundedCornerCardLarge(
                     iconRes = R.drawable.ic_check_circle,
                     title = stringResource(R.string.title_completed_task),
@@ -74,7 +74,7 @@ fun OverviewPage(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer
                 )
             }
-            item {
+            item(key = 4) {
                 RoundedCornerCardLarge(
                     iconRes = R.drawable.ic_pending,
                     title = stringResource(R.string.title_pending_task),
@@ -82,14 +82,14 @@ fun OverviewPage(
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer
                 )
             }
-            item {
+            item(key = 5) {
                 ProgressCard(
                     title = stringResource(R.string.title_today_task),
                     total = uiState.todayTasks.size,
                     completed = uiState.todayTasks.count { it.isCompleted }
                 )
             }
-            item {
+            item(key = 6) {
                 ListCard(
                     title = stringResource(R.string.title_upcoming_task),
                     list = uiState.nextWeekTasks
