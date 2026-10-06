@@ -137,8 +137,6 @@
     <string name="label_basic_information">基本信息</string>
     <string name="pref_assist_in_translation">协助翻译</string>
     <string name="pref_assist_in_translation_desc">帮助我们把 VerveDo 翻译到你使用的语言</string>
-    <string name="pref_preview_color_system">预览新的颜色系统</string>
-    <string name="pref_preview_color_system_desc">使用支持 Material 3 Expressive 的颜色标准 Spec2025（实验性）</string>
     <string name="pref_export_task">导出任务到文件</string>
     <string name="pref_export_task_desc">导出全部任务到一个文件中（当前支持 .csv 文件）</string>
     <string name="tip_export_success">导出成功</string>

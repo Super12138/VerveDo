@@ -19,7 +19,6 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
     private val DARK_MODE = intPreferencesKey(Constants.PREF_DARK_MODE)
     private val PURE_BLACK_MODE = booleanPreferencesKey(Constants.PREF_PURE_BLACK_MODE)
     private val CONTRAST_LEVEL = floatPreferencesKey(Constants.PREF_CONTRAST_LEVEL)
-    private val PREVIEW_COLOR_SYSTEM = booleanPreferencesKey(Constants.PREF_PREVIEW_COLOR_SYSTEM)
 
     // 界面与交互
     // private val SHOW_COMPLETED = booleanPreferencesKey(Constants.PREF_SHOW_COMPLETED)
@@ -51,10 +50,6 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
 
     val contrastLevelFlow = dataStore.data.map { preferences ->
         preferences[CONTRAST_LEVEL] ?: Constants.PREF_CONTRAST_LEVEL_DEFAULT
-    }
-
-    val previewColorSystemFlow: Flow<Boolean> = dataStore.data.map { preferences ->
-        preferences[PREVIEW_COLOR_SYSTEM] ?: Constants.PREF_PREVIEW_COLOR_SYSTEM_DEFAULT
     }
 
     /*val showCompletedFlow: Flow<Boolean> = dataStore.data.map { preferences ->
@@ -112,12 +107,6 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
     suspend fun setContrastLevel(value: Float) {
         dataStore.edit { preferences ->
             preferences[CONTRAST_LEVEL] = value
-        }
-    }
-
-    suspend fun setPreviewColorSystem(value: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[PREVIEW_COLOR_SYSTEM] = value
         }
     }
 

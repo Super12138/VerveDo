@@ -17,7 +17,6 @@ class MainViewModel(
     val isConfettiVisible = confettiController.visible
     val secureModeFlow = settingsRepository.secureModeFlow
     val hapticFeedbackFlow = settingsRepository.hapticFeedbackFlow
-    val previewColorSystemFlow = settingsRepository.previewColorSystemFlow
 
     val appearanceUiState: StateFlow<SettingsAppearanceUiState> = combine(
         settingsRepository.dynamicColorFlow,

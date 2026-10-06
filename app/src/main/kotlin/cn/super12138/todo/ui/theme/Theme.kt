@@ -18,7 +18,7 @@ fun VerveDoTheme(
     style: PaletteStyle = PaletteStyle.TonalSpot,
     contrastLevel: ContrastLevel = ContrastLevel.Default,
     dynamicColor: Boolean = true, // Dynamic color is available on Android 12+
-    specVersion: ColorSpec.SpecVersion = ColorSpec.SpecVersion.SPEC_2021,
+    specVersion: ColorSpec.SpecVersion = ColorSpec.SpecVersion.SPEC_2025,
     platform: DynamicScheme.Platform = DynamicScheme.Platform.PHONE,
     animate: Boolean = true,
     content: @Composable () -> Unit

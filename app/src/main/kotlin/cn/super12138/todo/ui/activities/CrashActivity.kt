@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
@@ -18,7 +17,6 @@ import cn.super12138.todo.ui.theme.VerveDoTheme
 import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.configureEdgeToEdge
 import cn.super12138.todo.utils.isDark
-import com.kyant.m3color.dynamiccolor.ColorSpec
 import org.koin.compose.viewmodel.koinViewModel
 
 class CrashActivity : ComponentActivity() {
@@ -43,13 +41,6 @@ class CrashActivity : ComponentActivity() {
             val hapticFeedback by mainViewModel.hapticFeedbackFlow.collectAsStateWithLifecycle(
                 Constants.PREF_HAPTIC_FEEDBACK_DEFAULT
             )
-            val previewColorSystem by mainViewModel.previewColorSystemFlow.collectAsStateWithLifecycle(
-                initialValue = Constants.PREF_PREVIEW_COLOR_SYSTEM_DEFAULT
-            )
-
-            val specVersion = remember(previewColorSystem) {
-                if (previewColorSystem) ColorSpec.SpecVersion.SPEC_2025 else ColorSpec.SpecVersion.SPEC_2021
-            }
 
             val isDark = appearanceUiState.darkMode.isDark()
             // 配置状态栏和底部导航栏的颜色（在用户切换深色模式时）
@@ -68,8 +59,7 @@ class CrashActivity : ComponentActivity() {
                 pureBlackMode = appearanceUiState.pureBlackMode,
                 style = appearanceUiState.paletteStyle,
                 contrastLevel = appearanceUiState.contrastLevel,
-                dynamicColor = appearanceUiState.dynamicColor,
-                specVersion = specVersion
+                dynamicColor = appearanceUiState.dynamicColor
             ) {
                 CrashPage(
                     crashLog = crashLogs ?: stringResource(R.string.tip_no_crash_logs),

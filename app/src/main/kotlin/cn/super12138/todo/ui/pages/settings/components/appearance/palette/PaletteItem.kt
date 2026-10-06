@@ -51,7 +51,6 @@ fun PaletteItem(
     paletteStyle: PaletteStyle,
     contrastLevel: ContrastLevel,
     selected: Boolean,
-    specVersion: ColorSpec.SpecVersion,
     modifier: Modifier = Modifier,
     onSelect: () -> Unit = {},
     shapes: ButtonShapes = VerveDoDefaults.shapes
@@ -69,7 +68,7 @@ fun PaletteItem(
         contrastLevel = contrastLevel.value.toDouble(),
         pureBlack = pureBlackMode,
         style = paletteStyle,
-        specVersion = specVersion
+        specVersion = ColorSpec.SpecVersion.SPEC_2025
     )
     val animatedColorScheme = animateColorScheme(colorScheme)
 

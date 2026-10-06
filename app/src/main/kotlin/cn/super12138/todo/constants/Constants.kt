@@ -30,9 +30,6 @@ object Constants {
     const val PREF_CONTRAST_LEVEL = "contrast_level"
     const val PREF_CONTRAST_LEVEL_DEFAULT = 0f // Normal
 
-    const val PREF_PREVIEW_COLOR_SYSTEM = "preview_color_system"
-    const val PREF_PREVIEW_COLOR_SYSTEM_DEFAULT = false
-
     /*const val PREF_SHOW_COMPLETED = "show_completed"
     const val PREF_SHOW_COMPLETED_DEFAULT = true*/
 

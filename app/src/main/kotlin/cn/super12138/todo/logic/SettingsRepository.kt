@@ -18,7 +18,6 @@ class SettingsRepository(
     val darkModeFlow = dataStoreManager.darkModeFlow.map { DarkMode.fromId(it) }
     val pureBlackFlow = dataStoreManager.pureBlackFlow
     val contrastLevelFlow = dataStoreManager.contrastLevelFlow.map { ContrastLevel.fromFloat(it) }
-    val previewColorSystemFlow = dataStoreManager.previewColorSystemFlow
     val sortingOptionFlow = dataStoreManager.sortingOptionFlow.map { SortingOption.fromId(it) }
     val sortingDirectionFlow =
         dataStoreManager.sortingDirectionFlow.map { SortingDirection.fromId(it) }
@@ -34,9 +33,6 @@ class SettingsRepository(
     suspend fun setPureBlackMode(value: Boolean) = dataStoreManager.setPureBlackMode(value)
     suspend fun setContrastLevel(value: ContrastLevel) =
         dataStoreManager.setContrastLevel(value.value)
-
-    suspend fun setPreviewColorSystem(value: Boolean) =
-        dataStoreManager.setPreviewColorSystem(value)
 
     suspend fun setSortingOption(value: SortingOption) = dataStoreManager.setSortingMethod(value.id)
     suspend fun setSortingDirection(value: SortingDirection) =

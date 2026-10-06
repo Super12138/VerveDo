@@ -10,8 +10,7 @@ data class SettingsAppearanceUiState(
     val paletteStyle: PaletteStyle = PaletteStyle.TonalSpot,
     val darkMode: DarkMode = DarkMode.FollowSystem,
     val pureBlackMode: Boolean = Constants.PREF_PURE_BLACK_MODE_DEFAULT,
-    val contrastLevel: ContrastLevel = ContrastLevel.Default,
-    val previewColorSystem: Boolean = Constants.PREF_PREVIEW_COLOR_SYSTEM_DEFAULT
+    val contrastLevel: ContrastLevel = ContrastLevel.Default
 )
 
 data class SettingsInterfaceUiState(

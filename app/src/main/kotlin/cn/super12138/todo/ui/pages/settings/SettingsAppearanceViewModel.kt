@@ -35,9 +35,6 @@ class SettingsAppearanceViewModel(private val settingsRepository: SettingsReposi
         initialValue = SettingsAppearanceUiState()
     )
 
-    // 实验性设置单独设置流
-    val previewColorSystemFlow = settingsRepository.previewColorSystemFlow
-
     fun setDynamicColor(value: Boolean) {
         viewModelScope.launch {
             settingsRepository.setDynamicColor(value)
@@ -65,12 +62,6 @@ class SettingsAppearanceViewModel(private val settingsRepository: SettingsReposi
     fun setContrastLevel(contrastLevel: ContrastLevel) {
         viewModelScope.launch {
             settingsRepository.setContrastLevel(contrastLevel)
-        }
-    }
-
-    fun setPreviewColorSystem(value: Boolean) {
-        viewModelScope.launch {
-            settingsRepository.setPreviewColorSystem(value)
         }
     }
 }

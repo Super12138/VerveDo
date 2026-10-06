@@ -14,7 +14,6 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -37,7 +36,6 @@ import cn.super12138.todo.ui.widget.today.TodayTaskWidget
 import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.configureEdgeToEdge
 import cn.super12138.todo.utils.isDark
-import com.kyant.m3color.dynamiccolor.ColorSpec
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.android.scope.AndroidScopeComponent
@@ -66,15 +64,9 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
             val hapticFeedback by mainViewModel.hapticFeedbackFlow.collectAsStateWithLifecycle(
                 initialValue = Constants.PREF_HAPTIC_FEEDBACK_DEFAULT
             )
-            val previewColorSystem by mainViewModel.previewColorSystemFlow.collectAsStateWithLifecycle(
-                initialValue = Constants.PREF_PREVIEW_COLOR_SYSTEM_DEFAULT
-            )
             val isConfettiVisible by mainViewModel.isConfettiVisible
 
             val navigationScaffoldState = rememberNavigationSuiteScaffoldState()
-            val specVersion = remember(previewColorSystem) {
-                if (previewColorSystem) ColorSpec.SpecVersion.SPEC_2025 else ColorSpec.SpecVersion.SPEC_2021
-            }
 
             val isDark = appearanceUiState.darkMode.isDark()
             // 配置状态栏和底部导航栏的颜色（在用户切换深色模式时）
@@ -116,8 +108,7 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
                 pureBlackMode = appearanceUiState.pureBlackMode,
                 style = appearanceUiState.paletteStyle,
                 contrastLevel = appearanceUiState.contrastLevel,
-                dynamicColor = appearanceUiState.dynamicColor,
-                specVersion = specVersion
+                dynamicColor = appearanceUiState.dynamicColor
             ) {
                 Surface(
                     color = VerveDoDefaults.Colors.Background,

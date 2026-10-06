@@ -138,8 +138,6 @@
     <string name="label_basic_information">Basic Information</string>
     <string name="pref_assist_in_translation">Assist in Translation</string>
     <string name="pref_assist_in_translation_desc">Help us translate VerveDo into your language</string>
-    <string name="pref_preview_color_system">Preview New Color System</string>
-    <string name="pref_preview_color_system_desc">Using color specification Spec2025 which support Material 3 Expressive (Experimental)</string>
     <string name="pref_export_task">Export task to file</string>
     <string name="pref_export_task_desc">Export all task to a single file (support .csv file currently)</string>
     <string name="tip_export_success">Export successful</string>
