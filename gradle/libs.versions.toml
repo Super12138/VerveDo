@@ -17,7 +17,7 @@ aboutLibsRelease = "15.3.0"
 # M3 Color
 m3color = "2026.1"
 # Konfetti
-konfetti = "2.1.0"
+konfetti = "2.2.0"
 # Kotlin
 kotlinCoroutines = "1.11.0"
 kotlinSerialization = "1.11.0"
