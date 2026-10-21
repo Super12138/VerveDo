@@ -20,7 +20,7 @@ m3color = "2026.1"
 konfetti = "2.2.0"
 # Kotlin
 kotlinCoroutines = "1.11.0"
-kotlinSerialization = "1.11.0"
+kotlinSerialization = "1.12.0"
 kotlinDatetime = "0.8.0-0.6.x-compat"
 # Koin
 koinBom = "4.2.2"
