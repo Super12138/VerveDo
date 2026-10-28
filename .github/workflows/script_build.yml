@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v7.1.0
         with:
-          node-version: 24
+          node-version: 26
 
       - name: Install dependencies
         run: cd script && pnpm install
