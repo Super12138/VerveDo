@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="page_settings">Settings</string>
-    <string name="action_add_task">Add Task</string>
+    <string name="action_add_task">Нн</string>
     <string name="tip_no_task">There are no tasks to complete at the moment.\nTake a good rest!</string>
     <string name="placeholder_add_todo">Task content</string>
     <string name="action_cancel">Cancel</string>
@@ -153,4 +153,5 @@
     <string name="sorting_descending">Descending</string>
     <string name="label_sort_by">Sort by</string>
     <string name="label_sorting_direction">Direction</string>
+    <string name="error_no_file_picker">No system file picker is available.</string>
 </resources>
