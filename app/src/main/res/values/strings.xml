@@ -154,4 +154,5 @@
     <string name="sorting_descending">Descending</string>
     <string name="label_sort_by">Sort by</string>
     <string name="label_sorting_direction">Direction</string>
+    <string name="error_no_file_picker">No system file picker is available.</string>
 </resources>

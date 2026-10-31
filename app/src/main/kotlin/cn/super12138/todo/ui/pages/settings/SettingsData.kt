@@ -1,5 +1,8 @@
 package cn.super12138.todo.ui.pages.settings
 
+import android.content.ActivityNotFoundException
+import android.util.Log
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cn.super12138.todo.R
+import cn.super12138.todo.constants.Constants
 import cn.super12138.todo.ui.components.ConfirmDialog
 import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.pages.settings.components.SettingsCategory
@@ -43,6 +48,17 @@ fun SettingsData(
     val tipExportSuccess = stringResource(R.string.tip_export_success)
     val tipExportFailed = stringResource(R.string.tip_export_failed)
     val tipRestoreFailed = stringResource(R.string.tip_restore_failed)
+    val errorNoFilePicker = stringResource(R.string.error_no_file_picker)
+
+    fun <I, O> ManagedActivityResultLauncher<I, O>.safeLaunch(
+        input: I,
+        options: ActivityOptionsCompat? = null
+    ) = try {
+        this.launch(input, options)
+    } catch (e: ActivityNotFoundException) {
+        Log.e(Constants.TAG, "Fail to open Document UI", e)
+        scope.launch { snackbarHostState.showSnackbar(errorNoFilePicker) }
+    }
 
     val backupLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/zip"),
@@ -116,7 +132,7 @@ fun SettingsData(
                     title = stringResource(R.string.pref_backup),
                     description = stringResource(R.string.pref_backup_desc),
                     onClick = {
-                        backupLauncher.launch("VerveDo-backup-${SystemUtils.getFormattedCurrentTime()}.zip")
+                        backupLauncher.safeLaunch("VerveDo-backup-${SystemUtils.getFormattedCurrentTime()}.zip")
                     }
                 )
             }
@@ -126,7 +142,7 @@ fun SettingsData(
                     title = stringResource(R.string.pref_restore),
                     description = stringResource(R.string.pref_restore_desc),
                     onClick = {
-                        restoreLauncher.launch(arrayOf("application/zip"))
+                        restoreLauncher.safeLaunch(arrayOf("application/zip"))
                     }
                 )
             }
@@ -136,7 +152,7 @@ fun SettingsData(
                     title = stringResource(R.string.pref_export_task),
                     description = stringResource(R.string.pref_export_task_desc),
                     onClick = {
-                        exportCsvLauncher.launch("VerveDo-backup-${SystemUtils.getFormattedCurrentTime()}.csv")
+                        exportCsvLauncher.safeLaunch("VerveDo-backup-${SystemUtils.getFormattedCurrentTime()}.csv")
                     }
                 )
             }
@@ -175,6 +191,7 @@ fun SettingsData(
         onDismiss = viewModel::hideBackupFormatDialog
     )*/
 }
+
 /*
 enum class BackupFormat {
     Zip,

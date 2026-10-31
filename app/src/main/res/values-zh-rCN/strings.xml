@@ -153,4 +153,5 @@
     <string name="sorting_descending">降序</string>
     <string name="label_sort_by">依据</string>
     <string name="label_sorting_direction">方向</string>
+    <string name="error_no_file_picker">未找到系统文件选择器</string>
 </resources>
