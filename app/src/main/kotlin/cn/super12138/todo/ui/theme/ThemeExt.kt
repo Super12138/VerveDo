@@ -156,10 +156,10 @@ fun dynamicColorScheme(
             .toColor(),
         inverseSurface = scheme.inverseSurface
             .toColor()
-            .applyPureBlack(0.5f),
+            .applyPureBlack(0.3f), // 这个和下面的修改为了让snackbar的对比度正常
         inverseOnSurface = scheme.inverseOnSurface
             .toColor()
-            .applyPureBlack(0.1f),
+            .applyPureBlack(0.3f),
         error = scheme.error
             .toColor()
             .applyPureBlack(0.3f),

@@ -44,6 +44,11 @@ fun Int.blend(
     @FloatRange(from = 0.0, to = 1.0) fraction: Float = 0.5f,
 ): Int = ColorUtils.blendARGB(this, color, fraction)
 
+fun Color.blend(
+    color: Color,
+    @FloatRange(from = 0.0, to = 1.0) fraction: Float = 0.5f,
+): Color = ColorUtils.blendARGB(this.toArgb(), color.toArgb(), fraction).toColor()
+
 @Stable
 @Composable
 fun Priority.containerColor(): Color =

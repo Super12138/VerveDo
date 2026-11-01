@@ -3,13 +3,13 @@ package cn.super12138.todo.ui.pages.overview
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +23,8 @@ import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.pages.overview.components.ListCard
 import cn.super12138.todo.ui.pages.overview.components.ProgressCard
 import cn.super12138.todo.ui.pages.overview.components.RoundedCornerCardLarge
+import cn.super12138.todo.utils.blend
+import cn.super12138.todo.utils.isDark
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -52,9 +54,9 @@ fun OverviewPage(
                     ListCard(
                         title = stringResource(R.string.title_pinned_task),
                         list = uiState.pinnedTasks,
-                        borderStroke = BorderStroke(
-                            width = VerveDoDefaults.Sizes.borderWidth,
-                            color = MaterialTheme.colorScheme.error
+                        containerColor = VerveDoDefaults.Colors.Container.blend(
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            fraction = if (uiState.darkMode.isDark()) 0.4f else 0.3f
                         )
                     )
                 }
@@ -79,7 +81,13 @@ fun OverviewPage(
                     iconRes = R.drawable.ic_pending,
                     title = stringResource(R.string.title_pending_task),
                     count = uiState.totalTasks - uiState.completedTasks,
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                    colors = CardDefaults.cardColors(
+                        containerColor = VerveDoDefaults.Colors.Container.blend(
+                            color = MaterialTheme.colorScheme.tertiaryContainer,
+                            fraction = if (uiState.darkMode.isDark()) 0.85f else 1f
+                        ),
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                    ),
                 )
             }
             item(key = 5) {
