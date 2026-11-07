@@ -37,7 +37,7 @@ jobs:
         #if: github.ref != 'refs/heads/main'
         #run: sudo chmod -R 777 /home/runner/.config/.android
 
-      - name: Fix Permissions for NDK Path
+      - name: Fix permissions for NDK Path
         run: sudo chown -R $USER:$USER $ANDROID_HOME
 
       - name: Cache NDK
@@ -75,3 +75,10 @@ jobs:
         with:
           name: Release
           path: ${{ github.workspace }}/app/build/outputs/apk/release
+
+      - name: Upload mappings
+        if: success() && github.event_name != 'pull_request' && github.repository == 'Super12138/VerveDo'
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: Mappings
+          path: ${{ github.workspace }}/app/build/outputs/mapping/release
