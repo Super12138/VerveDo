@@ -1,10 +1,7 @@
 package cn.super12138.todo.di
 
-import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation3.runtime.NavKey
 import androidx.room3.Room
 import cn.super12138.todo.constants.Constants
@@ -24,6 +21,7 @@ import cn.super12138.todo.ui.pages.settings.SettingsDataViewModel
 import cn.super12138.todo.ui.pages.settings.SettingsInterfaceInteractionViewModel
 import cn.super12138.todo.ui.pages.tasks.TaskViewModel
 import cn.super12138.todo.utils.ConfettiController
+import cn.super12138.todo.utils.dataStore
 import com.jsoizo.kotlincsv.csvWriter
 import com.jsoizo.kotlincsv.writer.CsvWriter
 import com.jsoizo.kotlincsv.writer.WriteQuoteMode
@@ -36,18 +34,6 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 object VerveDoDI {
-    val Context.dataStore by preferencesDataStore(
-        name = Constants.SP_NAME,
-        produceMigrations = { context ->
-            listOf(
-                SharedPreferencesMigration(
-                    context = context,
-                    sharedPreferencesName = Constants.SP_NAME,
-                )
-            )
-        }
-    )
-
     val singleInstanceModule = module {
         singleOf(::ConfettiController)
         single<CsvWriter> { csvWriter { quoteMode = WriteQuoteMode.ALL } }

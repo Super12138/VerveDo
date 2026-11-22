@@ -14,6 +14,7 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
@@ -25,18 +26,22 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation3.runtime.NavKey
 import cn.super12138.todo.constants.Constants
+import cn.super12138.todo.logic.SettingsRepository
 import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.Confetti
-import cn.super12138.todo.ui.navigation.TopLevelBackStack
 import cn.super12138.todo.ui.navigation.TopNavigation
 import cn.super12138.todo.ui.navigation.VerveDoDestinations
+import cn.super12138.todo.ui.navigation.VerveDoScreen
+import cn.super12138.todo.ui.navigation.rememberTopLevelBackStack
 import cn.super12138.todo.ui.theme.VerveDoTheme
 import cn.super12138.todo.ui.widget.all.AllIncompleteWidget
 import cn.super12138.todo.ui.widget.today.TodayTaskWidget
 import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.configureEdgeToEdge
 import cn.super12138.todo.utils.isDark
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.get
 import org.koin.android.scope.AndroidScopeComponent
 import org.koin.androidx.scope.activityRetainedScope
@@ -54,21 +59,26 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
         configureEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        val backStack: TopLevelBackStack<NavKey> = get()
+        val settingsRepository: SettingsRepository = get()
 
         setContent {
             val mainViewModel: MainViewModel = koinViewModel()
-
             val appearanceUiState by mainViewModel.appearanceUiState.collectAsStateWithLifecycle()
             val secureMode by mainViewModel.secureModeFlow.collectAsStateWithLifecycle(Constants.PREF_SECURE_MODE_DEFAULT)
             val hapticFeedback by mainViewModel.hapticFeedbackFlow.collectAsStateWithLifecycle(
                 initialValue = Constants.PREF_HAPTIC_FEEDBACK_DEFAULT
             )
             val isConfettiVisible by mainViewModel.isConfettiVisible
-
+            val isDark = appearanceUiState.darkMode.isDark()
             val navigationScaffoldState = rememberNavigationSuiteScaffoldState()
 
-            val isDark = appearanceUiState.darkMode.isDark()
+            val startupDestination = remember {
+                runBlocking {
+                    settingsRepository.startupPage.firstOrNull() ?: VerveDoDestinations.Overview
+                }.toScreen()
+            }
+            val backStack = rememberTopLevelBackStack<NavKey>(startupDestination)
+
             // 配置状态栏和底部导航栏的颜色（在用户切换深色模式时）
             // https://github.com/dn0ne/lotus/blob/master/app/src/main/java/com/dn0ne/player/MainActivity.kt#L266
             LaunchedEffect(appearanceUiState.darkMode) {
@@ -171,4 +181,10 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
             todayTaskWidget.updateAll(applicationContext)
         }
     }
+}
+
+private fun VerveDoDestinations.toScreen(): NavKey = when (this) {
+    VerveDoDestinations.Overview -> VerveDoScreen.Overview
+    VerveDoDestinations.Tasks -> VerveDoScreen.Tasks
+    VerveDoDestinations.Settings -> VerveDoScreen.Settings.Main
 }

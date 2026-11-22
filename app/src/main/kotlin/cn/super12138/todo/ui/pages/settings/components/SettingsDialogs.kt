@@ -33,7 +33,7 @@ import cn.super12138.todo.utils.VibrationUtils
 fun SettingsRadioDialog(
     visible: Boolean,
     title: String,
-    currentOptions: SettingsRadioOptions,
+    currentOptionId: Int,
     options: List<SettingsRadioOptions>,
     onSelect: (id: Int) -> Unit,
     onDismiss: () -> Unit,
@@ -52,7 +52,7 @@ fun SettingsRadioDialog(
             ) {
                 options.forEach { option ->
                     RadioItem(
-                        selected = option == currentOptions,
+                        selected = option.id == currentOptionId,
                         text = option.text,
                         onClick = {
                             onSelect(option.id)

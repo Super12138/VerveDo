@@ -33,6 +33,9 @@ object Constants {
     /*const val PREF_SHOW_COMPLETED = "show_completed"
     const val PREF_SHOW_COMPLETED_DEFAULT = true*/
 
+    const val PREF_STARTUP_PAGE = "startup_page"
+    const val PREF_STARTUP_PAGE_DEFAULT = 1
+
     const val PREF_SORTING_OPTION = "sorting_option"
     const val PREF_SORTING_OPTION_DEFAULT = 1
 

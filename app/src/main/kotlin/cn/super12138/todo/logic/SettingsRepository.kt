@@ -6,6 +6,7 @@ import cn.super12138.todo.logic.model.DarkMode
 import cn.super12138.todo.logic.model.PaletteStyle
 import cn.super12138.todo.logic.model.SortingDirection
 import cn.super12138.todo.logic.model.SortingOption
+import cn.super12138.todo.ui.navigation.VerveDoDestinations
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 
@@ -18,6 +19,7 @@ class SettingsRepository(
     val darkModeFlow = dataStoreManager.darkModeFlow.map { DarkMode.fromId(it) }
     val pureBlackFlow = dataStoreManager.pureBlackFlow
     val contrastLevelFlow = dataStoreManager.contrastLevelFlow.map { ContrastLevel.fromFloat(it) }
+    val startupPage = dataStoreManager.startupPageFlow.map { VerveDoDestinations.fromId(it) }
     val sortingOptionFlow = dataStoreManager.sortingOptionFlow.map { SortingOption.fromId(it) }
     val sortingDirectionFlow =
         dataStoreManager.sortingDirectionFlow.map { SortingDirection.fromId(it) }
@@ -33,6 +35,9 @@ class SettingsRepository(
     suspend fun setPureBlackMode(value: Boolean) = dataStoreManager.setPureBlackMode(value)
     suspend fun setContrastLevel(value: ContrastLevel) =
         dataStoreManager.setContrastLevel(value.value)
+
+    suspend fun setStartupPage(value: VerveDoDestinations) =
+        dataStoreManager.setStartupPage(value.id)
 
     suspend fun setSortingOption(value: SortingOption) = dataStoreManager.setSortingMethod(value.id)
     suspend fun setSortingDirection(value: SortingDirection) =

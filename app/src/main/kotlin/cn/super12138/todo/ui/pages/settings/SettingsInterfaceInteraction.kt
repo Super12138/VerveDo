@@ -8,9 +8,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cn.super12138.todo.R
 import cn.super12138.todo.ui.components.TopAppBarScaffold
+import cn.super12138.todo.ui.navigation.VerveDoDestinations
 import cn.super12138.todo.ui.pages.settings.components.SettingsCategory
 import cn.super12138.todo.ui.pages.settings.components.SettingsContainer
+import cn.super12138.todo.ui.pages.settings.components.SettingsItem
 import cn.super12138.todo.ui.pages.settings.components.SettingsPlainBox
+import cn.super12138.todo.ui.pages.settings.components.SettingsRadioDialog
+import cn.super12138.todo.ui.pages.settings.components.SettingsRadioOptions
 import cn.super12138.todo.ui.pages.settings.components.SwitchSettingsItem
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -54,6 +58,15 @@ fun SettingsInterface(
 
             item {
                 SettingsCategory(stringResource(R.string.pref_category_global))
+                SettingsItem(
+                    leadingIconRes = R.drawable.ic_shield,
+                    title = stringResource(R.string.pref_startup_page),
+                    description = stringResource(R.string.pref_startup_page_desc),
+                    onClick = { viewModel.showDialog() }
+                )
+            }
+
+            item {
                 SwitchSettingsItem(
                     checked = uiState.secureMode,
                     leadingIconRes = R.drawable.ic_shield,
@@ -74,5 +87,19 @@ fun SettingsInterface(
                 SettingsPlainBox(stringResource(R.string.pref_haptic_feedback_more_info))
             }
         }
+
+        SettingsRadioDialog(
+            visible = uiState.showDialog,
+            title = stringResource(R.string.pref_startup_page),
+            currentOptionId = uiState.startupPage.id,
+            options = VerveDoDestinations.entries.map {
+                SettingsRadioOptions(
+                    id = it.id,
+                    text = stringResource(it.label)
+                )
+            },
+            onSelect = { viewModel.setStartupPage(VerveDoDestinations.fromId(it)) },
+            onDismiss = { viewModel.hideDialog() },
+        )
     }
 }

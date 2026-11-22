@@ -22,6 +22,7 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
 
     // 界面与交互
     // private val SHOW_COMPLETED = booleanPreferencesKey(Constants.PREF_SHOW_COMPLETED)
+    private val STARTUP_PAGE = intPreferencesKey(Constants.PREF_STARTUP_PAGE)
     private val SORTING_OPTION = intPreferencesKey(Constants.PREF_SORTING_OPTION)
     private val SORTING_DIRECTION = intPreferencesKey(Constants.PREF_SORTING_DIRECTION)
     private val TEXT_FIELD_AUTO_FOCUS = booleanPreferencesKey(Constants.PREF_TEXT_FIELD_AUTO_FOCUS)
@@ -56,6 +57,10 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
         preferences[SHOW_COMPLETED] ?: Constants.PREF_SHOW_COMPLETED_DEFAULT
     }*/
 
+    val startupPageFlow: Flow<Int> = dataStore.data.map { preferences ->
+        preferences[STARTUP_PAGE] ?: Constants.PREF_STARTUP_PAGE_DEFAULT
+    }
+    
     val sortingOptionFlow: Flow<Int> = dataStore.data.map { preferences ->
         preferences[SORTING_OPTION] ?: Constants.PREF_SORTING_OPTION_DEFAULT
     }
@@ -116,6 +121,12 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
         }
     }*/
 
+    suspend fun setStartupPage(value: Int) {
+        dataStore.edit { preferences ->
+            preferences[STARTUP_PAGE] = value
+        }
+    }
+    
     suspend fun setSortingMethod(value: Int) {
         dataStore.edit { preferences ->
             preferences[SORTING_OPTION] = value
