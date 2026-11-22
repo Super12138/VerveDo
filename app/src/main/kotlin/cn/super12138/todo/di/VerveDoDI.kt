@@ -84,17 +84,10 @@ object VerveDoDI {
         viewModelOf(::SettingsInterfaceInteractionViewModel)
     }
 
-    val navigationModule = module {
-        activityRetainedScope {
-            scoped { TopLevelBackStack<NavKey>(VerveDoScreen.Overview) }
-        }
-    }
-
     val allModules = listOf(
         singleInstanceModule,
         databaseModule,
         datastoreModule,
-        viewModelModule,
-        navigationModule
+        viewModelModule
     )
 }
