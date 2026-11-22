@@ -20,7 +20,9 @@ val verCode = "git rev-list --count HEAD".exec().toInt() */
 android {
     namespace = "cn.super12138.todo"
     compileSdk {
-        version = release(37)
+        version = release(37) {
+            minorApiLevel = 1
+        }
     }
 
     // 获取 Release 签名
@@ -39,7 +41,7 @@ android {
         applicationId = "cn.super12138.todo"
         minSdk = 26
         targetSdk = 37
-        versionCode = 1319
+        versionCode = 1343
         versionName = "3.6.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
