@@ -154,4 +154,6 @@
     <string name="label_sort_by">依据</string>
     <string name="label_sorting_direction">方向</string>
     <string name="error_no_file_picker">未找到系统文件选择器</string>
+    <string name="pref_startup_page">启动页面</string>
+    <string name="pref_startup_page_desc">设置在应用启动后显示的页面</string>
 </resources>

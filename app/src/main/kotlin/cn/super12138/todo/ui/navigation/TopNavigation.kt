@@ -1,8 +1,6 @@
 package cn.super12138.todo.ui.navigation
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,11 +27,10 @@ import cn.super12138.todo.ui.theme.fadeScale
 import cn.super12138.todo.ui.theme.materialSharedAxisX
 import cn.super12138.todo.ui.theme.veilFade
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TopNavigation(
-    modifier: Modifier = Modifier,
-    backStack: TopLevelBackStack<NavKey>
+    backStack: TopLevelBackStack<NavKey>,
+    modifier: Modifier = Modifier
 ) {
     fun onBack() {
         backStack.removeLast()

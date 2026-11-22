@@ -1,7 +1,7 @@
 package cn.super12138.todo.ui.activities
 
 import android.os.Bundle
-import android.view.WindowManager
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.Crossfade
@@ -14,29 +14,36 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
+import androidx.datastore.core.IOException
 import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation3.runtime.NavKey
 import cn.super12138.todo.constants.Constants
+import cn.super12138.todo.logic.SettingsRepository
 import cn.super12138.todo.ui.VerveDoDefaults
+import cn.super12138.todo.ui.components.ActivityConfigure
 import cn.super12138.todo.ui.components.Confetti
-import cn.super12138.todo.ui.navigation.TopLevelBackStack
 import cn.super12138.todo.ui.navigation.TopNavigation
 import cn.super12138.todo.ui.navigation.VerveDoDestinations
+import cn.super12138.todo.ui.navigation.VerveDoScreen
+import cn.super12138.todo.ui.navigation.rememberTopLevelBackStack
 import cn.super12138.todo.ui.theme.VerveDoTheme
 import cn.super12138.todo.ui.widget.all.AllIncompleteWidget
 import cn.super12138.todo.ui.widget.today.TodayTaskWidget
 import cn.super12138.todo.utils.VibrationUtils
 import cn.super12138.todo.utils.configureEdgeToEdge
 import cn.super12138.todo.utils.isDark
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.get
 import org.koin.android.scope.AndroidScopeComponent
 import org.koin.androidx.scope.activityRetainedScope
@@ -54,43 +61,41 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
         configureEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        val backStack: TopLevelBackStack<NavKey> = get()
+        val settingsRepository: SettingsRepository = get()
 
         setContent {
             val mainViewModel: MainViewModel = koinViewModel()
-
             val appearanceUiState by mainViewModel.appearanceUiState.collectAsStateWithLifecycle()
             val secureMode by mainViewModel.secureModeFlow.collectAsStateWithLifecycle(Constants.PREF_SECURE_MODE_DEFAULT)
             val hapticFeedback by mainViewModel.hapticFeedbackFlow.collectAsStateWithLifecycle(
                 initialValue = Constants.PREF_HAPTIC_FEEDBACK_DEFAULT
             )
             val isConfettiVisible by mainViewModel.isConfettiVisible
-
             val navigationScaffoldState = rememberNavigationSuiteScaffoldState()
 
-            val isDark = appearanceUiState.darkMode.isDark()
-            // 配置状态栏和底部导航栏的颜色（在用户切换深色模式时）
-            // https://github.com/dn0ne/lotus/blob/master/app/src/main/java/com/dn0ne/player/MainActivity.kt#L266
-            LaunchedEffect(appearanceUiState.darkMode) {
-                WindowCompat.getInsetsController(window, window.decorView).apply {
-                    isAppearanceLightStatusBars = !isDark
-                    isAppearanceLightNavigationBars = !isDark
-                }
+            val startupDestination = remember {
+                runBlocking {
+                    settingsRepository.startupPage
+                        .catch { e ->
+                            if (e !is IOException) throw e
+                            Log.e(
+                                Constants.TAG,
+                                "Failed to get startup page, fallback to overview page.",
+                                e
+                            )
+                            emit(VerveDoDestinations.Overview)
+                        }
+                        .firstOrNull() ?: VerveDoDestinations.Overview
+                }.toScreen()
             }
+            val backStack = rememberTopLevelBackStack(startupDestination)
 
-            // 安全模式相关配置
-            LaunchedEffect(secureMode) {
-                if (secureMode) {
-                    window.setFlags(
-                        WindowManager.LayoutParams.FLAG_SECURE,
-                        WindowManager.LayoutParams.FLAG_SECURE
-                    )
-                } else {
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-                }
-            }
-
-            LaunchedEffect(hapticFeedback) { VibrationUtils.setEnabled(hapticFeedback) }
+            ActivityConfigure(
+                window = window,
+                darkMode = appearanceUiState.darkMode,
+                secureMode = secureMode,
+                hapticFeedback = hapticFeedback
+            )
 
             // 当BackStack出现非顶层路由时，隐藏底部导航栏
             LaunchedEffect(backStack.backStack.lastOrNull()) {
@@ -104,7 +109,7 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
             }
 
             VerveDoTheme(
-                darkTheme = isDark,
+                darkTheme = appearanceUiState.darkMode.isDark(),
                 pureBlackMode = appearanceUiState.pureBlackMode,
                 style = appearanceUiState.paletteStyle,
                 contrastLevel = appearanceUiState.contrastLevel,
@@ -115,6 +120,7 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
                     modifier = Modifier.fillMaxSize()
                 ) {
                     val view = LocalView.current
+
                     NavigationSuiteScaffold(
                         state = navigationScaffoldState,
                         navigationSuiteItems = {
@@ -171,4 +177,10 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
             todayTaskWidget.updateAll(applicationContext)
         }
     }
+}
+
+private fun VerveDoDestinations.toScreen(): NavKey = when (this) {
+    VerveDoDestinations.Overview -> VerveDoScreen.Overview
+    VerveDoDestinations.Tasks -> VerveDoScreen.Tasks
+    VerveDoDestinations.Settings -> VerveDoScreen.Settings.Main
 }
