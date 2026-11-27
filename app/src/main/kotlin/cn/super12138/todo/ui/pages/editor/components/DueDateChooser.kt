@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
@@ -26,6 +29,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.setDisplayedMonth
 import androidx.compose.material3.setSelectedDate
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -181,7 +185,27 @@ private fun ExposedDropdownMenu(
     modifier: Modifier = Modifier,
     specificInstant: Instant? = null,
 ) {
+    val selectedText = buildString {
+        append(stringResource(selectedItem.labelRes))
+
+        if (selectedItem == DueDateSelection.Customization) {
+            specificInstant?.let {
+                append(" ")
+                append(it.toLocalDateTime(TimeZone.UTC).toFormattedDate())
+            }
+        }
+    }
+
     val view = LocalView.current
+
+    val dueDateField = rememberTextFieldState(selectedText)
+
+    // 同步外部选中项变化
+    LaunchedEffect(selectedText) {
+        if (dueDateField.text.toString() != selectedText) {
+            dueDateField.setTextAndPlaceCursorAtEnd(selectedText)
+        }
+    }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -191,23 +215,12 @@ private fun ExposedDropdownMenu(
         },
         modifier = modifier
     ) {
-        val selectedText = buildString {
-            append(stringResource(selectedItem.labelRes))
-
-            if (selectedItem == DueDateSelection.Customization) {
-                specificInstant?.let {
-                    append(" ")
-                    append(it.toLocalDateTime(TimeZone.UTC).toFormattedDate())
-                }
-            }
-        }
         TextField(
-            value = selectedText,
-            onValueChange = {},
+            state = dueDateField,
             label = { Text(stringResource(R.string.label_due_date)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             readOnly = true,
-            singleLine = true,
+            lineLimits = TextFieldLineLimits.SingleLine,
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
             modifier = Modifier
                 .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
@@ -226,7 +239,7 @@ private fun ExposedDropdownMenu(
                     shapes = MenuDefaults.itemShape(index, optionCount),
                     text = {
                         Text(
-                            stringResource(option.labelRes),
+                            text = stringResource(option.labelRes),
                             style = MaterialTheme.typography.bodyLarge
                         )
                     },

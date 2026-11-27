@@ -2,7 +2,11 @@ package cn.super12138.todo.ui.pages.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.FlexAlignContent
+import androidx.compose.foundation.layout.FlexBox
+import androidx.compose.foundation.layout.FlexDirection
+import androidx.compose.foundation.layout.FlexJustifyContent
+import androidx.compose.foundation.layout.FlexWrap
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.items
@@ -27,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import cn.super12138.todo.R
+import cn.super12138.todo.ui.VerveDoDefaults
 import cn.super12138.todo.ui.components.BasicDialog
 import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.pages.settings.components.SettingsContainer
@@ -88,7 +93,15 @@ fun SettingsAboutLicence(
                     },
                     supportingContent = {
                         if (library.licenses.isNotEmpty()) {
-                            FlowRow {
+                            FlexBox(
+                                config = {
+                                    direction(FlexDirection.Row)
+                                    justifyContent(FlexJustifyContent.Start)
+                                    alignContent(FlexAlignContent.Start)
+                                    wrap(FlexWrap.Wrap)
+                                    gap(VerveDoDefaults.contentPadding / 4)
+                                }
+                            ) {
                                 library.licenses.forEach {
                                     Badge(containerColor = MaterialTheme.colorScheme.primary) {
                                         Text(

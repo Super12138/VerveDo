@@ -111,7 +111,7 @@ class TaskViewModel(
     fun showDeleteConfirmDialog() = localUiState.update { it.copy(showDeleteConfirmDialog = true) }
     fun hideDeleteConfirmDialog() = localUiState.update { it.copy(showDeleteConfirmDialog = false) }
 
-    fun updateSearchQuery(query: String) = localUiState.update { it.copy(searchQuery = query) }
+    fun setSearchQuery(query: String) = localUiState.update { it.copy(searchQuery = query) }
 
     fun setConfettiVisibility(visible: Boolean) = confettiController.setVisibility(visible)
 }

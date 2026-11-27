@@ -1,7 +1,10 @@
 package cn.super12138.todo.ui.pages.settings.components.appearance.contrast
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.FlexAlignContent
+import androidx.compose.foundation.layout.FlexBox
+import androidx.compose.foundation.layout.FlexDirection
+import androidx.compose.foundation.layout.FlexJustifyContent
+import androidx.compose.foundation.layout.FlexWrap
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.Text
@@ -34,10 +37,16 @@ fun ContrastPicker(
         description = stringResource(R.string.pref_contrast_level_desc),
         modifier = modifier
     ) {
-        FlowRow(
+        FlexBox(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
-            verticalArrangement = Arrangement.spacedBy(VerveDoDefaults.contentPadding / 4)
+            config = {
+                direction(FlexDirection.Row)
+                justifyContent(FlexJustifyContent.Start)
+                alignContent(FlexAlignContent.Start)
+                wrap(FlexWrap.Wrap)
+                rowGap(ButtonGroupDefaults.ConnectedSpaceBetween)
+                columnGap(VerveDoDefaults.contentPadding / 4)
+            }
         ) {
             contrastLevelList.forEachIndexed { index, contrastLevel ->
                 ToggleButton(

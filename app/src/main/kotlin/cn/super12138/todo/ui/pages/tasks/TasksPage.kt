@@ -11,15 +11,14 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialShapes
@@ -28,9 +27,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.animateFloatingActionButton
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.computedStateOf
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -92,7 +94,13 @@ fun SharedTransitionScope.TasksPage(
         }
     }
 
-    val expandedFab by remember { derivedStateOf { taskListState.firstVisibleItemIndex == 0 } }
+    val searchFieldState = rememberTextFieldState()
+    LaunchedEffect(searchFieldState) {
+        snapshotFlow { searchFieldState.text.trim().toString() }
+            .collect { viewModel.setSearchQuery(it) }
+    }
+
+    val expandedFab by remember { computedStateOf { taskListState.firstVisibleItemScrollOffset == 0 } }
 
     BackHandler(enabled = uiState.inSelectionMode || uiState.inSearchMode) {
         if (uiState.inSelectionMode) {
@@ -145,8 +153,7 @@ fun SharedTransitionScope.TasksPage(
                 exit = listExitTransition
             ) {
                 TaskSearchTextField(
-                    value = uiState.searchQuery,
-                    onValueChange = { viewModel.updateSearchQuery(it) },
+                    state = searchFieldState,
                     onExitSearchMode = viewModel::exitSearchMode,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -181,17 +188,16 @@ fun SharedTransitionScope.TasksPage(
                     LazyVerticalStaggeredGrid(
                         state = taskListState,
                         columns = StaggeredGridCells.Adaptive(minSize = 250.dp),
-                        contentPadding = PaddingValues(vertical = VerveDoDefaults.contentPadding / 4),
+                        contentPadding = PaddingValues(
+                            top = VerveDoDefaults.contentPadding / 2,
+                            bottom = VerveDoDefaults.screenVerticalPadding / 2
+                        ),
                         verticalItemSpacing = VerveDoDefaults.contentPadding / 2,
                         horizontalArrangement = Arrangement.spacedBy(VerveDoDefaults.contentPadding / 2),
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(VerveDoDefaults.ScreenContainerShape)
                     ) {
-                        item {
-                            Spacer(modifier = Modifier.size(VerveDoDefaults.screenVerticalPadding / 2))
-                        }
-
                         items(
                             items = taskList,
                             key = { task -> task.id }
@@ -239,10 +245,6 @@ fun SharedTransitionScope.TasksPage(
                                         fadeOutSpec = MaterialTheme.motionScheme.fastEffectsSpec()
                                     )
                             )
-                        }
-
-                        item {
-                            Spacer(modifier = Modifier.size(VerveDoDefaults.screenVerticalPadding / 2))
                         }
                     }
                 }

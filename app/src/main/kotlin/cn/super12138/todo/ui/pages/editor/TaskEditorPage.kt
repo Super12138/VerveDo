@@ -11,7 +11,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.FlexAlignContent
+import androidx.compose.foundation.layout.FlexBox
+import androidx.compose.foundation.layout.FlexDirection
+import androidx.compose.foundation.layout.FlexJustifyContent
+import androidx.compose.foundation.layout.FlexWrap
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -120,6 +124,7 @@ fun TaskEditorPage(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val contentField = rememberTextFieldState(initialText = task?.content ?: "")
+    val categoryField = rememberTextFieldState(initialText = task?.category ?: "")
     val customizationText = stringResource(R.string.label_customization)
 
     val focusRequester = remember { FocusRequester() }
@@ -169,6 +174,11 @@ fun TaskEditorPage(
     LaunchedEffect(contentField) {
         snapshotFlow { contentField.text.trim().toString() }
             .collect { viewModel.setContentText(it) }
+    }
+
+    LaunchedEffect(categoryField) {
+        snapshotFlow { categoryField.text.trim().toString() }
+            .collect { viewModel.setCategoryText(it) }
     }
 
     BackHandler(onBack = ::navigateUpIfUnchanged)
@@ -257,29 +267,6 @@ fun TaskEditorPage(
                         .fillMaxWidth()
                         .focusRequester(focusRequester)
                 )
-                /*TextField(
-                    value = uiState.content,
-                    onValueChange = { viewModel.setContentText(it) },
-                    label = { Text(stringResource(R.string.placeholder_add_todo)) },
-                    maxLines = 3,
-                    isError = isContentError,
-                    supportingText = {
-                        AnimatedVisibility(
-                            visible = isContentError,
-                            enter = fadeIn() + expandVertically(),
-                            exit = fadeOut() + shrinkVertically()
-                        ) {
-                            Text(
-                                text = stringResource(R.string.error_no_content_entered),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester)
-                )*/
             }
             item {
                 Subtitle(R.string.label_category)
@@ -296,20 +283,17 @@ fun TaskEditorPage(
                     }
                     FilterChipGroup(
                         items = categoryChipList,
-                        selectedItemId = uiState.selectedCategoryId,
+                        selectedId = uiState.selectedCategoryId,
                         onSelectedChanged = { viewModel.setSelectedCategory(it) }
                     )
                     AnimatedVisibility(uiState.selectedCategoryId == -1) {
                         TextField(
-                            value = uiState.category,
-                            onValueChange = { viewModel.setCategoryText(it) },
+                            state = categoryField,
                             label = { Text(stringResource(R.string.label_enter_category_name)) },
+                            lineLimits = TextFieldLineLimits.SingleLine,
                             isError = isCategoryError,
                             supportingText = {
-                                AnimatedContent(
-                                    targetState = isCategoryError,
-                                    // transitionSpec = { enterTransition togetherWith exitTransition }
-                                ) { error ->
+                                AnimatedContent(isCategoryError) { error ->
                                     Text(
                                         text = if (error) {
                                             stringResource(R.string.error_no_content_entered)
@@ -321,7 +305,6 @@ fun TaskEditorPage(
                                     )
                                 }
                             },
-                            singleLine = true,
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -331,10 +314,16 @@ fun TaskEditorPage(
                 val priorityList = Priority.entries
 
                 Subtitle(R.string.label_priority)
-                FlowRow(
+                FlexBox(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
-                    verticalArrangement = Arrangement.spacedBy(VerveDoDefaults.contentPadding / 4)
+                    config = {
+                        direction(FlexDirection.Row)
+                        justifyContent(FlexJustifyContent.Start)
+                        alignContent(FlexAlignContent.Start)
+                        wrap(FlexWrap.Wrap)
+                        rowGap(ButtonGroupDefaults.ConnectedSpaceBetween)
+                        columnGap(VerveDoDefaults.contentPadding / 4)
+                    }
                 ) {
                     priorityList.forEachIndexed { index, priority ->
                         ToggleButton(

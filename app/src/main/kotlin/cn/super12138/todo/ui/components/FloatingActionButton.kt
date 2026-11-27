@@ -21,7 +21,6 @@ import cn.super12138.todo.utils.VibrationUtils
  * 封装的内置组件 FAB，在点击时支持添加震动反馈
  * * （现在内置组件的动画好像好一点了）
  *
- * 将缩放部分转为最简单的`AnimatedVisibility`实现
  * @param iconRes FAB 的前置图标
  * @param text FAB 的文本
  * @param expanded 是否为展开状态
@@ -68,6 +67,7 @@ fun TodoFloatingActionButton(
         contentColor = contentColor,
         shape = shape,
         interactionSource = interactionSource,
+        expanded = expanded,
         modifier = modifier
     )
 }

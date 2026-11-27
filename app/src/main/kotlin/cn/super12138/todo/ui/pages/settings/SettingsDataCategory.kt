@@ -20,6 +20,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.computedStateOf
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -58,7 +59,7 @@ fun SettingsDataCategory(
     val listState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
     val isListEmpty by remember { derivedStateOf { uiState.categories.isEmpty() } }
-    val isExpanded by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
+    val isExpanded by remember { computedStateOf { listState.firstVisibleItemIndex == 0 } }
 
     val transitionSpec = fadeScale()
 

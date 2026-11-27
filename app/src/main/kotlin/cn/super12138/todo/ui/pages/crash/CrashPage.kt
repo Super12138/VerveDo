@@ -18,7 +18,7 @@ import androidx.compose.material3.SmallExtendedFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.computedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -51,7 +51,7 @@ fun CrashPage(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val scrollState = rememberScrollState()
-    val isExpanded by remember { derivedStateOf { scrollState.value == 0 } }
+    val isExpanded by remember { computedStateOf { scrollState.value == 0 } }
 
     Scaffold(
         modifier = modifier
