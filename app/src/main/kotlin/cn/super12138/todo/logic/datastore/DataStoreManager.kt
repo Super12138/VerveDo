@@ -60,7 +60,7 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
     val startupPageFlow: Flow<Int> = dataStore.data.map { preferences ->
         preferences[STARTUP_PAGE] ?: Constants.PREF_STARTUP_PAGE_DEFAULT
     }
-    
+
     val sortingOptionFlow: Flow<Int> = dataStore.data.map { preferences ->
         preferences[SORTING_OPTION] ?: Constants.PREF_SORTING_OPTION_DEFAULT
     }
@@ -126,7 +126,7 @@ class DataStoreManager(val dataStore: DataStore<Preferences>) {
             preferences[STARTUP_PAGE] = value
         }
     }
-    
+
     suspend fun setSortingMethod(value: Int) {
         dataStore.edit { preferences ->
             preferences[SORTING_OPTION] = value

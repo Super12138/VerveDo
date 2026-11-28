@@ -1,6 +1,5 @@
 package cn.super12138.todo.ui.pages.editor
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.logic.SettingsRepository
@@ -64,10 +63,7 @@ class EditorViewModel(
     fun setPriority(priority: Priority) = localUiState.update { it.copy(priority = priority) }
     fun setDueDate(dueDate: Instant?) = localUiState.update { it.copy(dueDate = dueDate) }
     fun setCompleted(completed: Boolean) = localUiState.update { it.copy(isCompleted = completed) }
-    fun setPinned(pinned: Boolean) = localUiState.update {
-        Log.d("VVD", "setPinned: $pinned")
-        it.copy(isPinned = pinned)
-    }
+    fun setPinned(pinned: Boolean) = localUiState.update { it.copy(isPinned = pinned) }
 
     fun isModified(): Boolean {
         var isModified = false

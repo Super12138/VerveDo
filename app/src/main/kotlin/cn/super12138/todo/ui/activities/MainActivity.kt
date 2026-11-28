@@ -1,7 +1,6 @@
 package cn.super12138.todo.ui.activities
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.Crossfade
@@ -45,21 +44,19 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.get
-import org.koin.android.scope.AndroidScopeComponent
-import org.koin.androidx.scope.activityRetainedScope
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.scope.Scope
+import timber.log.Timber
 
-class MainActivity : ComponentActivity(), AndroidScopeComponent {
+class MainActivity : ComponentActivity() {
     val allIncompleteWidget = AllIncompleteWidget()
     val todayTaskWidget = TodayTaskWidget()
-
-    override val scope: Scope by activityRetainedScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         configureEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        Timber.tag("MainActivity")
 
         val settingsRepository: SettingsRepository = get()
 
@@ -78,11 +75,7 @@ class MainActivity : ComponentActivity(), AndroidScopeComponent {
                     settingsRepository.startupPage
                         .catch { e ->
                             if (e !is IOException) throw e
-                            Log.e(
-                                Constants.TAG,
-                                "Failed to get startup page, fallback to overview page.",
-                                e
-                            )
+                            Timber.e(e, "Failed to get startup page, fallback to overview page.")
                             emit(VerveDoDestinations.Overview)
                         }
                         .firstOrNull() ?: VerveDoDestinations.Overview

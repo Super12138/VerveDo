@@ -41,7 +41,7 @@ android {
         applicationId = "cn.super12138.todo"
         minSdk = 26
         targetSdk = 37
-        versionCode = 1346
+        versionCode = 1348
         versionName = "3.6.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -76,6 +76,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     // F-Droid 构建无法检测依赖信息块，所以将其忽略
@@ -146,6 +147,8 @@ dependencies {
     implementation(libs.koin.compose.viewmodel)
     // Kotlin Csv
     implementation(libs.jsoizo.kotlin.csv)
+    // Timber
+    implementation(libs.com.jakewharton.timber)
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

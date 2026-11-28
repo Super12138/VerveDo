@@ -1,7 +1,6 @@
 package cn.super12138.todo.ui.pages.settings
 
 import android.content.ActivityNotFoundException
-import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,7 +18,6 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cn.super12138.todo.R
-import cn.super12138.todo.constants.Constants
 import cn.super12138.todo.ui.components.ConfirmDialog
 import cn.super12138.todo.ui.components.TopAppBarScaffold
 import cn.super12138.todo.ui.pages.settings.components.SettingsCategory
@@ -29,6 +27,7 @@ import cn.super12138.todo.utils.SystemUtils
 import cn.super12138.todo.utils.restartApp
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
+import timber.log.Timber
 
 @Composable
 fun SettingsData(
@@ -56,61 +55,54 @@ fun SettingsData(
     ) = try {
         this.launch(input, options)
     } catch (e: ActivityNotFoundException) {
-        Log.e(Constants.TAG, "Fail to open Document UI", e)
+        Timber.tag("SettingsData").e(e, "Fail to open Document UI.")
         scope.launch { snackbarHostState.showSnackbar(errorNoFilePicker) }
     }
 
     val backupLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/zip"),
-        onResult = {
-            if (it != null) {
-                viewModel.backupDataInZipFile(
-                    uri = it,
-                    context = context,
-                    onResult = { success ->
-                        scope.launch {
-                            snackbarHostState.showSnackbar(if (success) tipBackupSuccess else tipBackupFailed)
+        onResult = { uri ->
+            uri?.let {
+                scope.launch {
+                    viewModel.backupDataInZipFile(uri = it, context = context)
+                        .onSuccess { snackbarHostState.showSnackbar(tipBackupSuccess) }
+                        .onFailure { t ->
+                            Timber.tag("SettingsData").e(t, "Failed to backup database.")
+                            snackbarHostState.showSnackbar(tipBackupFailed)
                         }
-                    }
-                )
+                }
             }
         }
     )
 
     val exportCsvLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("text/csv"),
-        onResult = {
-            if (it != null) {
-                viewModel.backupDataInCsvFile(
-                    uri = it,
-                    context = context,
-                    onResult = { success ->
-                        scope.launch {
-                            snackbarHostState.showSnackbar(if (success) tipExportSuccess else tipExportFailed)
+        onResult = { uri ->
+            uri?.let {
+                scope.launch {
+                    viewModel.backupDataInCsvFile(uri = uri, context = context)
+                        .onSuccess { snackbarHostState.showSnackbar(tipExportSuccess) }
+                        .onFailure { t ->
+                            Timber.tag("SettingsData").e(t, "Failed to export database in CSV.")
+                            snackbarHostState.showSnackbar(tipExportFailed)
                         }
-                    }
-                )
+                }
             }
         }
     )
 
     val restoreLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
-        onResult = {
-            if (it != null) {
-                viewModel.restoreAppData(
-                    uri = it,
-                    context = context,
-                    onResult = { success ->
-                        if (success) {
-                            viewModel.showRestoreDialog()
-                        } else {
-                            scope.launch {
-                                snackbarHostState.showSnackbar(tipRestoreFailed)
-                            }
+        onResult = { uri ->
+            uri?.let {
+                scope.launch {
+                    viewModel.restoreAppData(uri = it, context = context)
+                        .onSuccess { viewModel.showRestoreDialog() }
+                        .onFailure { t ->
+                            Timber.tag("SettingsData").e(t, "Failed to restore database.")
+                            snackbarHostState.showSnackbar(tipRestoreFailed)
                         }
-                    }
-                )
+                }
             }
         }
     )

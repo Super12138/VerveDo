@@ -2,7 +2,6 @@ package cn.super12138.todo.di
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.navigation3.runtime.NavKey
 import androidx.room3.Room
 import cn.super12138.todo.constants.Constants
 import cn.super12138.todo.logic.SettingsRepository
@@ -11,8 +10,6 @@ import cn.super12138.todo.logic.database.TaskDao
 import cn.super12138.todo.logic.database.TaskDatabase
 import cn.super12138.todo.logic.datastore.DataStoreManager
 import cn.super12138.todo.ui.activities.MainViewModel
-import cn.super12138.todo.ui.navigation.TopLevelBackStack
-import cn.super12138.todo.ui.navigation.VerveDoScreen
 import cn.super12138.todo.ui.pages.editor.EditorViewModel
 import cn.super12138.todo.ui.pages.overview.OverviewViewModel
 import cn.super12138.todo.ui.pages.settings.SettingsAppearanceViewModel
@@ -27,7 +24,6 @@ import com.jsoizo.kotlincsv.writer.CsvWriter
 import com.jsoizo.kotlincsv.writer.WriteQuoteMode
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidApplication
-import org.koin.androidx.scope.dsl.activityRetainedScope
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf

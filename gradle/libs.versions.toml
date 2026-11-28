@@ -26,6 +26,8 @@ kotlinDatetime = "0.8.0-0.6.x-compat"
 koinBom = "4.2.2"
 # Kotlin Csv
 kotlinCsv = "2.1.0"
+# Timber
+timber = "5.0.1"
 # Test
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -92,6 +94,9 @@ koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmo
 
 # Kotlin Csv
 jsoizo-kotlin-csv = { group = "com.jsoizo", name = "kotlin-csv", version.ref = "kotlinCsv" }
+
+# Timber
+com-jakewharton-timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 # Test
 junit = { group = "junit", name = "junit", version.ref = "junit" }

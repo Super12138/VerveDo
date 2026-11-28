@@ -3,7 +3,6 @@ package cn.super12138.todo.ui.pages.settings
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import cn.super12138.todo.constants.Constants
 import cn.super12138.todo.logic.TaskRepository
 import cn.super12138.todo.utils.FileUtils
@@ -13,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
@@ -34,20 +32,16 @@ class SettingsDataViewModel(
      *
      * @param uri 备份文件路径的 URI
      * @param context 应用 Context
-     * @param onResult 备份完成的回调函数
      */
-    fun backupDataInZipFile(uri: Uri, context: Context, onResult: (completed: Boolean) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = runCatching {
-                context.contentResolver.openOutputStream(uri)?.use { outputStream ->
-                    ZipOutputStream(BufferedOutputStream(outputStream)).use { zipOutStream ->
-                        getBackupFiles(context).forEach { file ->
-                            FileUtils.addFileToZip(file, file.name, zipOutStream)
-                        }
+    suspend fun backupDataInZipFile(uri: Uri, context: Context) = withContext(Dispatchers.IO) {
+        runCatching {
+            context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                ZipOutputStream(BufferedOutputStream(outputStream)).use { zipOutStream ->
+                    getBackupFiles(context).forEach { file ->
+                        FileUtils.addFileToZip(file, file.name, zipOutStream)
                     }
                 }
-            }.isSuccess
-            withContext(Dispatchers.Main) { onResult(result) }
+            } ?: error("Failed to open output stream.")
         }
     }
 
@@ -56,20 +50,17 @@ class SettingsDataViewModel(
      *
      * @param uri 选择的恢复文件的 URI
      * @param context 应用 Context
-     * @param onResult 恢复完成的回调函数
      */
-    fun restoreAppData(uri: Uri, context: Context, onResult: (completed: Boolean) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = runCatching {
+    suspend fun restoreAppData(uri: Uri, context: Context): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            runCatching {
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->
                     ZipInputStream(BufferedInputStream(inputStream)).use { zipInputStream ->
                         extractZipEntries(zipInputStream, context)
                     }
-                }
-            }.isSuccess
-            withContext(Dispatchers.Main) { onResult(result) }
+                } ?: error("Failed to open input stream.")
+            }
         }
-    }
 
     /**
      * 获取要备份文件的文件列表
@@ -114,8 +105,8 @@ class SettingsDataViewModel(
     }
 
     // 考虑重新设计API
-    fun backupDataInCsvFile(uri: Uri, context: Context, onResult: (completed: Boolean) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
+    suspend fun backupDataInCsvFile(uri: Uri, context: Context) = withContext(Dispatchers.IO) {
+        runCatching {
             val tasks = taskRepository.getAllTasks().first()
 
             val header =
@@ -134,15 +125,11 @@ class SettingsDataViewModel(
                 }
             }
 
-            val result = runCatching {
-                context.contentResolver.openOutputStream(uri)?.use { outputStream ->
-                    outputStream.write(
-                        csvWriter.writeAll(listOf(header) + rows)
-                            .toByteArray(charset = Charsets.UTF_8)
-                    )
-                }
-            }.isSuccess
-            withContext(Dispatchers.Main) { onResult(result) }
+            context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                outputStream.write(
+                    csvWriter.writeAll(listOf(header) + rows).toByteArray(Charsets.UTF_8)
+                )
+            } ?: error("Failed to open output stream when export CSV.")
         }
     }
 

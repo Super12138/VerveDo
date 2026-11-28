@@ -16,8 +16,8 @@ class SettingsDataCategoryViewModel(private val settingsRepository: SettingsRepo
     val localUiState = MutableStateFlow(SettingsDataCategoryUiState())
     val uiState: StateFlow<SettingsDataCategoryUiState> =
         combine(
-        settingsRepository.categoriesFlow,
-        localUiState
+            settingsRepository.categoriesFlow,
+            localUiState
         ) { categories, localUiState -> localUiState.copy(categories = categories) }
             .stateIn(
                 scope = viewModelScope,
