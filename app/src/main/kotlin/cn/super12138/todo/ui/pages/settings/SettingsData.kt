@@ -144,7 +144,7 @@ fun SettingsData(
                     title = stringResource(R.string.pref_export_task),
                     description = stringResource(R.string.pref_export_task_desc),
                     onClick = {
-                        exportCsvLauncher.safeLaunch("VerveDo-backup-${SystemUtils.getFormattedCurrentTime()}.csv")
+                        exportCsvLauncher.safeLaunch("VerveDo-export-${SystemUtils.getFormattedCurrentTime()}.csv")
                     }
                 )
             }
